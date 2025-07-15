@@ -1,0 +1,40 @@
+.footer.-type-1 {
+  color: rgba(var(--bs-white-rgb));
+  background-color: var(--color-dark-2);
+
+  @media (max-width: 576px) {
+    .border-sm-top-light {
+      border-top: 1px solid #dddddd; /* Whatever color you desire */
+    }
+  }
+}
+.footer .button {
+  color: rgba(var(--bs-white-rgb));
+  background-color: var(--color-dark-2);
+  cursor: pointer;
+  &:hover {
+    background-color: #010814;
+  }
+}
+.footer .row {
+  --bs-gutter-x: 67px !important;
+}
+
+.footer.-dashboard {
+  border-top: 1px solid var(--color-border);
+
+  .footer {
+    &__row {
+      padding: 15px 0;
+    }
+  }
+}
+.footer-link {
+  transition: 0.3s;
+  &:hover {
+    // color: var(--color-blue-1);
+    // color: rgb(169, 241, 225);
+    transform: translateX(4px);
+    // font-weight: 600;
+  }
+}

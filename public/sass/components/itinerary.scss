@@ -1,0 +1,162 @@
+.itinerary_map {
+  width: 150%;
+  height: 100%;
+  // margin-left: -250px;
+}
+
+.map_height {
+  min-height: 250px;
+}
+
+.itinerary_map {
+  @media (max-width: 767px) {
+    width: 200%;
+    height: 100%;
+    // margin-left: -200px;
+
+    // margin-top: -70px;
+  }
+}
+
+// top destination styles
+
+.top_destination_width {
+  @media (min-width: 767px) {
+    width: 20%;
+  }
+}
+
+// bannar section styles
+
+.bannar_height {
+  @media (min-width: 767px) {
+    height: 388px;
+  }
+  @media (max-width: 767px) {
+    height: 300px;
+  }
+}
+
+// bannar content section styles
+
+.bannar_content {
+  @media (min-width: 767px) {
+    top: 31%;
+    right: 13%;
+    // width: 100%;
+  }
+  @media (max-width: 767px) {
+    top: 70%;
+    // right: 32%;
+    width: 100%;
+  }
+  @media (max-width: 567px) {
+    top: 41%;
+    // right: 13%;
+    width: 100%;
+  }
+  @media (max-width: 450px) {
+    top: 41%;
+    width: 100%;
+  }
+  @media (max-width: 348px) {
+    top: 41%;
+    // right: 5%;
+    width: 100%;
+  }
+  @media (max-width: 298px) {
+    top: 70%;
+    // right: 8%;
+    width: 100%;
+  }
+}
+
+.bannar_content_title {
+  @media (min-width: 767px) {
+    font-family: sans-serif;
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: 0.1rem;
+  }
+  @media (min-width: 1192px) {
+    font-family: sans-serif;
+    font-size: 45px;
+    line-height: 1.1;
+    letter-spacing: 0.01rem;
+  }
+  @media (max-width: 767px) {
+    font-family: sans-serif;
+    font-size: 22px;
+  }
+}
+
+.bannar_content_subtile {
+  @media (min-width: 767px) {
+    color: #302b29;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: sans-serif;
+  }
+  @media (min-width: 1192px) {
+    color: #302b29;
+    font-weight: bold;
+    font-size: 26px;
+    font-family: sans-serif;
+  }
+  @media (max-width: 767px) {
+    color: #302b29;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: sans-serif;
+  }
+}
+
+.bannar_mobile {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.bannar_desktop {
+  @media (min-width: 767px) {
+    display: none;
+  }
+}
+
+// whatsapp button pluse styles
+.btn-whatsapp-pulse {
+  // background: #25d366;
+  // color: white;
+  // position: fixed;
+  // bottom: 20px;
+  // right: 20px;
+  // font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40;
+  height: 40;
+  // padding: 5px;
+  text-decoration: none;
+  border-radius: 60%;
+  animation-name: pulse;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+  }
+  80% {
+    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+  }
+}
+
+.whatsapp_icon {
+  @media (min-width: 767px) {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
