@@ -15,7 +15,6 @@ import SrollTop from "../components/common/ScrollTop";
 import { store } from "../store/store";
 import "../styles/index.scss";
 import CookieConsent from "@/components/cookie/CookieConsent";
-import { CartProvider } from "@/hooks/useCart";
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
@@ -115,13 +114,11 @@ export default function RootLayout({ children }) {
         </noscript>
         <main>
           <Provider store={store}>
-            <CartProvider>
-              <Header />
-              {children}
-              <DefaultFooter />
-              <SrollTop />
-              <CookieConsent />
-            </CartProvider>
+            <Header />
+            {children}
+            <DefaultFooter />
+            <SrollTop />
+            <CookieConsent />
           </Provider>
         </main>
       </body>

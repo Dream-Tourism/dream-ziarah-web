@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import CheckoutModal from "./CheckoutModal";
-import { useCart } from "@/hooks/useCart";
 
 const BookingPreview = ({
   bookingData,
@@ -15,8 +14,6 @@ const BookingPreview = ({
 }) => {
   const [isBooking, setIsBooking] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
-  const [currentCartItemId, setCurrentCartItemId] = useState(null);
-  const { addToCart } = useCart();
 
   const formatDate = (date) => {
     const options = {
@@ -49,20 +46,6 @@ const BookingPreview = ({
 
   const handleBookNow = () => {
     const totalPrice = calculateTotal();
-
-    // Add tour to cart
-    const cartItemId = addToCart({
-      tourName,
-      selectedDate,
-      selectedTime,
-      participants,
-      totalPrice,
-      duration,
-      tourImage,
-      bookingData,
-    });
-
-    setCurrentCartItemId(cartItemId);
     setShowCheckoutModal(true);
   };
 
@@ -210,7 +193,6 @@ const BookingPreview = ({
         selectedTime={selectedTime}
         participants={participants}
         tourName={tourName}
-        cartItemId={currentCartItemId}
       />
     </div>
   );

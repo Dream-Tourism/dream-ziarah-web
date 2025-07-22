@@ -65,7 +65,7 @@ const Cart = () => {
         style={{ border: "none", background: "none", padding: "8px" }}
       >
         <i
-          className="fas fa-shopping-cart"
+          className="icon-cart"
           style={{ fontSize: "20px", color: "#333" }}
         ></i>
         {cartCount > 0 && (

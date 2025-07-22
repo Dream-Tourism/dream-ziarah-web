@@ -2,8 +2,6 @@ import useMenus from "@/hooks/useMenus";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isActiveLink } from "../../utils/linkActiveChecker";
-import Cart from "../cart/Cart";
-import { Suspense } from "react";
 
 const MainMenu = ({ style = "" }) => {
   const pathname = usePathname();
@@ -61,11 +59,7 @@ const MainMenu = ({ style = "" }) => {
           ))}
         </ul>
       </nav>
-      <div className="d-flex align-items-center">
-        <Suspense fallback={<div></div>}>
-          <Cart />
-        </Suspense>
-      </div>
+      <div className="d-flex align-items-center"></div>
     </div>
   );
 };
