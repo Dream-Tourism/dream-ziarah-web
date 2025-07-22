@@ -156,7 +156,15 @@ const Cart = () => {
           </div>
 
           {/* Cart Footer */}
-          <div className="p-3 bg-light">
+          <div
+            className="bg-light shadow p-3"
+            style={{
+              position: "sticky",
+              bottom: 0,
+              backgroundColor: "#f8f9fa",
+              zIndex: 10,
+            }}
+          >
             <div className="d-flex justify-content-between align-items-center mb-2">
               <span className="fw-bold">Total:</span>
               <span className="fw-bold text-primary h5 mb-0">
