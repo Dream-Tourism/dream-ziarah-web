@@ -9,6 +9,38 @@ import Script from "next/script";
 import GuestCalculate from "./GuestCalculate";
 import AgentCalendar from "./Bookings/AgentCalendar";
 
+const sampleTourData = {
+  day_tour_price_list: [
+    {
+      person: "3",
+      price: "30",
+      guide: "With Guide",
+      available_times: ["12:00 AM", "04:44 AM", "04:00 PM"],
+      available_dates: [
+        "07/09/2025",
+        "07/17/2025",
+        "07/25/2025",
+        "07/26/2025",
+        "07/31/2025",
+      ],
+    },
+    {
+      person: "5",
+      price: "25",
+      guide: "Without Guide",
+      available_times: ["08:30 AM", "05:00 PM", "06:30 PM", "07:00 PM"],
+      available_dates: ["07/24/2025", "07/31/2025", "07/30/2025", "08/28/2025"],
+    },
+    {
+      person: "7",
+      price: "35",
+      guide: "Without Guide",
+      available_times: ["09:00 AM", "02:00 PM"],
+      available_dates: ["07/15/2025", "07/20/2025", "07/25/2025"],
+    },
+  ],
+};
+
 const bokunUrls = {
   "makkah-city-ziarah-luxury-private-vehicle-with-guide": {
     three:
@@ -77,20 +109,7 @@ const SidebarRight = () => {
     );
   }
 
-  return (
-    <AgentCalendar
-    // tourSlug={slug}
-    // busId={busData?.id}
-    // availableDates={busData?.available_dates}
-    // price={data?.price}
-    // adultPrice={busData?.adult_seat_price}
-    // childPrice={busData?.child_seat_price}
-    // youthPrice={busData?.youth_seat_price}
-    // data={busData}
-    // data2={data}
-    // agentRef={agentRef}
-    />
-  );
+  return <AgentCalendar tourData={sampleTourData} />;
 };
 
 export default SidebarRight;

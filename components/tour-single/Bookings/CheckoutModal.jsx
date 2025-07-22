@@ -1,6 +1,5 @@
 "use client";
 
-import { useCart } from "@/hooks/useCart";
 import { useState } from "react";
 
 const CheckoutModal = ({
@@ -9,12 +8,15 @@ const CheckoutModal = ({
   bookingData,
   selectedDate,
   selectedTime,
-  participants,
-  tourName = "C1 - Heart of Montreal City Tour",
+  selectedTourType,
+  participantCount,
+  totalPrice,
+  priceOption,
+  tourName = "Makkah City Ziarah Luxury Private Vehicle",
   tourImage = "/placeholder.svg?height=120&width=180",
   rating = 4.2,
   reviewCount = 814,
-  cartItemId,
+  duration = "4 Hours",
 }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -23,10 +25,6 @@ const CheckoutModal = ({
     acceptOffers: false,
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const { handlePaymentResult } = useCart();
-
-  // Simulate payment success/failure for demo
-  const if_payment_success = true; // Change this to false to test cart persistence
 
   const formatDate = (date) => {
     const options = {
@@ -40,31 +38,8 @@ const CheckoutModal = ({
 
   const getTimeRange = () => {
     const startTime = selectedTime;
-    const endTime = "12:30 pm";
+    const endTime = "12:30 pm"; // You can calculate this based on duration
     return `${startTime} - ${endTime}`;
-  };
-
-  const getParticipantSummary = () => {
-    const summary = [];
-    Object.entries(participants).forEach(([type, count]) => {
-      if (count > 0) {
-        const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
-        summary.push(`${count} x ${typeLabel}${count > 1 ? "s" : ""}`);
-      }
-    });
-    return summary.join(", ");
-  };
-
-  const calculateTotal = () => {
-    let total = 0;
-    Object.entries(participants).forEach(([type, count]) => {
-      if (count > 0) {
-        const pricePerPerson =
-          type === "adult" ? 52.64 : type === "youth" ? 42.64 : 32.64;
-        total += pricePerPerson * count;
-      }
-    });
-    return total;
   };
 
   const handleInputChange = (e) => {
@@ -87,23 +62,30 @@ const CheckoutModal = ({
       // Simulate payment processing
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Handle payment result
-      handlePaymentResult(if_payment_success, cartItemId);
+      const bookingDetails = {
+        travelerInfo: formData,
+        tourDetails: {
+          tourName,
+          tourType: selectedTourType,
+          participantCount,
+          date: selectedDate,
+          time: selectedTime,
+          duration,
+          priceOption,
+          totalPrice,
+          pricePerPerson: priceOption
+            ? Number.parseFloat(priceOption.price)
+            : 0,
+        },
+        bookingData,
+      };
 
-      if (if_payment_success) {
-        alert("Payment successful! Tour removed from cart.");
-        console.log("Payment successful - item removed from cart");
-      } else {
-        alert("Payment failed! Tour remains in cart.");
-        console.log("Payment failed - item remains in cart");
-      }
-
+      console.log("Complete booking details:", bookingDetails);
+      alert("Payment successful! Booking confirmed.");
       onClose();
     } catch (error) {
       console.error("Payment error:", error);
       alert("Payment failed. Please try again.");
-      // Payment failed, item remains in cart
-      handlePaymentResult(false, cartItemId);
     } finally {
       setIsProcessing(false);
     }
@@ -149,8 +131,6 @@ const CheckoutModal = ({
   };
 
   if (!isOpen) return null;
-
-  const total = calculateTotal();
 
   return (
     <div
@@ -387,7 +367,17 @@ const CheckoutModal = ({
                       style={{ fontSize: "14px" }}
                     ></i>
                     <span style={{ fontSize: "14px" }}>
-                      {getParticipantSummary()}
+                      {participantCount} Participants ({selectedTourType?.guide}
+                      )
+                    </span>
+                  </div>
+                  <div className="d-flex align-items-center mb-2">
+                    <i
+                      className="fas fa-user-tie text-muted me-2"
+                      style={{ fontSize: "14px" }}
+                    ></i>
+                    <span style={{ fontSize: "14px" }}>
+                      Tour Type: {selectedTourType?.guide}
                     </span>
                   </div>
                   <div className="d-flex align-items-center text-success">
@@ -401,7 +391,7 @@ const CheckoutModal = ({
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <span></span>
-                  <h5 className="mb-0">US${total.toFixed(2)}</h5>
+                  <h5 className="mb-0">US${totalPrice.toFixed(2)}</h5>
                 </div>
 
                 <div className="mb-3">
@@ -417,7 +407,7 @@ const CheckoutModal = ({
                 <div className="border-top pt-3">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Total</h5>
-                    <h4 className="mb-0">US${total.toFixed(2)}</h4>
+                    <h4 className="mb-0">US${totalPrice.toFixed(2)}</h4>
                   </div>
                   <small className="text-success">
                     All taxes and fees included

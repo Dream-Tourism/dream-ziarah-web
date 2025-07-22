@@ -7,10 +7,12 @@ const BookingPreview = ({
   bookingData,
   selectedDate,
   selectedTime,
-  participants,
+  selectedTourType,
+  participantCount,
+  totalPrice,
+  priceOption,
   tourName = "Makkah City Ziarah Luxury Private Vehicle",
-  duration = "45 Minutes",
-  tourImage = "/placeholder.svg?height=120&width=180",
+  duration = "4 Hours",
 }) => {
   const [isBooking, setIsBooking] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -26,30 +28,14 @@ const BookingPreview = ({
   };
 
   const getTimeRange = () => {
-    // Convert single time to time range (you can customize this logic)
     const startTime = selectedTime;
     const endTime = selectedTime; // You can calculate end time based on duration
     return `${startTime} - ${endTime}`;
   };
 
-  const calculateTotal = () => {
-    let total = 0;
-    Object.entries(participants).forEach(([type, count]) => {
-      if (count > 0) {
-        const pricePerPerson =
-          type === "adult" ? 72.5 : type === "youth" ? 60.0 : 45.0;
-        total += pricePerPerson * count;
-      }
-    });
-    return total;
-  };
-
   const handleBookNow = () => {
-    const totalPrice = calculateTotal();
     setShowCheckoutModal(true);
   };
-
-  const totalPrice = calculateTotal();
 
   return (
     <div
@@ -117,31 +103,17 @@ const BookingPreview = ({
           <p className="mb-2 text-muted" style={{ fontSize: "14px" }}>
             Price breakdown
           </p>
-          {Object.entries(participants).map(([type, count]) => {
-            if (count > 0) {
-              const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
-              const pricePerPerson =
-                type === "adult" ? 72.5 : type === "youth" ? 60.0 : 45.0;
-              const totalForType = pricePerPerson * count;
-              return (
-                <div
-                  key={type}
-                  className="d-flex justify-content-between align-items-center mb-1"
-                >
-                  <span style={{ color: "#333", fontSize: "16px" }}>
-                    {count} x {typeLabel}
-                  </span>
-                  <span
-                    className="fw-bold"
-                    style={{ color: "#333", fontSize: "16px" }}
-                  >
-                    ${totalForType.toFixed(2)}
-                  </span>
-                </div>
-              );
-            }
-            return null;
-          })}
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <span style={{ color: "#333", fontSize: "16px" }}>
+              {participantCount} × Participants ({selectedTourType?.guide})
+            </span>
+            <span
+              className="fw-bold"
+              style={{ color: "#333", fontSize: "16px" }}
+            >
+              ${totalPrice.toFixed(2)}
+            </span>
+          </div>
         </div>
 
         {/* Total Price Section */}
@@ -184,6 +156,7 @@ const BookingPreview = ({
           </button>
         </div>
       </div>
+
       {/* Checkout Modal */}
       <CheckoutModal
         isOpen={showCheckoutModal}
@@ -191,8 +164,12 @@ const BookingPreview = ({
         bookingData={bookingData}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
-        participants={participants}
+        selectedTourType={selectedTourType}
+        participantCount={participantCount}
+        totalPrice={totalPrice}
+        priceOption={priceOption}
         tourName={tourName}
+        duration={duration}
       />
     </div>
   );

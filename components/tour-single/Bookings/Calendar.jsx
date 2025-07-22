@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 
-const Calendar = ({ selectedDate, onDateSelect, onClose, isVisible }) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date(2025, 10)); // November 2025
+const Calendar = ({
+  selectedDate,
+  onDateSelect,
+  onClose,
+  isVisible,
+  availableDates = [],
+  isDateAvailable,
+}) => {
+  const [currentMonth, setCurrentMonth] = useState(new Date(2025, 6)); // July 2025
 
   const monthNames = [
     "January",
@@ -64,8 +71,10 @@ const Calendar = ({ selectedDate, onDateSelect, onClose, isVisible }) => {
         currentMonth.getMonth(),
         day
       );
-      onDateSelect(newDate);
-      onClose();
+      if (isDateAvailable && isDateAvailable(newDate)) {
+        onDateSelect(newDate);
+        onClose();
+      }
     }
   };
 
@@ -86,7 +95,7 @@ const Calendar = ({ selectedDate, onDateSelect, onClose, isVisible }) => {
         top: "100%",
         left: "0",
         zIndex: 1000,
-        width: "320px",
+        width: "420px",
         marginTop: "5px",
       }}
     >
@@ -97,7 +106,7 @@ const Calendar = ({ selectedDate, onDateSelect, onClose, isVisible }) => {
           onClick={handlePrevMonth}
           type="button"
         >
-          <i className="fas fa-chevron-left"></i>
+          <i className="icon icon-chevron-left"></i>
         </button>
         <h6 className="mb-0 fw-bold">
           {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
@@ -107,44 +116,64 @@ const Calendar = ({ selectedDate, onDateSelect, onClose, isVisible }) => {
           onClick={handleNextMonth}
           type="button"
         >
-          <i className="fas fa-chevron-right"></i>
+          <i className="icon icon-chevron-right"></i>
         </button>
       </div>
 
       {/* Day Names */}
-      <div className="row g-0 mb-2">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
         {dayNames.map((day) => (
-          <div key={day} className="col text-center">
-            <small className="text-muted fw-bold">{day}</small>
+          <div key={day} className="text-center fw-bold text-muted">
+            <small>{day}</small>
           </div>
         ))}
       </div>
-
       {/* Calendar Days */}
-      <div className="row g-0">
-        {days.map((day, index) => (
-          <div key={index} className="col p-1">
-            {day ? (
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
+        {days.map((day, index) => {
+          if (!day) {
+            return (
+              <div key={index} className="col p-1">
+                <div style={{ minHeight: "35px" }}></div>
+              </div>
+            );
+          }
+
+          const currentDate = new Date(
+            currentMonth.getFullYear(),
+            currentMonth.getMonth(),
+            day
+          );
+          const isAvailable = isDateAvailable
+            ? isDateAvailable(currentDate)
+            : true;
+          const isSelected = day === selectedDay;
+
+          return (
+            <div key={index} className="col p-1">
               <button
                 className={`btn w-100 p-2 border-0 ${
-                  day === selectedDay
+                  isSelected
                     ? "btn-primary text-white"
-                    : "btn-light text-dark hover-bg-light"
+                    : isAvailable
+                    ? "btn-light text-dark hover-bg-light"
+                    : "btn-light text-muted"
                 }`}
                 onClick={() => handleDateClick(day)}
                 type="button"
+                disabled={!isAvailable}
                 style={{
                   minHeight: "35px",
-                  fontSize: "14px",
+                  opacity: isAvailable ? 1 : 0.5,
+                  fontSize: isAvailable ? "15px" : "14px",
+                  fontWeight: isAvailable ? "bold" : "normal",
                 }}
               >
                 {day}
               </button>
-            ) : (
-              <div style={{ minHeight: "35px" }}></div>
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
