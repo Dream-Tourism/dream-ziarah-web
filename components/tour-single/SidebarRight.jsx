@@ -7,7 +7,7 @@ import { capitalize } from "@/utils";
 import { useParams } from "next/navigation";
 import Script from "next/script";
 import GuestCalculate from "./GuestCalculate";
-import AgentCalendar from "./AgentCalendar";
+import AgentCalendar from "./Bookings/AgentCalendar";
 
 const bokunUrls = {
   "makkah-city-ziarah-luxury-private-vehicle-with-guide": {
@@ -52,7 +52,7 @@ const SidebarRight = () => {
     contentItem?.id
   );
 
-  const is_bokun_url = true;
+  const is_bokun_url = false;
 
   if (is_bokun_url) {
     return bokunUrls[params?.name] ? (
