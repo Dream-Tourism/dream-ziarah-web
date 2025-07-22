@@ -84,7 +84,7 @@ const Participants = ({ participantTypes = [], onParticipantChange }) => {
             </div>
             <div className="d-flex align-items-center">
               <select
-                className="form-select border-0 bg-transparent text-end fw-bold"
+                className="form-select border-0 bg-transparent text-end fw-bold align-items-center"
                 style={{ width: "auto", minWidth: "60px" }}
                 value={participants[type.id] || 0}
                 onChange={(e) =>
