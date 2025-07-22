@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CheckoutModal from "./CheckoutModal";
+import { useCart } from "@/hooks/useCart";
 
 const BookingPreview = ({
   bookingData,
@@ -10,9 +11,12 @@ const BookingPreview = ({
   participants,
   tourName = "Makkah City Ziarah Luxury Private Vehicle",
   duration = "45 Minutes",
+  tourImage = "/placeholder.svg?height=120&width=180",
 }) => {
   const [isBooking, setIsBooking] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [currentCartItemId, setCurrentCartItemId] = useState(null);
+  const { addToCart } = useCart();
 
   const formatDate = (date) => {
     const options = {
@@ -44,6 +48,21 @@ const BookingPreview = ({
   };
 
   const handleBookNow = () => {
+    const totalPrice = calculateTotal();
+
+    // Add tour to cart
+    const cartItemId = addToCart({
+      tourName,
+      selectedDate,
+      selectedTime,
+      participants,
+      totalPrice,
+      duration,
+      tourImage,
+      bookingData,
+    });
+
+    setCurrentCartItemId(cartItemId);
     setShowCheckoutModal(true);
   };
 
@@ -190,7 +209,8 @@ const BookingPreview = ({
         selectedDate={selectedDate}
         selectedTime={selectedTime}
         participants={participants}
-        tourName="Makkah City Ziarah Luxury Private Vehicle"
+        tourName={tourName}
+        cartItemId={currentCartItemId}
       />
     </div>
   );

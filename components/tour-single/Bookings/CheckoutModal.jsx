@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/hooks/useCart";
 import { useState } from "react";
 
 const CheckoutModal = ({
@@ -13,6 +14,7 @@ const CheckoutModal = ({
   tourImage = "/placeholder.svg?height=120&width=180",
   rating = 4.2,
   reviewCount = 814,
+  cartItemId,
 }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -21,6 +23,10 @@ const CheckoutModal = ({
     acceptOffers: false,
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const { handlePaymentResult } = useCart();
+
+  // Simulate payment success/failure for demo
+  const if_payment_success = true; // Change this to false to test cart persistence
 
   const formatDate = (date) => {
     const options = {
@@ -32,14 +38,9 @@ const CheckoutModal = ({
     return date.toLocaleDateString("en-US", options);
   };
 
-  const formatTime = (time) => {
-    // Convert to 12-hour format if needed
-    return time;
-  };
-
   const getTimeRange = () => {
     const startTime = selectedTime;
-    const endTime = "12:30 pm"; // You can calculate this based on duration
+    const endTime = "12:30 pm";
     return `${startTime} - ${endTime}`;
   };
 
@@ -86,21 +87,23 @@ const CheckoutModal = ({
       // Simulate payment processing
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      console.log("Proceeding to payment with:", {
-        travelerInfo: formData,
-        bookingDetails: {
-          date: selectedDate,
-          time: selectedTime,
-          participants,
-          total: calculateTotal(),
-        },
-      });
+      // Handle payment result
+      handlePaymentResult(if_payment_success, cartItemId);
 
-      alert("Redirecting to payment...");
+      if (if_payment_success) {
+        alert("Payment successful! Tour removed from cart.");
+        console.log("Payment successful - item removed from cart");
+      } else {
+        alert("Payment failed! Tour remains in cart.");
+        console.log("Payment failed - item remains in cart");
+      }
+
       onClose();
     } catch (error) {
       console.error("Payment error:", error);
       alert("Payment failed. Please try again.");
+      // Payment failed, item remains in cart
+      handlePaymentResult(false, cartItemId);
     } finally {
       setIsProcessing(false);
     }
