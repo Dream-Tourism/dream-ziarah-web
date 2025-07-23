@@ -13,7 +13,7 @@ const CheckoutModal = ({
   totalPrice,
   priceOption,
   tourName = "Makkah City Ziarah Luxury Private Vehicle",
-  tourImage = "/placeholder.svg?height=120&width=180",
+  tourImage = "/tour.png?height=120&width=180",
   rating = 4.2,
   reviewCount = 814,
   duration = "4 Hours",
@@ -218,17 +218,21 @@ const CheckoutModal = ({
 
                 <div className="row g-3 mb-4">
                   <div className="col-md-6">
-                    <label className="form-label">
+                    <label className="form-label ">
                       First name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control shadow-sm"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      placeholder="Simone"
-                      style={{ padding: "12px 16px" }}
+                      placeholder="firstName"
+                      style={{
+                        padding: "12px 16px",
+                        border: "1px solid #007bff", // Blue border
+                        boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)", // Light blue shadow
+                      }}
                     />
                   </div>
                   <div className="col-md-6">
@@ -237,12 +241,16 @@ const CheckoutModal = ({
                     </label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control shadow-sm"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      placeholder="Stevenson"
-                      style={{ padding: "12px 16px" }}
+                      placeholder="lastName"
+                      style={{
+                        padding: "12px 16px",
+                        border: "1px solid #007bff", // Blue border
+                        boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)", // Light blue shadow
+                      }}
                     />
                   </div>
                   <div className="col-12">
@@ -258,22 +266,27 @@ const CheckoutModal = ({
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="nidewa@mailinator.com"
-                      style={{ padding: "12px 16px" }}
+                      placeholder="email"
+                      style={{
+                        padding: "12px 16px",
+                        border: "1px solid #007bff", // Blue border
+                        boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)", // Light blue shadow
+                      }}
                     />
                   </div>
                 </div>
 
-                <div className="form-check mb-4">
+                <div className="mb-4 d-flex align-items-center">
                   <input
-                    className="form-check-input"
+                    className="me-2"
                     type="checkbox"
                     name="acceptOffers"
                     checked={formData.acceptOffers}
                     onChange={handleInputChange}
                     id="acceptOffers"
+                    style={{ width: "18px", height: "18px" }} // Optional: slightly bigger checkbox
                   />
-                  <label className="form-check-label" htmlFor="acceptOffers">
+                  <label htmlFor="acceptOffers" className="mb-0">
                     Send me special offers, news and other relevant information
                   </label>
                 </div>

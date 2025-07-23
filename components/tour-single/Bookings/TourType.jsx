@@ -38,7 +38,7 @@ const TourType = ({ onTourTypeChange, availableTourTypes = [] }) => {
           </div>
           <div className="d-flex align-items-center">
             <select
-              className="form-select border-0 bg-transparent text-end fw-bold"
+              className="form-select border-0 bg-transparent text-center fw-bold"
               style={{ width: "auto", minWidth: "120px" }}
               value={selectedTourType}
               onChange={(e) => handleTourTypeChange(e.target.value)}
