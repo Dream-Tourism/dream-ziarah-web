@@ -20,8 +20,21 @@ const AgentCalendar = ({ tourData = null }) => {
   const [availableParticipantCounts, setAvailableParticipantCounts] = useState(
     []
   );
+  const [isMobile, setIsMobile] = useState(false);
 
   const bookingPreviewRef = useRef(null);
+  const dateButtonRef = useRef(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Sample backend data structure
   const sampleTourData = {
@@ -134,22 +147,19 @@ const AgentCalendar = ({ tourData = null }) => {
     }
   }, [selectedTourType, participantCount, priceList]);
 
-  // Scroll when calendar opens
+  // Scroll when calendar opens on desktop
   useEffect(() => {
-    if (showCalendar) {
+    if (showCalendar && !isMobile) {
       setTimeout(() => {
-        const calendarElement = document.querySelector(
-          ".position-relative .position-absolute"
-        );
-        if (calendarElement) {
-          calendarElement.scrollIntoView({
+        if (dateButtonRef.current) {
+          dateButtonRef.current.scrollIntoView({
             behavior: "smooth",
-            block: "nearest",
+            block: "center",
           });
         }
       }, 100);
     }
-  }, [showCalendar]);
+  }, [showCalendar, isMobile]);
 
   const formatDate = (date) => {
     const options = {
@@ -314,7 +324,13 @@ const AgentCalendar = ({ tourData = null }) => {
       {/* Price Section */}
       <div
         className="p-3 border-bottom"
-        style={{ borderTop: "3px solid #007bff" }}
+        style={{
+          backgroundColor: "#e6f0ff", // light blue
+          padding: "12px 16px",
+          height: "auto",
+          borderTop: "1px solid #e9ecef",
+          borderTop: "3px solid #007bff",
+        }}
       >
         <small className="text-muted">From</small>
         <h4 className="mb-0 fw-bold">
@@ -348,7 +364,7 @@ const AgentCalendar = ({ tourData = null }) => {
         />
 
         {/* Date Selection */}
-        <div className="mb-3 position-relative">
+        <div className="mb-3 position-relative" ref={dateButtonRef}>
           <div
             className="form-control d-flex align-items-center bg-white border-0 rounded"
             style={{
@@ -356,14 +372,22 @@ const AgentCalendar = ({ tourData = null }) => {
               padding: "12px 16px",
               height: "48px",
               width: "100%",
-              minWidth: "280px",
+              minWidth: isMobile ? "auto" : "280px",
             }}
             onClick={() => setShowCalendar(!showCalendar)}
           >
             <i className={`icon-twitter text-14 me-2`} />
-            <span className="flex-grow-1">
+            <span
+              className="flex-grow-1"
+              style={{ fontSize: isMobile ? "14px" : "16px" }}
+            >
               {selectedDate ? formatDate(selectedDate) : "Select Date"}
             </span>
+            <i
+              className={`icon-chevron-${
+                showCalendar ? "up" : "down"
+              } text-muted ms-2`}
+            ></i>
           </div>
 
           <Calendar
@@ -388,6 +412,7 @@ const AgentCalendar = ({ tourData = null }) => {
               style={{
                 padding: "12px 16px 12px 45px",
                 height: "48px",
+                fontSize: isMobile ? "14px" : "16px",
               }}
               value={selectedTime}
               onChange={(e) => handleTimeChange(e.target.value)}
@@ -427,7 +452,7 @@ const AgentCalendar = ({ tourData = null }) => {
           style={{
             backgroundColor: "#ffa500",
             padding: "12px 16px",
-            fontSize: "16px",
+            fontSize: isMobile ? "14px" : "16px",
             height: "48px",
           }}
           onClick={handleCheckAvailability}

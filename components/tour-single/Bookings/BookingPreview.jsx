@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import CheckoutModal from "./CheckoutModal";
+import { useRouter } from "next/navigation";
 
 const BookingPreview = ({
   bookingData,
@@ -15,7 +15,7 @@ const BookingPreview = ({
   duration = "4 Hours",
 }) => {
   const [isBooking, setIsBooking] = useState(false);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const router = useRouter();
 
   const formatDate = (date) => {
     const options = {
@@ -33,14 +33,88 @@ const BookingPreview = ({
     return `${startTime} - ${endTime}`;
   };
 
-  const handleBookNow = () => {
-    setShowCheckoutModal(true);
+  const setCookie = (name, value, days = 1) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(
+      JSON.stringify(value)
+    )};expires=${expires.toUTCString()};path=/`;
+  };
+
+  const constructCheckoutUrl = () => {
+    // Create booking parameters object
+    const bookingParams = {
+      channel_id: "12130", // Your channel ID
+      tour_name: encodeURIComponent(tourName),
+      tour_type: encodeURIComponent(selectedTourType?.guide || ""),
+      date: selectedDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
+      time: encodeURIComponent(selectedTime),
+      duration: encodeURIComponent(duration),
+      participants: participantCount,
+      price_per_person: priceOption ? Number.parseFloat(priceOption.price) : 0,
+      total_price: totalPrice,
+      booking_id: bookingData?.bookingId || `BK-${Date.now()}`,
+      // Add any additional parameters you need
+      guide_type: encodeURIComponent(selectedTourType?.guide || ""),
+      timestamp: Date.now(),
+    };
+
+    // Convert object to URL search params
+    const searchParams = new URLSearchParams();
+    Object.entries(bookingParams).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        searchParams.append(key, value.toString());
+      }
+    });
+
+    return `/checkout/?${searchParams.toString()}`;
+  };
+
+  const handleBookNow = async () => {
+    setIsBooking(true);
+
+    try {
+      // Store all booking information in cookies
+      const bookingInfo = {
+        tourName,
+        selectedDate: selectedDate.toISOString(),
+        selectedTime,
+        selectedTourType,
+        participantCount,
+        totalPrice,
+        priceOption,
+        duration,
+        bookingData,
+        tourImage: "/tour.png?height=120&width=180", // Add tour image
+        rating: 4.2,
+        reviewCount: 814,
+        timestamp: new Date().toISOString(),
+      };
+
+      // Set cookies with booking information
+      setCookie("booking_info", bookingInfo, 1); // Expires in 1 day
+      setCookie("channel_id", "12130", 1);
+
+      // Construct checkout URL with parameters
+      const checkoutUrl = constructCheckoutUrl();
+
+      // Open in new tab
+      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+
+      // Optional: Also navigate in current tab if needed
+      // router.push(checkoutUrl);
+    } catch (error) {
+      console.error("Error preparing checkout:", error);
+      alert("Error preparing checkout. Please try again.");
+    } finally {
+      setIsBooking(false);
+    }
   };
 
   return (
     <div
       className="booking-preview bg-white border rounded shadow-sm"
-      style={{ maxWidth: "400px" }}
+      style={{ maxWidth: "450px" }}
     >
       {/* Header with Logo */}
       <div className="p-3 border-bottom">
@@ -117,7 +191,15 @@ const BookingPreview = ({
         </div>
 
         {/* Total Price Section */}
-        <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+        <div
+          className="d-flex justify-content-between align-items-center pt-3 border-top"
+          style={{
+            backgroundColor: "#e6f0ff", // light blue
+            padding: "12px 16px",
+            height: "auto",
+            borderTop: "1px solid #e9ecef",
+          }}
+        >
           <div>
             <p className="mb-1 text-muted" style={{ fontSize: "14px" }}>
               Total Price
@@ -151,26 +233,14 @@ const BookingPreview = ({
                 Processing...
               </>
             ) : (
-              "Book now"
+              <>
+                <i className="fas fa-external-link-alt me-2"></i>
+                Book now
+              </>
             )}
           </button>
         </div>
       </div>
-
-      {/* Checkout Modal */}
-      <CheckoutModal
-        isOpen={showCheckoutModal}
-        onClose={() => setShowCheckoutModal(false)}
-        bookingData={bookingData}
-        selectedDate={selectedDate}
-        selectedTime={selectedTime}
-        selectedTourType={selectedTourType}
-        participantCount={participantCount}
-        totalPrice={totalPrice}
-        priceOption={priceOption}
-        tourName={tourName}
-        duration={duration}
-      />
     </div>
   );
 };

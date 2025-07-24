@@ -16,6 +16,8 @@ import Slider from "react-slick";
 export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
   const [dataAvailable, setDataAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const width = useWindowSize();
   const isMobile = width < 768;
 
@@ -111,6 +113,8 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
 
   // Handle image click and data loading
   const handleImageClick = (index) => {
+    setCurrentImageIndex(index);
+    setLightboxOpen(true);
     // Trigger data available callback when image is clicked
     if (onDataAvailable) {
       onDataAvailable(true);
@@ -127,6 +131,24 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
         onDataAvailable(true);
       }
     }
+  };
+
+  // Close lightbox
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
+
+  // Navigate lightbox
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % (tour?.slideImg?.length || 1));
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex(
+      (prev) =>
+        (prev - 1 + (tour?.slideImg?.length || 1)) %
+        (tour?.slideImg?.length || 1)
+    );
   };
 
   useEffect(() => {
@@ -148,175 +170,181 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
           {/* Full Width Gallery Section */}
           <div className="row">
             <div className="col-12">
-              {/* New Gallery Grid/Slider - Full Width */}
+              {/* Show skeleton while loading */}
               {isLoading ? (
                 <TourGalleryGridSkeleton />
               ) : (
-                // Desktop Grid Layout - Always show 4 images
-                <div className="gallery-grid">
-                  <div
-                    className={`gallery-grid-container ${
-                      hasSingleImage ? "single-image-grid" : ""
-                    }`}
-                  >
-                    {/* First large image (left) */}
-                    <div
-                      className="gallery-item gallery-item-large-left"
-                      onClick={() => handleImageClick(0)}
-                    >
-                      <Image
-                        src={normalizedImages[0] || "/placeholder.svg"}
-                        alt={`${tour?.title || "Tour"} - Image 1`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover rounded-4"
-                        priority={true}
-                        onLoad={handleImageLoad}
-                      />
-                    </div>
-                    {/* Center large image */}
-                    <div
-                      className="gallery-item gallery-item-large-center"
-                      onClick={() => handleImageClick(1)}
-                    >
-                      <Image
-                        src={normalizedImages[1] || "/placeholder.svg"}
-                        alt={`${tour?.title || "Tour"} - Image 2`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover rounded-4"
-                        priority={true}
-                        onLoad={handleImageLoad}
-                      />
-                    </div>
-                    {/* Top right image */}
-                    <div
-                      className="gallery-item gallery-item-small-top-right"
-                      onClick={() => handleImageClick(2)}
-                    >
-                      <Image
-                        src={normalizedImages[2] || "/placeholder.svg"}
-                        alt={`${tour?.title || "Tour"} - Image 3`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 25vw"
-                        className="object-cover rounded-4"
-                        onLoad={handleImageLoad}
-                      />
-                    </div>
-                    {/* Bottom right image */}
-                    <div
-                      className="gallery-item gallery-item-small-bottom-right"
-                      onClick={() => handleImageClick(3)}
-                    >
-                      <Image
-                        src={normalizedImages[3] || "/placeholder.svg"}
-                        alt={`${tour?.title || "Tour"} - Image 4`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 25vw"
-                        className="object-cover rounded-4"
-                        onLoad={handleImageLoad}
-                      />
-                      {tour?.slideImg?.length > 4 && (
-                        <div className="more-photos-overlay rounded-4">
-                          <span>+{tour.slideImg.length - 4}</span>
+                <>
+                  {/* Desktop View */}
+                  {!isMobile && (
+                    <div className="gallery-grid">
+                      <div
+                        className={`gallery-grid-container ${
+                          hasSingleImage ? "single-image-grid" : ""
+                        }`}
+                      >
+                        {/* First large image (left) */}
+                        <div
+                          className="gallery-item gallery-item-large-left"
+                          onClick={() => handleImageClick(0)}
+                        >
+                          <Image
+                            src={normalizedImages[0] || "/placeholder.svg"}
+                            alt={`${tour?.title || "Tour"} - Image 1`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className="object-cover rounded-4"
+                            priority={true}
+                            onLoad={handleImageLoad}
+                          />
                         </div>
+                        {/* Center large image */}
+                        <div
+                          className="gallery-item gallery-item-large-center"
+                          onClick={() => handleImageClick(1)}
+                        >
+                          <Image
+                            src={normalizedImages[1] || "/placeholder.svg"}
+                            alt={`${tour?.title || "Tour"} - Image 2`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover rounded-4"
+                            priority={true}
+                            onLoad={handleImageLoad}
+                          />
+                        </div>
+                        {/* Top right image */}
+                        <div
+                          className="gallery-item gallery-item-small-top-right"
+                          onClick={() => handleImageClick(2)}
+                        >
+                          <Image
+                            src={normalizedImages[2] || "/placeholder.svg"}
+                            alt={`${tour?.title || "Tour"} - Image 3`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 25vw"
+                            className="object-cover rounded-4"
+                            onLoad={handleImageLoad}
+                          />
+                        </div>
+                        {/* Bottom right image */}
+                        <div
+                          className="gallery-item gallery-item-small-bottom-right"
+                          onClick={() => handleImageClick(3)}
+                        >
+                          <Image
+                            src={normalizedImages[3] || "/placeholder.svg"}
+                            alt={`${tour?.title || "Tour"} - Image 4`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 25vw"
+                            className="object-cover rounded-4"
+                            onLoad={handleImageLoad}
+                          />
+                          {tour?.slideImg?.length > 4 && (
+                            <div className="more-photos-overlay rounded-4">
+                              <span>+{tour.slideImg.length - 4}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Mobile View */}
+                  {isMobile && (
+                    <div className="mobile-slider-container">
+                      {hasSingleImage ? (
+                        // Single image for mobile - no grid, no slider
+                        <div
+                          className="mobile-single-image"
+                          onClick={() => handleImageClick(0)}
+                        >
+                          <Image
+                            src={normalizedImages[0] || "/placeholder.svg"}
+                            alt={`${tour?.title || "Tour"} - Image 1`}
+                            width={800}
+                            height={500}
+                            style={{ width: "100%", height: "auto" }}
+                            sizes="100vw"
+                            className="object-cover rounded-4"
+                            priority={true}
+                            onLoad={handleImageLoad}
+                          />
+                        </div>
+                      ) : (
+                        // Multiple images - use grid slider with 3 images per slide
+                        <Slider {...sliderSettings}>
+                          {mobileImageGroups.map((group, groupIndex) => (
+                            <div key={groupIndex}>
+                              <div className="mobile-grid-slide">
+                                {/* Always 3 images layout (1 large + 2 small) */}
+                                <div
+                                  className="mobile-grid-large"
+                                  onClick={() =>
+                                    handleImageClick(groupIndex * 3)
+                                  }
+                                >
+                                  <Image
+                                    src={group[0] || "/placeholder.svg"}
+                                    alt={`${tour?.title || "Tour"} - Image ${
+                                      groupIndex * 3 + 1
+                                    }`}
+                                    width={600}
+                                    height={600}
+                                    style={{ height: "auto" }}
+                                    sizes="60vw"
+                                    className="object-cover w-full h-full rounded-4"
+                                    onLoad={handleImageLoad}
+                                  />
+                                </div>
+                                <div className="mobile-grid-small-container">
+                                  <div
+                                    className="mobile-grid-small"
+                                    onClick={() =>
+                                      handleImageClick(groupIndex * 3 + 1)
+                                    }
+                                  >
+                                    <Image
+                                      src={group[1] || "/placeholder.svg"}
+                                      alt={`${tour?.title || "Tour"} - Image ${
+                                        groupIndex * 3 + 2
+                                      }`}
+                                      width={300}
+                                      height={200}
+                                      style={{ height: "auto" }}
+                                      sizes="40vw"
+                                      className="object-cover w-full h-full rounded-4"
+                                      onLoad={handleImageLoad}
+                                    />
+                                  </div>
+                                  <div
+                                    className="mobile-grid-small"
+                                    onClick={() =>
+                                      handleImageClick(groupIndex * 3 + 2)
+                                    }
+                                  >
+                                    <Image
+                                      src={group[2] || "/placeholder.svg"}
+                                      alt={`${tour?.title || "Tour"} - Image ${
+                                        groupIndex * 3 + 3
+                                      }`}
+                                      width={300}
+                                      height={200}
+                                      style={{ height: "auto" }}
+                                      sizes="40vw"
+                                      className="object-cover w-full h-full rounded-4"
+                                      onLoad={handleImageLoad}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </Slider>
                       )}
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Mobile View - Always show 3 images per slide */}
-              {!isLoading && isMobile && (
-                <div className="mobile-slider-container">
-                  {hasSingleImage ? (
-                    // Single image for mobile - no grid, no slider
-                    <div
-                      className="mobile-single-image"
-                      onClick={() => handleImageClick(0)}
-                    >
-                      <Image
-                        src={normalizedImages[0] || "/placeholder.svg"}
-                        alt={`${tour?.title || "Tour"} - Image 1`}
-                        width={800}
-                        height={500}
-                        style={{ width: "100%", height: "auto" }}
-                        sizes="100vw"
-                        className="object-cover rounded-4"
-                        priority={true}
-                        onLoad={handleImageLoad}
-                      />
-                    </div>
-                  ) : (
-                    // Multiple images - use grid slider with 3 images per slide
-                    <Slider {...sliderSettings}>
-                      {mobileImageGroups.map((group, groupIndex) => (
-                        <div key={groupIndex}>
-                          <div className="mobile-grid-slide">
-                            {/* Always 3 images layout (1 large + 2 small) */}
-                            <div
-                              className="mobile-grid-large"
-                              onClick={() => handleImageClick(groupIndex * 3)}
-                            >
-                              <Image
-                                src={group[0] || "/placeholder.svg"}
-                                alt={`${tour?.title || "Tour"} - Image ${
-                                  groupIndex * 3 + 1
-                                }`}
-                                width={600}
-                                height={600}
-                                style={{ height: "auto" }}
-                                sizes="60vw"
-                                className="object-cover w-full h-full rounded-4"
-                                onLoad={handleImageLoad}
-                              />
-                            </div>
-                            <div className="mobile-grid-small-container">
-                              <div
-                                className="mobile-grid-small"
-                                onClick={() =>
-                                  handleImageClick(groupIndex * 3 + 1)
-                                }
-                              >
-                                <Image
-                                  src={group[1] || "/placeholder.svg"}
-                                  alt={`${tour?.title || "Tour"} - Image ${
-                                    groupIndex * 3 + 2
-                                  }`}
-                                  width={300}
-                                  height={200}
-                                  style={{ height: "auto" }}
-                                  sizes="40vw"
-                                  className="object-cover w-full h-full rounded-4"
-                                  onLoad={handleImageLoad}
-                                />
-                              </div>
-                              <div
-                                className="mobile-grid-small"
-                                onClick={() =>
-                                  handleImageClick(groupIndex * 3 + 2)
-                                }
-                              >
-                                <Image
-                                  src={group[2] || "/placeholder.svg"}
-                                  alt={`${tour?.title || "Tour"} - Image ${
-                                    groupIndex * 3 + 3
-                                  }`}
-                                  width={300}
-                                  height={200}
-                                  style={{ height: "auto" }}
-                                  sizes="40vw"
-                                  className="object-cover w-full h-full rounded-4"
-                                  onLoad={handleImageLoad}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </Slider>
                   )}
-                </div>
+                </>
               )}
             </div>
           </div>
@@ -349,6 +377,37 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
         </div>
         {/* End container */}
       </section>
+
+      {/* Fullscreen Lightbox */}
+      {lightboxOpen && (
+        <div className="lightbox-overlay" onClick={closeLightbox}>
+          <div
+            className="lightbox-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="lightbox-close" onClick={closeLightbox}>
+              <i className="icon icon-close text-20"></i>
+            </button>
+            <button className="lightbox-prev" onClick={prevImage}>
+              <i className="icon icon-chevron-left text-20"></i>
+            </button>
+            <button className="lightbox-next" onClick={nextImage}>
+              <i className="icon icon-chevron-right text-20"></i>
+            </button>
+            <div className="lightbox-image-container">
+              <Image
+                src={tour?.slideImg?.[currentImageIndex] || "/placeholder.svg"}
+                alt={`${tour?.title || "Tour"} - Image ${
+                  currentImageIndex + 1
+                }`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CSS for the gallery grid and mobile layout */}
       <style jsx global>{`
@@ -458,6 +517,77 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
           position: relative;
           cursor: pointer;
         }
+
+        /* Lightbox Styles */
+        .lightbox-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.9);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .lightbox-container {
+          position: relative;
+          width: 90vw;
+          height: 90vh;
+          max-width: 1200px;
+          max-height: 800px;
+        }
+        .lightbox-image-container {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+        .lightbox-close {
+          position: absolute;
+          top: -50px;
+          right: 0;
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          color: white;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10001;
+        }
+        .lightbox-prev,
+        .lightbox-next {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          color: white;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10001;
+        }
+        .lightbox-prev {
+          left: -70px;
+        }
+        .lightbox-next {
+          right: -70px;
+        }
+        .lightbox-close:hover,
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
           .mobile-grid-slide {
@@ -471,6 +601,16 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
           .row.y-gap-30.mt-40 .col-xl-8 {
             width: 100%;
             max-width: 100%;
+          }
+          .lightbox-prev {
+            left: 10px;
+          }
+          .lightbox-next {
+            right: 10px;
+          }
+          .lightbox-close {
+            top: 10px;
+            right: 10px;
           }
         }
         @media (max-width: 480px) {
