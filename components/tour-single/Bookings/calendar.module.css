@@ -1,0 +1,431 @@
+.bookingColumn {
+  max-width: 400px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.section {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 24px 0;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 24px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.sectionTitle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 2px;
+  background-color: #111827;
+}
+.ParticipantsectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 24px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.ParticipantsectionTitle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 2px;
+  background-color: #111827;
+}
+
+.calendarWrapper {
+  width: 100%;
+}
+
+.calendarGrid {
+  margin: 0 -2px;
+}
+
+.calendarCol {
+  flex: 0 0 14.2857%;
+  max-width: 14.2857%;
+  /* old code */
+  /* padding: 2px; */
+  /* new code */
+  padding: 0px;
+}
+
+.calendarBtn {
+  padding: 4px;
+  height: 100%;
+  min-height: 50px;
+  border: 1px solid #ececec;
+  background: white;
+  font-size: 14px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.calendarBtn:hover {
+  background-color: #f8f9fa;
+}
+
+.calendarBtn.active {
+  background-color: #111827;
+  color: white;
+  border-color: #111827;
+}
+
+.calendarBtn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.datePrice {
+  font-size: 9px;
+  color: #868686;
+  font-weight: 600;
+  display: block;
+  line-height: 1;
+}
+.datePrice.active {
+  font-size: 8px;
+  color: #ffffff;
+  display: block;
+  line-height: 1;
+}
+
+.availabilityDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+}
+
+.monthSelector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.monthButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #111827;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monthButton:hover {
+  color: #6b7280;
+}
+
+.weekDays {
+  display: flex;
+  margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.weekDay {
+  /* flex: 0 0 14.2857%; */
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.timeSelectionWrapper {
+  padding: 16px 0;
+}
+
+.timeSelectionTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.timeSlot {
+  position: relative;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timeSlot:hover {
+  background: #f9fafb;
+}
+
+.timeSlotSelected {
+  background: #111827 !important;
+  color: white;
+  border-color: #111827;
+}
+
+.availabilityIndicator {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-right: 12px;
+  color: #111827;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.backButton:hover {
+  color: #6b7280;
+}
+
+.backToCalendarLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #2563eb;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.backToCalendarLink:hover {
+  text-decoration: underline;
+}
+
+.participantsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.participantType {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.participantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.participantLabel {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.ageRange {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.counterControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.counterButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.counterButton:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.counterButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttonIcon {
+  font-size: 20px;
+  line-height: 1;
+  color: #111827;
+}
+
+.counterValue {
+  min-width: 20px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+.calendarBtn.active .datePrice {
+  color: white;
+}
+
+.availabilityInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.availableSpots {
+  font-weight: 600;
+  color: #333;
+}
+
+.bookedSpots {
+  color: #666;
+  font-size: 0.9rem;
+}
+/* Add these styles to your existing calendar.module.css file */
+
+/* Add these styles to your existing calendar.module.css file */
+
+.monthDropdownContainer {
+  position: relative;
+  width: 180px;
+  z-index: 20;
+  margin-left: 55px;
+}
+
+.monthDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.monthDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 30;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 0.25rem;
+}
+
+.monthOption {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.monthOption:hover {
+  background-color: #f3f4f6;
+}
+
+.activeMonth {
+  background-color: #e5e7eb;
+}
+
+/* Make sure the month selector has position relative for dropdown positioning */
+.monthSelector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Add cursor pointer to make it clear the month text is clickable */
+.monthSelector .cursor-pointer {
+  cursor: pointer;
+}
+
+/* Add this to your CSS file for the month availability dot */
+.monthAvailabilityDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.monthOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.monthOption:hover {
+  background-color: #f5f5f5;
+}
+
+.activeMonth {
+  background-color: #e6f7ff;
+  font-weight: 600;
+}

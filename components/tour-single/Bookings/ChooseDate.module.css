@@ -1,0 +1,114 @@
+.calendarGrid {
+    margin-bottom: 1rem;
+  }
+  
+  .calendarCell {
+    flex: 0 0 14.285714%;
+    max-width: 14.285714%;
+    padding: 2px;
+  }
+  
+  .dayLabel {
+    color: #6c757d;
+    font-weight: 500;
+    display: block;
+    padding: 0.5rem 0;
+  }
+  
+  .dateButton {
+    aspect-ratio: 1;
+    padding: 0.5rem !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease-in-out !important;
+    border: 1px solid #dee2e6 !important;
+  }
+  
+  .dateButton:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dateButton.selected {
+    background-color: #212529;
+    color: white;
+    border-color: #212529;
+  }
+  
+  .priceLabel {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+  }
+  
+  .availabilityDot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+  }
+  
+  .emptyDate {
+    display: block;
+    padding: 0.5rem;
+    color: #dee2e6;
+    text-align: center;
+  }
+  
+  .monthSelector {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .monthButton {
+    color: #212529 !important;
+    padding: 0.5rem !important;
+  }
+  
+  .monthButton:hover {
+    background-color: #f8f9fa;
+    border-radius: 50%;
+  }
+  
+  .timeGrid {
+    margin: -0.25rem;
+  }
+  
+  .timeButton {
+    flex: 1 1 calc(33.333% - 0.5rem);
+    min-width: 100px;
+    margin: 0.25rem;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .backButton {
+    color: #212529 !important;
+    margin-right: 1rem;
+  }
+  
+  .backButton:hover {
+    color: #0d6efd !important;
+  }
+  
+  .experienceCard {
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  @media (max-width: 576px) {
+    .timeButton {
+      flex: 1 1 calc(50% - 0.5rem);
+    }
+  
+    .dateButton {
+      padding: 0.25rem !important;
+      font-size: 0.75rem !important;
+    }
+  
+    .priceLabel {
+      font-size: 0.65rem;
+    }
+  }
+  
+  
