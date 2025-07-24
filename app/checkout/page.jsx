@@ -154,7 +154,7 @@ const CheckoutPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center">
+      <div className="min-vh-200 d-flex align-items-center justify-content-center">
         <div className="text-center">
           <div className="spinner-border text-primary mb-3" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -180,11 +180,21 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="min-vh-100 bg-light">
+    <div
+      className="min-vh-100 bg-light"
+      style={{ marginTop: "70px", paddingTop: "20px" }}
+    >
       {/* Header */}
-      <div className="bg-white border-bottom py-3">
+      <div
+        className=" border-bottom py-3"
+        style={{
+          backgroundColor: "#3554d1",
+          fontSize: "14px",
+          borderRadius: "4px",
+        }}
+      >
         <div className="container">
-          <h4 className="mb-0">Checkout</h4>
+          <h4 className="mb-0 text-white">Checkout</h4>
         </div>
       </div>
 

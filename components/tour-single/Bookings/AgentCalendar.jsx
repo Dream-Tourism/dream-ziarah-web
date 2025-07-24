@@ -323,13 +323,12 @@ const AgentCalendar = ({ tourData = null }) => {
     <div className="bg-white">
       {/* Price Section */}
       <div
-        className="p-3 border-bottom"
+        className="p-3 border-bottom mb-1"
         style={{
-          backgroundColor: "#e6f0ff", // light blue
-          padding: "12px 16px",
+          padding: "12px 16px 30px", // added bottom padding: 20px
           height: "auto",
-          borderTop: "1px solid #e9ecef",
-          borderTop: "3px solid #007bff",
+          borderTop: "3px solid #007bff", // keep the blue top border
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)", // subtle shadow
         }}
       >
         <small className="text-muted">From</small>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 const BookingPreview = ({
   bookingData,
@@ -15,7 +14,6 @@ const BookingPreview = ({
   duration = "4 Hours",
 }) => {
   const [isBooking, setIsBooking] = useState(false);
-  const router = useRouter();
 
   const formatDate = (date) => {
     const options = {
@@ -39,35 +37,6 @@ const BookingPreview = ({
     document.cookie = `${name}=${encodeURIComponent(
       JSON.stringify(value)
     )};expires=${expires.toUTCString()};path=/`;
-  };
-
-  const constructCheckoutUrl = () => {
-    // Create booking parameters object
-    const bookingParams = {
-      channel_id: "12130", // Your channel ID
-      tour_name: encodeURIComponent(tourName),
-      tour_type: encodeURIComponent(selectedTourType?.guide || ""),
-      date: selectedDate.toISOString().split("T")[0], // Format: YYYY-MM-DD
-      time: encodeURIComponent(selectedTime),
-      duration: encodeURIComponent(duration),
-      participants: participantCount,
-      price_per_person: priceOption ? Number.parseFloat(priceOption.price) : 0,
-      total_price: totalPrice,
-      booking_id: bookingData?.bookingId || `BK-${Date.now()}`,
-      // Add any additional parameters you need
-      guide_type: encodeURIComponent(selectedTourType?.guide || ""),
-      timestamp: Date.now(),
-    };
-
-    // Convert object to URL search params
-    const searchParams = new URLSearchParams();
-    Object.entries(bookingParams).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        searchParams.append(key, value.toString());
-      }
-    });
-
-    return `/checkout/?${searchParams.toString()}`;
   };
 
   const handleBookNow = async () => {
@@ -95,14 +64,11 @@ const BookingPreview = ({
       setCookie("booking_info", bookingInfo, 1); // Expires in 1 day
       setCookie("channel_id", "12130", 1);
 
-      // Construct checkout URL with parameters
-      const checkoutUrl = constructCheckoutUrl();
+      // Simple checkout URL - only channel_id parameter
+      const checkoutUrl = `/checkout/?channel_id=12130`;
 
       // Open in new tab
       window.open(checkoutUrl, "_blank", "noopener,noreferrer");
-
-      // Optional: Also navigate in current tab if needed
-      // router.push(checkoutUrl);
     } catch (error) {
       console.error("Error preparing checkout:", error);
       alert("Error preparing checkout. Please try again.");
@@ -198,6 +164,7 @@ const BookingPreview = ({
             padding: "12px 16px",
             height: "auto",
             borderTop: "1px solid #e9ecef",
+            borderTop: "3px solid #007bff",
           }}
         >
           <div>
