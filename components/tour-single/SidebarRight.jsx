@@ -84,7 +84,12 @@ const SidebarRight = () => {
   const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
     contentItem?.id
   );
-  const { data2, isSuccess2 } = useGetTourEntryByIdQuery(24);
+  const {
+    data: data2,
+    isSuccess: isSuccess2,
+    isLoading: isLoading2,
+    error,
+  } = useGetTourEntryByIdQuery(24);
 
   const is_bokun_url = false;
 
@@ -111,7 +116,10 @@ const SidebarRight = () => {
     );
   }
 
-  return <AgentCalendar tourData={data2} />;
+  if (isLoading2) return <p>Loading calendar...</p>;
+  if (error) return <p>Failed to load tour data.</p>;
+
+  return isSuccess2 ? <AgentCalendar tourData={data2} /> : null;
 };
 
 export default SidebarRight;
