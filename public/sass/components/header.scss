@@ -6,6 +6,18 @@
   }
 }
 
+.customheader {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+  transition: all 0.4s $easeOutQuart;
+}
+
 .header {
   position: fixed;
   z-index: 1000;
@@ -546,4 +558,8 @@
   @media (min-width: 560px) {
     margin-left: 84px;
   }
+}
+.customheader_logo_left_space {
+  margin-left: 100px;
+  margin-top: 10px;
 }

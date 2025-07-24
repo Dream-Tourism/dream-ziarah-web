@@ -181,20 +181,19 @@ const CheckoutPage = () => {
 
   return (
     <div
-      className="min-vh-100 bg-light"
+      className="min-vh-100"
       style={{ marginTop: "70px", paddingTop: "20px" }}
     >
       {/* Header */}
       <div
         className=" border-bottom py-3"
         style={{
-          backgroundColor: "#3554d1",
           fontSize: "14px",
           borderRadius: "4px",
         }}
       >
         <div className="container">
-          <h4 className="mb-0 text-white">Checkout</h4>
+          <h4 className="mb-0 text-black">Secure Checkout</h4>
         </div>
       </div>
 
