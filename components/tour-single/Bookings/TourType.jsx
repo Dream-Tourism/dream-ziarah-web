@@ -30,16 +30,26 @@ const TourType = ({ onTourTypeChange, availableTourTypes = [] }) => {
       <div className="mb-3">
         <div
           className="form-control d-flex align-items-center justify-content-between bg-white border-0 rounded"
-          style={{ padding: "12px 16px", height: "48px" }}
+          style={{
+            padding: "12px 16px",
+            height: "48px",
+            borderTop: "1px solid #e9ecef",
+          }}
         >
           <div className="d-flex align-items-center">
-            <i className="fas fa-user-tie me-2 text-muted"></i>
+            <i className={`icon-twitter text-14 me-2`} />
             <span>Tour Type</span>
           </div>
-          <div className="d-flex align-items-center">
+          <div
+            className="d-flex align-items-center"
+            style={{ borderLeft: "1px solid black" }}
+          >
             <select
+              title={selectedTourType}
               className="form-select border-0 bg-transparent text-center fw-bold"
-              style={{ width: "auto", minWidth: "120px" }}
+              style={{
+                width: "180px",
+              }}
               value={selectedTourType}
               onChange={(e) => handleTourTypeChange(e.target.value)}
             >

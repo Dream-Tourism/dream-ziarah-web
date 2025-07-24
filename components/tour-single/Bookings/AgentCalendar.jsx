@@ -134,6 +134,23 @@ const AgentCalendar = ({ tourData = null }) => {
     }
   }, [selectedTourType, participantCount, priceList]);
 
+  // Scroll when calendar opens
+  useEffect(() => {
+    if (showCalendar) {
+      setTimeout(() => {
+        const calendarElement = document.querySelector(
+          ".position-relative .position-absolute"
+        );
+        if (calendarElement) {
+          calendarElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        }
+      }, 100);
+    }
+  }, [showCalendar]);
+
   const formatDate = (date) => {
     const options = {
       weekday: "short",
@@ -334,10 +351,16 @@ const AgentCalendar = ({ tourData = null }) => {
         <div className="mb-3 position-relative">
           <div
             className="form-control d-flex align-items-center bg-white border-0 rounded"
-            style={{ cursor: "pointer", padding: "12px 16px", height: "48px" }}
+            style={{
+              cursor: "pointer",
+              padding: "12px 16px",
+              height: "48px",
+              width: "100%",
+              minWidth: "280px",
+            }}
             onClick={() => setShowCalendar(!showCalendar)}
           >
-            <i className={`icon-twitter text-14`} />
+            <i className={`icon-twitter text-14 me-2`} />
             <span className="flex-grow-1">
               {selectedDate ? formatDate(selectedDate) : "Select Date"}
             </span>
@@ -355,26 +378,33 @@ const AgentCalendar = ({ tourData = null }) => {
 
         {/* Time Selection */}
         <div className="mb-3">
-          <select
-            className="form-select bg-white border-0 rounded"
-            style={{ padding: "12px 16px", height: "48px" }}
-            value={selectedTime}
-            onChange={(e) => handleTimeChange(e.target.value)}
-            disabled={availableTimes.length === 0}
-          >
-            <i className={`icon-twitter text-14`} />
-
-            <option value="">
-              {availableTimes.length === 0
-                ? "No times available"
-                : "Select Time"}
-            </option>
-            {availableTimes.map((time) => (
-              <option key={time} value={time}>
-                {time}
+          <div className="position-relative">
+            <i
+              className="icon-twitter position-absolute top-50 start-0 translate-middle-y text-black text-muted ps-3"
+              style={{ fontSize: "14px" }}
+            ></i>
+            <select
+              className="form-select bg-white border-0 rounded"
+              style={{
+                padding: "12px 16px 12px 45px",
+                height: "48px",
+              }}
+              value={selectedTime}
+              onChange={(e) => handleTimeChange(e.target.value)}
+              disabled={availableTimes.length === 0}
+            >
+              <option value="">
+                {availableTimes.length === 0
+                  ? "No times available"
+                  : "Select Time"}
               </option>
-            ))}
-          </select>
+              {availableTimes.map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Price Display */}
