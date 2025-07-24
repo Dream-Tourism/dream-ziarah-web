@@ -295,7 +295,10 @@ const AgentCalendar = ({ tourData = null }) => {
   return (
     <div className="bg-white">
       {/* Price Section */}
-      <div className="p-3 border-bottom">
+      <div
+        className="p-3 border-bottom"
+        style={{ borderTop: "3px solid #007bff" }}
+      >
         <small className="text-muted">From</small>
         <h4 className="mb-0 fw-bold">
           $
@@ -331,7 +334,7 @@ const AgentCalendar = ({ tourData = null }) => {
         <div className="mb-3 position-relative">
           <div
             className="form-control d-flex align-items-center bg-white border-0 rounded"
-            style={{ cursor: "pointer", padding: "12px 16px" }}
+            style={{ cursor: "pointer", padding: "12px 16px", height: "48px" }}
             onClick={() => setShowCalendar(!showCalendar)}
           >
             <i className={`icon-twitter text-14`} />
@@ -354,7 +357,7 @@ const AgentCalendar = ({ tourData = null }) => {
         <div className="mb-3">
           <select
             className="form-select bg-white border-0 rounded"
-            style={{ padding: "12px 16px" }}
+            style={{ padding: "12px 16px", height: "48px" }}
             value={selectedTime}
             onChange={(e) => handleTimeChange(e.target.value)}
             disabled={availableTimes.length === 0}
@@ -395,6 +398,7 @@ const AgentCalendar = ({ tourData = null }) => {
             backgroundColor: "#ffa500",
             padding: "12px 16px",
             fontSize: "16px",
+            height: "48px",
           }}
           onClick={handleCheckAvailability}
           disabled={isCheckingAvailability || !currentPriceOption}

@@ -30,10 +30,10 @@ const TourType = ({ onTourTypeChange, availableTourTypes = [] }) => {
       <div className="mb-3">
         <div
           className="form-control d-flex align-items-center justify-content-between bg-white border-0 rounded"
-          style={{ padding: "12px 16px" }}
+          style={{ padding: "12px 16px", height: "48px" }}
         >
           <div className="d-flex align-items-center">
-            <i className={`icon-twitter text-14`} />
+            <i className="fas fa-user-tie me-2 text-muted"></i>
             <span>Tour Type</span>
           </div>
           <div className="d-flex align-items-center">
