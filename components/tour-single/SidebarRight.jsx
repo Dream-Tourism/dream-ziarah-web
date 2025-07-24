@@ -2,6 +2,7 @@
 import {
   useGetContentsByMenuContentIdQuery,
   useGetContentsByMenuContentTitleQuery,
+  useGetTourEntryByIdQuery,
 } from "@/features/content/contentApi";
 import { capitalize } from "@/utils";
 import { useParams } from "next/navigation";
@@ -83,6 +84,7 @@ const SidebarRight = () => {
   const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
     contentItem?.id
   );
+  const { data2, isSuccess2 } = useGetTourEntryByIdQuery(24);
 
   const is_bokun_url = false;
 
@@ -109,7 +111,7 @@ const SidebarRight = () => {
     );
   }
 
-  return <AgentCalendar tourData={sampleTourData} />;
+  return <AgentCalendar tourData={data2} />;
 };
 
 export default SidebarRight;
