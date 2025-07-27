@@ -568,6 +568,7 @@ export const SEARCH_MENU = `${BASE_URL}/menu_item/api/v1/menu_item/search/`;
 
 export const GET_MENUS_WITHOUT_PAGINATION = `${BASE_URL}/cms_menu/api/v1/cms_menu/without_pagination/all/`;
 export const GET_TOUR_ENTRYID = `${BASE_URL2}/tour_content/api/v1/tour`;
+export const CHECKOUTDATA = `${BASE_URL2}/payments/api/v1/payments/checkout/create/`;
 //menu content
 
 export const CREATE_CONTENT = `${BASE_URL}/cms_menu_content/api/v1/cms_menu_content/create/`;

@@ -1,5 +1,6 @@
 "use client";
 
+import { CHECKOUTDATA } from "@/constant/constants";
 import { useState, useEffect } from "react";
 
 const CheckoutPage = () => {
@@ -7,6 +8,7 @@ const CheckoutPage = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    phone: "",
     email: "",
     acceptOffers: false,
   });
@@ -50,6 +52,7 @@ const CheckoutPage = () => {
 
     loadBookingData();
   }, []);
+  console.log("Booking Data:", bookingData);
 
   const formatDate = (date) => {
     const options = {
@@ -59,6 +62,14 @@ const CheckoutPage = () => {
       day: "numeric",
     };
     return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatDateToMMDDYYYY = (date) => {
+    const d = new Date(date);
+    const month = `${d.getMonth() + 1}`.padStart(2, "0");
+    const day = `${d.getDate()}`.padStart(2, "0");
+    const year = d.getFullYear();
+    return `${month}/${day}/${year}`;
   };
 
   const getTimeRange = () => {
@@ -77,7 +88,12 @@ const CheckoutPage = () => {
   };
 
   const handleProceedToPayment = async () => {
-    if (!formData.firstName || !formData.lastName || !formData.email) {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.phone ||
+      !formData.email
+    ) {
       alert("Please fill in all required fields");
       return;
     }
@@ -85,29 +101,63 @@ const CheckoutPage = () => {
     setIsProcessing(true);
 
     try {
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      // Prepare complete booking data for API
       const completeBookingDetails = {
-        travelerInfo: formData,
-        tourDetails: bookingData,
-        timestamp: new Date().toISOString(),
+        //Travel info
+        travelerInfo: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          email: formData.email,
+          acceptOffers: formData.acceptOffers,
+        },
+        // Tour Details
+        tourDetails: {
+          tourId: bookingData.bookingData?.details?.tourData?.id || null,
+          tourName: bookingData.tourName,
+          description:
+            bookingData.bookingData?.details?.tourData?.description || "",
+          selectedDate: formatDateToMMDDYYYY(bookingData.selectedDate),
+          selectedTime: bookingData.selectedTime,
+          duration: bookingData.duration,
+          participantCount: bookingData.participantCount,
+          totalPrice: bookingData.totalPrice,
+          pricePerPerson: bookingData.priceOption
+            ? Number.parseFloat(bookingData.priceOption.price)
+            : 0,
+          tourImage: bookingData.tourImage,
+        },
       };
 
-      console.log("Complete booking details:", completeBookingDetails);
-      alert("Payment successful! Booking confirmed.");
+      // Send booking data to API
+      const response = await fetch(CHECKOUTDATA, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(completeBookingDetails),
+      });
 
-      // Clear cookies after successful payment
-      document.cookie =
-        "booking_info=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie =
-        "channel_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Booking processed successfully:", result);
+        alert("Payment successful! Booking confirmed.");
 
-      // Redirect or close window
-      window.close();
+        // Clear cookies after successful payment
+        document.cookie =
+          "booking_info=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "channel_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        // Redirect or close window
+        // window.close();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Payment processing failed");
+      }
     } catch (error) {
       console.error("Payment error:", error);
-      alert("Payment failed. Please try again.");
+      alert(`Payment failed: ${error.message}. Please try again.`);
     } finally {
       setIsProcessing(false);
     }
@@ -154,7 +204,7 @@ const CheckoutPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-vh-200 d-flex align-items-center justify-content-center">
+      <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <div className="text-center">
           <div className="spinner-border text-primary mb-3" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -250,6 +300,24 @@ const CheckoutPage = () => {
                         value={formData.lastName}
                         onChange={handleInputChange}
                         placeholder="Last name"
+                        style={{
+                          padding: "12px 16px",
+                          border: "1px solid #007bff",
+                          boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)",
+                        }}
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label">
+                        phone <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="phone"
+                        className="form-control"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="Phone"
                         style={{
                           padding: "12px 16px",
                           border: "1px solid #007bff",
