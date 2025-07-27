@@ -10,7 +10,15 @@ const Calendar = ({
   availableDates = [],
   isDateAvailable,
 }) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date(2025, 6)); // July 2025
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    if (availableDates.length > 0) {
+      const sortedDates = [...availableDates].sort((a, b) => a - b);
+      const firstDate = sortedDates[0];
+      return new Date(firstDate.getFullYear(), firstDate.getMonth());
+    }
+    return new Date(); // fallback to current month if none available
+  });
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -23,6 +31,14 @@ const Calendar = ({
 
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (availableDates.length > 0) {
+      const sortedDates = [...availableDates].sort((a, b) => a - b);
+      const firstDate = sortedDates[0];
+      setCurrentMonth(new Date(firstDate.getFullYear(), firstDate.getMonth()));
+    }
+  }, [availableDates]);
 
   const monthNames = [
     "January",
@@ -40,6 +56,7 @@ const Calendar = ({
   ];
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  console.log("Current Month:", isDateAvailable);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
