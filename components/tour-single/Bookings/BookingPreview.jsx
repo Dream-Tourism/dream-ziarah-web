@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 const BookingPreview = ({
+  tourId,
   bookingData,
   selectedDate,
   selectedTime,
@@ -45,6 +46,7 @@ const BookingPreview = ({
     try {
       // Store all booking information in cookies
       const bookingInfo = {
+        tourId,
         tourName,
         selectedDate: selectedDate.toISOString(),
         selectedTime,

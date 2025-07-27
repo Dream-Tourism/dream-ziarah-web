@@ -437,6 +437,7 @@ const AgentCalendar = ({ tourData = null }) => {
       {bookingAvailable && bookingData && (
         <div ref={bookingPreviewRef} className="mt-4">
           <BookingPreview
+            tourId={tourData?.id}
             bookingData={bookingData}
             selectedDate={selectedDate}
             selectedTime={selectedTime}
@@ -444,6 +445,7 @@ const AgentCalendar = ({ tourData = null }) => {
             participantCount={participantCount}
             totalPrice={totalPrice}
             priceOption={currentPriceOption}
+            tourName={tourData?.name}
           />
         </div>
       )}

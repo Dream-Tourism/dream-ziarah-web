@@ -104,7 +104,7 @@ const CheckoutPage = () => {
       // Prepare complete booking data for API
       const completeBookingDetails = {
         //Travel info
-        travelerInfo: {
+        travellerInfo: {
           firstName: formData.firstName,
           lastName: formData.lastName,
           phone: formData.phone,
@@ -113,8 +113,8 @@ const CheckoutPage = () => {
         },
         // Tour Details
         tourDetails: {
-          tourId: bookingData.bookingData?.details?.tourData?.id || null,
-          tourName: bookingData.tourName,
+          tourId: bookingData?.tourId || null,
+          tourName: bookingData?.tourName,
           description:
             bookingData.bookingData?.details?.tourData?.description || "",
           selectedDate: formatDateToMMDDYYYY(bookingData.selectedDate),
@@ -373,7 +373,7 @@ const CheckoutPage = () => {
                       fontSize: "16px",
                     }}
                     onClick={handleProceedToPayment}
-                    disabled={isProcessing}
+                    disabled={isProcessing || !formData.acceptOffers}
                   >
                     {isProcessing ? (
                       <>
