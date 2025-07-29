@@ -10,6 +10,7 @@ import paginatonReducer from "../features/pagination/paginationSlice";
 import searchReducer from "../features/search/searchSlice";
 import siteSettingReducer from "../features/site-setting/siteSettingSlice";
 import tourReducer from "../features/tour/tourSlice";
+import authReducer from "../features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     location: locationReducer,
     search: searchReducer,
     bokun: bokunReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

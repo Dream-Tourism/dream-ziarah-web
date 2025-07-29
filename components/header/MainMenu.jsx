@@ -1,11 +1,22 @@
+"use client";
+
 import useMenus from "@/hooks/useMenus";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { isActiveLink } from "../../utils/linkActiveChecker";
+import { useDispatch, useSelector } from "react-redux";
 
 const MainMenu = ({ style = "" }) => {
   const pathname = usePathname();
-  const menuItems = useMenus();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const menuItems = useMenus(); // uses useSelector internally
+
+  // const handleLogout = () => {
+  //   dispatch(logoutUser());
+  //   router.push("/");
+  // };
 
   const currentPathName =
     pathname.split("/")[1] === "destinations"
@@ -56,6 +67,24 @@ const MainMenu = ({ style = "" }) => {
             )}
           </li>
         ))}
+        <li className="mr-10 fw-500">
+          {isAuthenticated ? (
+            <button className="btn btn-sm btn-dark">
+              Logout ({user?.name})
+            </button>
+          ) : (
+            <Link href="/login" className="btn btn-sm btn-primary">
+              Login
+            </Link>
+          )}
+        </li>
+        {isAuthenticated && (
+          <li>
+            <Link href="/dashboard" className="btn btn-sm btn-primary">
+              Show Orders
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );

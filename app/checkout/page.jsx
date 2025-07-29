@@ -52,7 +52,7 @@ const CheckoutPage = () => {
 
     loadBookingData();
   }, []);
-  console.log("Booking Data:", bookingData);
+  // console.log("Booking Data:", bookingData);
 
   const formatDate = (date) => {
     const options = {
@@ -105,8 +105,8 @@ const CheckoutPage = () => {
       const completeBookingDetails = {
         //Travel info
         travellerInfo: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
           phone: formData.phone,
           email: formData.email,
           acceptOffers: formData.acceptOffers,
@@ -172,7 +172,7 @@ const CheckoutPage = () => {
       stars.push(
         <i
           key={i}
-          className="fas fa-star text-warning"
+          className="icon-star text-yellow-1 text-10"
           style={{ fontSize: "12px" }}
         ></i>
       );
@@ -182,7 +182,7 @@ const CheckoutPage = () => {
       stars.push(
         <i
           key="half"
-          className="fas fa-star-half-alt text-warning"
+          className="icon-star text-yellow-1 text-10"
           style={{ fontSize: "12px" }}
         ></i>
       );
@@ -193,7 +193,7 @@ const CheckoutPage = () => {
       stars.push(
         <i
           key={`empty-${i}`}
-          className="far fa-star text-warning"
+          className="icon-star text-yellow-1 text-10"
           style={{ fontSize: "12px" }}
         ></i>
       );
