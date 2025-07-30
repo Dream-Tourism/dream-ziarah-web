@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { isActiveLink } from "../../utils/linkActiveChecker";
 import { useDispatch, useSelector } from "react-redux";
+import { clearAuthState } from "@/features/auth/authSlice";
 
 const MainMenu = ({ style = "" }) => {
   const pathname = usePathname();
@@ -13,10 +14,10 @@ const MainMenu = ({ style = "" }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const menuItems = useMenus(); // uses useSelector internally
 
-  // const handleLogout = () => {
-  //   dispatch(logoutUser());
-  //   router.push("/");
-  // };
+  const handleLogout = () => {
+    dispatch(clearAuthState());
+    router.push("/");
+  };
 
   const currentPathName =
     pathname.split("/")[1] === "destinations"
@@ -69,8 +70,8 @@ const MainMenu = ({ style = "" }) => {
         ))}
         <li className="mr-10 fw-500">
           {isAuthenticated ? (
-            <button className="btn btn-sm btn-dark">
-              Logout ({user?.name})
+            <button onClick={handleLogout} className="btn btn-sm btn-dark">
+              Logout ({user?.last_name})
             </button>
           ) : (
             <Link href="/login" className="btn btn-sm btn-primary">

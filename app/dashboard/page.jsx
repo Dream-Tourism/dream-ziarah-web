@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 // Mock API data - replace with your actual API endpoint
 const mockOrders = [
@@ -65,7 +66,12 @@ export default function TourDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
-
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  useEffect(() => {
+    console.log("Auth status updated");
+    console.log("Authenticated:", isAuthenticated);
+    console.log("User:", user);
+  }, [isAuthenticated, user]);
   // Simulate API call
   useEffect(() => {
     const fetchOrders = async () => {
@@ -147,7 +153,13 @@ export default function TourDashboard() {
         <div className="col-12">
           <div className="card">
             <div className="card-header bg-primary text-white">
-              <h3 className="card-title mb-0">Tour Orders Dashboard</h3>
+              {isAuthenticated && user?.first_name && user?.last_name ? (
+                <h3 className="card-title mb-0 text-center text-white">
+                  Welcome, {user.first_name} {user.last_name}
+                </h3>
+              ) : (
+                <p className="text-center mb-0">Loading user...</p>
+              )}
             </div>
             <div className="card-body">
               {/* Filter Buttons */}

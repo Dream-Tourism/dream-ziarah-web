@@ -3,13 +3,12 @@ import axios from "axios";
 import { store } from "@/store/store";
 
 const axiosAuth = axios.create({
-  // baseURL: "http://192.168.68.127:8004/user/api/v1/user/",
-  baseURL: "http://localhost:8000/api/auth/",
+  baseURL: "http://192.168.68.127:8004/user/api/v1/user/",
+  // baseURL: "http://localhost:8000/api/auth/",
   withCredentials: true,
 });
 axiosAuth.interceptors.request.use(
   (config) => {
-    // No need for Authorization header if using cookies
     return config;
   },
   (error) => Promise.reject(error)
@@ -31,7 +30,7 @@ axiosAuth.interceptors.response.use(
 
       try {
         // Attempt refresh
-        await axiosAuth.post("/refresh/");
+        await axiosAuth.post("token/refresh/");
         // Retry original request
         return axiosAuth(originalRequest);
       } catch (refreshError) {

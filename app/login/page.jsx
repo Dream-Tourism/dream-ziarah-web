@@ -7,7 +7,7 @@ import axiosAuth from "@/utils/axiosAuth";
 import Link from "next/link";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,20 +15,17 @@ const LoginPage = () => {
   const router = useRouter();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
       const response = await axiosAuth.post("/login/", {
-        email,
+        username,
         password,
       });
 
-      // Update auth state with user data
-      dispatch(setAuthState({ user: response.data }));
-
-      // Redirect to dashboard
+      dispatch(setAuthState({ user: response.data.user }));
       router.push("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
@@ -61,18 +58,18 @@ const LoginPage = () => {
 
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email/Phone
+            <label htmlFor="username" className="form-label">
+              Email / Phone
             </label>
             <input
-              id="email"
+              id="username"
               className="form-control"
-              type="email"
-              placeholder="Enter your email/phone"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ border: "1px solid blue" }}
+              type="text" // changed from 'email' to 'text'
+              placeholder="Enter your email or phone"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
+              style={{ border: "1px solid blue" }}
             />
           </div>
 

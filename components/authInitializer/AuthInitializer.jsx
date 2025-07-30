@@ -13,7 +13,7 @@ const AuthInitializer = () => {
     const initializeAuth = async () => {
       try {
         // First try to verify current session
-        const verifyResponse = await axiosAuth.get("/verify/");
+        const verifyResponse = await axiosAuth.get("session/verify/");
 
         if (isMounted) {
           dispatch(setAuthState({ user: verifyResponse.data.user }));
@@ -22,7 +22,7 @@ const AuthInitializer = () => {
       } catch (verifyError) {
         // If verification fails, try refresh
         try {
-          const refreshResponse = await axiosAuth.post("/refresh/");
+          const refreshResponse = await axiosAuth.post("token/refresh/");
 
           if (isMounted) {
             dispatch(setAuthState({ user: refreshResponse.data.user }));
