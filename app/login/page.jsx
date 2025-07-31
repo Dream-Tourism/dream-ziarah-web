@@ -20,10 +20,14 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await axiosAuth.post("/login/", {
-        username,
-        password,
-      });
+      const response = await axiosAuth.post(
+        "/login/",
+        {
+          username,
+          password,
+        },
+        { withCredentials: true }
+      );
 
       dispatch(setAuthState({ user: response.data.user }));
       router.push("/dashboard");
