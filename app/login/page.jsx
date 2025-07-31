@@ -1,130 +1,118 @@
 "use client";
+
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setAuthState } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
-import axiosAuth from "@/utils/axiosAuth";
-import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUserThunk } from "@/features/auth/authSlice";
 
-const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const dispatch = useDispatch();
   const router = useRouter();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  if (isAuthenticated) {
+    router.push("/dashboard");
+    router.refresh();
+    return null;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setIsLoading(true);
     setError("");
 
-    try {
-      const response = await axiosAuth.post(
-        "/login/",
-        {
-          username,
-          password,
-        },
-        { withCredentials: true }
-      );
+    const formData = new FormData(event.currentTarget);
+    const username = formData.get("username");
+    const password = formData.get("password");
 
-      dispatch(setAuthState({ user: response.data.user }));
-      router.push("/dashboard");
-    } catch (err) {
-      console.error("Login error:", err);
-      setError(
-        err.response?.data?.message || "Login failed. Please try again."
+    try {
+      const resultAction = await dispatch(
+        loginUserThunk({ username, password })
       );
+      if (loginUserThunk.fulfilled.match(resultAction)) {
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        setError(resultAction.payload || "Login failed");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
+      console.error("Login error:", err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  };
+  }
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <div
-        className="card shadow-lg p-4"
-        style={{
-          width: "100%",
-          maxWidth: "400px",
-          borderRadius: "12px",
-          marginTop: "-50px",
-        }}
-      >
-        <h3 className="text-center mb-4">Welcome Back</h3>
-
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin}>
+    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+      <div className="card w-100 shadow-lg" style={{ maxWidth: "400px" }}>
+        <div className="card-header text-center py-3 border-bottom">
+          <h1 className="h4 fw-bold text-dark">Login</h1>
+          <p className="text-muted mt-2">
+            Enter your credentials to access your account
+          </p>
+        </div>
+        <form onSubmit={handleSubmit} className="card-body p-4">
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Email / Phone
-            </label>
-            <input
-              id="username"
-              className="form-control"
-              type="text" // changed from 'email' to 'text'
-              placeholder="Enter your email or phone"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              style={{ border: "1px solid blue" }}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              id="password"
-              className="form-control"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              style={{ border: "1px solid blue" }}
-            />
-          </div>
-
-          <button
-            className="btn btn-primary w-100"
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Logging in...
-              </>
-            ) : (
-              "Login"
+            {error && (
+              <div className="alert alert-danger">
+                <p className="mb-0">{error}</p>
+              </div>
             )}
-          </button>
+            <div className="mb-3">
+              <label htmlFor="username" className="form-label">
+                Username/Email
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Enter your username or email"
+                required
+                disabled={isLoading}
+                className="form-control"
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                required
+                disabled={isLoading}
+                className="form-control"
+              />
+            </div>
+          </div>
+          <div className="d-grid gap-2 mt-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-primary btn-lg"
+            >
+              {isLoading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  <span className="visually-hidden">Loading...</span>
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
+            </button>
+          </div>
         </form>
-
-        <p className="text-center mt-3 mb-0">
-          <small>
-            Don't have an account?{" "}
-            <Link href="/register" className="text-decoration-none">
-              Register
-            </Link>
-          </small>
-        </p>
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

@@ -1,6 +1,7 @@
 import axios from "axios";
 // import { logoutUser, loginUser } from "@/features/auth/authSlice";
 import { store } from "@/store/store";
+import { clearAuthState, setAuthState } from "@/features/auth/authSlice";
 
 const axiosAuth = axios.create({
   baseURL: "http://192.168.68.127:8004/user/api/v1/user/",
@@ -9,6 +10,10 @@ const axiosAuth = axios.create({
 });
 axiosAuth.interceptors.request.use(
   (config) => {
+    const token = store.getState().auth.accessToken;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -29,16 +34,16 @@ axiosAuth.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Attempt refresh
-        await axiosAuth.post("token/refresh/");
-        // Retry original request
+        const res = await axiosAuth.post("token/refresh/");
+        const newAccessToken = res.data.accessToken;
+
+        store.dispatch(setAuthState({ accessToken: newAccessToken }));
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosAuth(originalRequest);
       } catch (refreshError) {
-        // Redirect to login if refresh fails
-        if (refreshError.response?.status === 401) {
-          store.dispatch(clearAuthState());
-          window.location.href = "/login";
-        }
+        store.dispatch(clearAuthState());
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

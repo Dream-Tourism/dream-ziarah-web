@@ -11,7 +11,7 @@ const MainMenu = ({ style = "" }) => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { user, loading, isAuthenticated } = useSelector((state) => state.auth);
   const menuItems = useMenus(); // uses useSelector internally
 
   const handleLogout = () => {
