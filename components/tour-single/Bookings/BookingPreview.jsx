@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 const BookingPreview = ({
+  tourId,
   bookingData,
   selectedDate,
   selectedTime,
@@ -45,6 +46,7 @@ const BookingPreview = ({
     try {
       // Store all booking information in cookies
       const bookingInfo = {
+        tourId,
         tourName,
         selectedDate: selectedDate.toISOString(),
         selectedTime,
@@ -65,7 +67,7 @@ const BookingPreview = ({
       setCookie("channel_id", "12130", 1);
 
       // Simple checkout URL - only channel_id parameter
-      const checkoutUrl = `/checkout/?channel_id=12130`;
+      const checkoutUrl = `/checkout/`;
 
       // Open in new tab
       window.open(checkoutUrl, "_blank", "noopener,noreferrer");

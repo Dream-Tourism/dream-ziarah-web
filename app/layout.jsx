@@ -15,6 +15,9 @@ import SrollTop from "../components/common/ScrollTop";
 import { store } from "../store/store";
 import "../styles/index.scss";
 import CookieConsent from "@/components/cookie/CookieConsent";
+import { usePathname } from "next/navigation";
+import Customheader from "@/components/customHeader";
+import AuthInitializer from "@/components/authInitializer/AuthInitializer";
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
@@ -27,7 +30,9 @@ export default function RootLayout({ children }) {
       once: true,
     });
   }, []);
+  const pathname = usePathname();
 
+  const isCheckout = pathname.startsWith("/checkout");
   return (
     <html lang="en">
       <head>
@@ -114,7 +119,8 @@ export default function RootLayout({ children }) {
         </noscript>
         <main>
           <Provider store={store}>
-            <Header />
+            <AuthInitializer />
+            {isCheckout ? <Customheader /> : <Header />}
             {children}
             <DefaultFooter />
             <SrollTop />

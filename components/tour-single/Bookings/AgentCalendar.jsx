@@ -24,7 +24,7 @@ const AgentCalendar = ({ tourData = null }) => {
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-
+  console.log("tour", tourData);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -36,47 +36,8 @@ const AgentCalendar = ({ tourData = null }) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Sample backend data structure
-  const sampleTourData = {
-    day_tour_price_list: [
-      {
-        person: "3",
-        price: "30",
-        guide: "With Guide",
-        available_times: ["12:00 AM", "04:44 AM", "04:00 PM"],
-        available_dates: [
-          "07/09/2025",
-          "07/17/2025",
-          "07/25/2025",
-          "07/26/2025",
-          "07/31/2025",
-        ],
-      },
-      {
-        person: "5",
-        price: "25",
-        guide: "Without Guide",
-        available_times: ["08:30 AM", "05:00 PM", "06:30 PM", "07:00 PM"],
-        available_dates: [
-          "07/24/2025",
-          "07/31/2025",
-          "07/30/2025",
-          "08/28/2025",
-        ],
-      },
-      {
-        person: "7",
-        price: "35",
-        guide: "Without Guide",
-        available_times: ["09:00 AM", "02:00 PM"],
-        available_dates: ["07/15/2025", "07/20/2025", "07/25/2025"],
-      },
-    ],
-  };
-
   // Use provided tourData or sample data
-  const priceList =
-    tourData?.day_tour_price_list || sampleTourData.day_tour_price_list;
+  const priceList = tourData?.day_tour_price_list;
 
   // Get unique tour types
   const getUniqueTourTypes = () => {
@@ -476,6 +437,7 @@ const AgentCalendar = ({ tourData = null }) => {
       {bookingAvailable && bookingData && (
         <div ref={bookingPreviewRef} className="mt-4">
           <BookingPreview
+            tourId={tourData?.id}
             bookingData={bookingData}
             selectedDate={selectedDate}
             selectedTime={selectedTime}
@@ -483,6 +445,7 @@ const AgentCalendar = ({ tourData = null }) => {
             participantCount={participantCount}
             totalPrice={totalPrice}
             priceOption={currentPriceOption}
+            tourName={tourData?.name}
           />
         </div>
       )}

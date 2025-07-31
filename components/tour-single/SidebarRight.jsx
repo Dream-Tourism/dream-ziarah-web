@@ -2,11 +2,13 @@
 import {
   useGetContentsByMenuContentIdQuery,
   useGetContentsByMenuContentTitleQuery,
+  useGetTourEntryByIdQuery,
 } from "@/features/content/contentApi";
 import { capitalize } from "@/utils";
 import { useParams } from "next/navigation";
 import Script from "next/script";
 import GuestCalculate from "./GuestCalculate";
+import AgentCalendar from "./Bookings/AgentCalendar";
 
 const bokunUrls = {
   "makkah-city-ziarah-luxury-private-vehicle-with-guide": {
@@ -50,25 +52,42 @@ const SidebarRight = () => {
   const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
     contentItem?.id
   );
+  const {
+    data: data2,
+    isSuccess: isSuccess2,
+    isLoading: isLoading2,
+    error,
+  } = useGetTourEntryByIdQuery(1);
 
-  return bokunUrls[params?.name] ? (
-    <GuestCalculate contentItem={contentItem} />
-  ) : (
-    <div
-      // className="d-flex justify-end js-pin-content"
-      className="d-flex js-pin-content"
-      style={{ height: "fit-content" }}
-    >
-      <div className="w-360 lg:w-full  items-left">
-        {isSuccess && <div className="bokunWidget" data-src={data?.url}></div>}
+  const is_bokun_url = false;
+
+  if (is_bokun_url) {
+    return bokunUrls[params?.name] ? (
+      <GuestCalculate contentItem={contentItem} />
+    ) : (
+      <div
+        // className="d-flex justify-end js-pin-content"
+        className="d-flex js-pin-content"
+        style={{ height: "fit-content" }}
+      >
+        <div className="w-360 lg:w-full  items-left">
+          {isSuccess && (
+            <div className="bokunWidget" data-src={data?.url}></div>
+          )}
+        </div>
+        <Script
+          type="text/javascript"
+          src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=aa4c5059-8d0b-43dc-8bd3-bac143537416"
+          async={true}
+        />
       </div>
-      <Script
-        type="text/javascript"
-        src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=aa4c5059-8d0b-43dc-8bd3-bac143537416"
-        async={true}
-      />
-    </div>
-  );
+    );
+  }
+
+  if (isLoading2) return <p>Loading calendar...</p>;
+  if (error) return <p>Failed to load tour data.</p>;
+
+  return isSuccess2 ? <AgentCalendar tourData={data2} /> : null;
 };
 
 export default SidebarRight;

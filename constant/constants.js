@@ -9,6 +9,7 @@ export const BASE_URL = "https://ziarahapi.dreamtourism.co.uk";
 // export const BASE_URL = "https://api.labbaikintbd.com/";
 
 // export const BASE_URL = 'http://api.cashconnectbd.com';
+export const BASE_URL2 = "http://192.168.68.127:8004";
 
 //login
 export const LOGIN_URL = `${BASE_URL}/user/api/v1/user/login/`;
@@ -566,6 +567,8 @@ export const GET_MENUS_BY_ROLE = `${BASE_URL}/menu_item/api/v1/menu_item/nested_
 export const SEARCH_MENU = `${BASE_URL}/menu_item/api/v1/menu_item/search/`;
 
 export const GET_MENUS_WITHOUT_PAGINATION = `${BASE_URL}/cms_menu/api/v1/cms_menu/without_pagination/all/`;
+export const GET_TOUR_ENTRYID = `${BASE_URL2}/tour_content/api/v1/tour`;
+export const CHECKOUTDATA = `${BASE_URL2}/payments/api/v1/payments/checkout/create/`;
 //menu content
 
 export const CREATE_CONTENT = `${BASE_URL}/cms_menu_content/api/v1/cms_menu_content/create/`;
