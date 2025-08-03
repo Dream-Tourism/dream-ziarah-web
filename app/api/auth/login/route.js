@@ -12,7 +12,7 @@ export async function POST(request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-      credentials: "include", // Important: This ensures Django's set-cookie headers are received by this Next.js API route
+      credentials: "include",
     });
 
     const data = await response.json();

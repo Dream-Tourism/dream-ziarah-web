@@ -64,12 +64,13 @@ const CheckoutPage = () => {
     return date.toLocaleDateString("en-US", options);
   };
 
-  const formatDateToMMDDYYYY = (date) => {
+  const formatDateToYYYYMMDD = (date) => {
     const d = new Date(date);
     const month = `${d.getMonth() + 1}`.padStart(2, "0");
     const day = `${d.getDate()}`.padStart(2, "0");
     const year = d.getFullYear();
-    return `${month}/${day}/${year}`;
+    // return `${month}/${day}/${year}`;
+    return `${year}-${month}-${day}`;
   };
 
   const getTimeRange = () => {
@@ -113,19 +114,19 @@ const CheckoutPage = () => {
         },
         // Tour Details
         tourDetails: {
-          tourId: bookingData?.tourId || null,
-          tourName: bookingData?.tourName,
-          description:
-            bookingData.bookingData?.details?.tourData?.description || "",
-          selectedDate: formatDateToMMDDYYYY(bookingData.selectedDate),
-          selectedTime: bookingData.selectedTime,
-          duration: bookingData.duration,
-          participantCount: bookingData.participantCount,
-          totalPrice: bookingData.totalPrice,
-          pricePerPerson: bookingData.priceOption
+          tour_id: bookingData?.tourId || null,
+          // tourName: bookingData?.tourName,
+          // description:
+          // bookingData.bookingData?.details?.tourData?.description || "",
+          selected_date: formatDateToYYYYMMDD(bookingData.selectedDate),
+          selected_time: bookingData.selectedTime,
+          // duration: bookingData.duration,
+          total_participants: bookingData.participantCount,
+          total_price: bookingData.totalPrice,
+          price_per_person: bookingData.priceOption
             ? Number.parseFloat(bookingData.priceOption.price)
             : 0,
-          tourImage: bookingData.tourImage,
+          // tourImage: bookingData.tourImage,
         },
       };
 
