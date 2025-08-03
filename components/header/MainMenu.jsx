@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { isActiveLink } from "../../utils/linkActiveChecker";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAuthState } from "@/features/auth/authSlice";
+import { clearAuthState, logoutUserThunk } from "@/features/auth/authSlice";
 
 const MainMenu = ({ style = "" }) => {
   const pathname = usePathname();
@@ -14,9 +14,9 @@ const MainMenu = ({ style = "" }) => {
   const { user, loading, isAuthenticated } = useSelector((state) => state.auth);
   const menuItems = useMenus(); // uses useSelector internally
 
-  const handleLogout = () => {
-    dispatch(clearAuthState());
-    router.push("/");
+  const handleLogout = async () => {
+    await dispatch(logoutUserThunk());
+    router.push("/login");
   };
 
   const currentPathName =
