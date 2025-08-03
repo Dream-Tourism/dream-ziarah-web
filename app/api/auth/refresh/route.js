@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// Use the hardcoded IP for consistency with other routes and to resolve the 'undefined' error
 const BACKEND_URL = "http://192.168.68.127:8004";
 
 export async function POST(request) {
@@ -17,14 +16,14 @@ export async function POST(request) {
       );
       response.cookies.set("accessToken", "", {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
         maxAge: 0,
       });
       response.cookies.set("refreshToken", "", {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
         maxAge: 0,

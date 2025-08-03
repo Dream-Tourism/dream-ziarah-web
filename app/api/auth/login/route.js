@@ -17,18 +17,16 @@ export async function POST(request) {
 
     const data = await response.json();
 
-    // Create a new response to send back to the client
     const nextResponse = NextResponse.json(
       { user: data.user },
       { status: response.status }
-    ); // Only send user data, not tokens
+    );
 
-    // Handle accessToken from Django's JSON response and set it as an HTTP-only cookie
     if (data.accessToken) {
       nextResponse.cookies.set("accessToken", data.accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Set to true in production with HTTPS
-        sameSite: "lax", // Or 'strict' or 'none' (requires secure: true)
+        secure: process.env.NODE_ENV === "production", // Consistent secure flag
+        sameSite: "lax",
         path: "/",
         maxAge: 15 * 60, // Example: 15 minutes for access token
       });
@@ -45,8 +43,8 @@ export async function POST(request) {
         if (name && value && name.trim() === "refreshToken") {
           const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Set to true in production with HTTPS
-            sameSite: "lax", // Or 'strict' or 'none' (requires secure: true)
+            secure: process.env.NODE_ENV === "production", // Consistent secure flag
+            sameSite: "lax",
             path: "/",
           };
 

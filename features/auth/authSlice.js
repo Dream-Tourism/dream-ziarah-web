@@ -14,9 +14,9 @@ export const loginUserThunk = createAsyncThunk(
     try {
       const result = await loginUser(username, password);
       if (result.success) {
-        return result.user; // Payload for fulfilled action
+        return result.user;
       } else {
-        return rejectWithValue(result.error); // Payload for rejected action
+        return rejectWithValue(result.error);
       }
     } catch (error) {
       return rejectWithValue("Network error. Please try again.");
@@ -29,10 +29,9 @@ export const verifySessionThunk = createAsyncThunk(
   "auth/verifySession",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      let currentUser = await verifySession(); // Check if current access token is valid
+      let currentUser = await verifySession();
 
       if (!currentUser) {
-        // If access token is invalid/expired, try to refresh
         currentUser = await refreshToken();
       }
 

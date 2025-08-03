@@ -23,5 +23,5 @@ export default function AuthInitializer() {
     return () => clearInterval(refreshIntervalId);
   }, [dispatch]); // Dispatch is stable, but good practice to include
 
-  return null; // This component doesn't render anything
+  return null;
 }
