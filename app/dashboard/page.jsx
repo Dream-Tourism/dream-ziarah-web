@@ -94,6 +94,11 @@ function Dashboard() {
     console.log("Processing payment for order:", orderId);
     setOrderData((prev) => ({
       ...prev,
+      summary: {
+        ...prev.summary,
+        pendingPayment: prev.summary.pendingPayment - 1,
+        paidOrders: prev.summary.paidOrders + 1,
+      },
       orders: prev.orders.map((order) =>
         order.id === orderId ? { ...order, status: "paid" } : order
       ),
@@ -105,6 +110,11 @@ function Dashboard() {
     console.log("Cancelling order:", orderId);
     setOrderData((prev) => ({
       ...prev,
+      summary: {
+        ...prev.summary,
+        pendingPayment: prev.summary.pendingPayment - 1,
+        cancelledOrders: prev.summary.cancelledOrders + 1,
+      },
       orders: prev.orders.map((order) =>
         order.id === orderId ? { ...order, status: "cancelled" } : order
       ),
@@ -139,7 +149,11 @@ function Dashboard() {
         return <DashboardSummary orderData={orderData} />;
       case "tour-orders":
         return (
-          <TourOrders orderData={orderData} onOrderSelect={setSelectedOrder} />
+          <TourOrders
+            orderData={orderData}
+            onOrderSelect={setSelectedOrder}
+            onPayment={handlePayment}
+          />
         );
       case "returns":
         return <Returns />;
