@@ -355,7 +355,7 @@ export default function TourOrders({
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
                       <i className="icon-users text-14 me-2"></i>
-                      Travelers
+                      Participants
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
                       <i className="icon-calendar text-14 me-2"></i>

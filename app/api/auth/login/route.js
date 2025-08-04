@@ -1,12 +1,11 @@
+import { BASE_URL2 } from "@/constant/constants";
 import { NextResponse } from "next/server";
-
-const BACKEND_URL = "http://192.168.68.127:8004";
 
 export async function POST(request) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${BACKEND_URL}/user/api/v1/user/login/`, {
+    const response = await fetch(`${BASE_URL2}/user/api/v1/user/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

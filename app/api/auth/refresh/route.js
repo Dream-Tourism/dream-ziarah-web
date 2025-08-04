@@ -1,6 +1,5 @@
+import { BASE_URL2 } from "@/constant/constants";
 import { NextResponse } from "next/server";
-
-const BACKEND_URL = "http://192.168.68.127:8004";
 
 export async function POST(request) {
   try {
@@ -38,7 +37,7 @@ export async function POST(request) {
     };
 
     const response = await fetch(
-      `${BACKEND_URL}/user/api/v1/user/token/refresh/`,
+      `${BASE_URL2}/user/api/v1/user/token/refresh/`,
       {
         method: "POST",
         headers: headers,
