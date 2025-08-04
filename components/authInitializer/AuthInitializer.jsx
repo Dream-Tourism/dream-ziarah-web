@@ -17,7 +17,7 @@ export default function AuthInitializer() {
     // Set up automatic token refresh before access token expires (e.g., every 14 minutes for a 15-min token)
     const refreshIntervalId = setInterval(() => {
       dispatch(refreshTokenThunk());
-    }, 14 * 60 * 1000); // 14 minutes
+    }, 140 * 60 * 1000); // 14 minutes
 
     // Cleanup function: clear the interval when the component unmounts
     return () => clearInterval(refreshIntervalId);

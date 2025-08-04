@@ -50,6 +50,26 @@ const mockOrderData = {
       customerName: "Mike Johnson",
       customerEmail: "mike@example.com",
     },
+    {
+      id: "TO004",
+      status: "paid",
+      participants: 3,
+      datePurchased: "2024-01-12",
+      totalPrice: 1500,
+      tourName: "Safari Adventure",
+      customerName: "Sarah Wilson",
+      customerEmail: "sarah@example.com",
+    },
+    {
+      id: "TO005",
+      status: "pending",
+      participants: 2,
+      datePurchased: "2024-01-11",
+      totalPrice: 900,
+      tourName: "Mountain Hiking",
+      customerName: "David Brown",
+      customerEmail: "david@example.com",
+    },
   ],
 };
 
@@ -133,96 +153,134 @@ function Dashboard() {
   };
 
   return (
-    <div className="container-fluid" style={{ marginTop: "120px" }}>
+    <div className="container-fluid">
       <div className="row">
         {/* Sidebar */}
         <div
-          className="col-md-3 col-lg-2 text-white min-vh-100 p-0"
-          style={{ backgroundColor: "#3554d1" }}
+          className="col-md-3 col-lg-2 text-white min-vh-100 p-0 position-relative"
+          style={{ backgroundColor: "#3554d1", marginTop: "120px" }}
         >
-          <div className="p-3">
-            <div className="text-center mb-4">
-              <i className="fas fa-user-circle fa-3x mb-2"></i>
-              <h6 className="mb-0">Welcome,</h6>
-              <h5>{user?.first_name || "User"}</h5>
+          <div className="position-absolute top-0 end-0 opacity-10">
+            <i className="fas fa-compass fa-6x"></i>
+          </div>
+          <div className="p-3 position-relative">
+            <div className="text-center mb-4 pb-3 border-bottom border-white border-opacity-25">
+              <div
+                className="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                style={{ width: "60px", height: "60px" }}
+              >
+                <i className="fas fa-user-circle fa-2x"></i>
+              </div>
+              <h6 className="mb-0 opacity-75">Welcome back,</h6>
+              <h5 className="fw-bold">
+                {user?.first_name || "Travel Manager"}
+              </h5>
             </div>
+
             <nav className="nav flex-column">
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded ${
-                  activeSection === "dashboard" ? "bg-white text-primary" : ""
+                className={`nav-link border-0 bg-transparent text-start mb-2 rounded-3 p-3 position-relative ${
+                  activeSection === "dashboard" ? "bg-white bg-opacity-20" : ""
                 }`}
                 onClick={() => setActiveSection("dashboard")}
-                style={
-                  activeSection === "dashboard"
-                    ? { color: "#3554d1 !important" }
-                    : {}
-                }
+                style={{
+                  color: activeSection === "dashboard" ? "#0d2857" : "#ffffff",
+                  fontWeight: activeSection === "dashboard" ? "600" : "400",
+                }}
               >
-                <i className="fas fa-tachometer-alt me-2"></i>
+                <i className="fas fa-chart-pie me-3"></i>
                 Dashboard
+                {activeSection === "dashboard" && (
+                  <div className="position-absolute top-50 end-0 translate-middle-y me-2">
+                    <i className="fas fa-chevron-right"></i>
+                  </div>
+                )}
               </button>
+
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded ${
-                  activeSection === "tour-orders" ? "bg-white text-primary" : ""
-                }`}
+                className="nav-link text-white border-0  text-start mb-2 rounded-3 p-3 position-relative"
                 onClick={() => setActiveSection("tour-orders")}
-                style={
-                  activeSection === "tour-orders"
-                    ? { color: "#3554d1 !important" }
-                    : {}
-                }
+                style={{
+                  backgroundColor:
+                    activeSection === "tour-orders" ? "#0d2857" : "transparent",
+                  color:
+                    activeSection === "tour-orders" ? "#ffffff" : "#ffffff",
+                  fontWeight: activeSection === "tour-orders" ? "600" : "400",
+                }}
               >
-                <i className="fas fa-map me-2"></i>
+                <i className="fas fa-briefcase me-3"></i>
                 Tour Orders
+                {activeSection === "tour-orders" && (
+                  <div className="position-absolute top-50 end-0 translate-middle-y me-2">
+                    <i className="fas fa-chevron-right"></i>
+                  </div>
+                )}
               </button>
+
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded ${
-                  activeSection === "returns" ? "bg-white text-primary" : ""
-                }`}
+                className="nav-link text-white border-0  text-start mb-2 rounded-3 p-3 position-relative"
                 onClick={() => setActiveSection("returns")}
-                style={
-                  activeSection === "returns"
-                    ? { color: "#3554d1 !important" }
-                    : {}
-                }
+                style={{
+                  backgroundColor:
+                    activeSection === "returns" ? "#0d2857" : "transparent",
+                  color: activeSection === "returns" ? "#ffffff" : "#ffffff",
+                  fontWeight: activeSection === "returns" ? "600" : "400",
+                }}
               >
-                <i className="fas fa-undo me-2"></i>
+                <i className="fas fa-undo-alt me-3"></i>
                 Returns
+                {activeSection === "returns" && (
+                  <div className="position-absolute top-50 end-0 translate-middle-y me-2">
+                    <i className="fas fa-chevron-right"></i>
+                  </div>
+                )}
               </button>
+
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded ${
-                  activeSection === "support" ? "bg-white text-primary" : ""
+                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded-3 p-3 position-relative ${
+                  activeSection === "support" ? "bg-white bg-opacity-20" : ""
                 }`}
                 onClick={() => setActiveSection("support")}
-                style={
-                  activeSection === "support"
-                    ? { color: "#3554d1 !important" }
-                    : {}
-                }
+                style={{
+                  color: activeSection === "support" ? "#0d2857" : "#ffffff",
+                  fontWeight: activeSection === "support" ? "600" : "400",
+                }}
               >
-                <i className="fas fa-headset me-2"></i>
+                <i className="fas fa-life-ring me-3"></i>
                 Support Tickets
+                {activeSection === "support" && (
+                  <div className="position-absolute top-50 end-0 translate-middle-y me-2">
+                    <i className="fas fa-chevron-right"></i>
+                  </div>
+                )}
               </button>
+
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded ${
-                  activeSection === "account" ? "bg-white text-primary" : ""
+                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded-3 p-3 position-relative ${
+                  activeSection === "account" ? "bg-white bg-opacity-20" : ""
                 }`}
                 onClick={() => setActiveSection("account")}
-                style={
-                  activeSection === "account"
-                    ? { color: "#3554d1 !important" }
-                    : {}
-                }
+                style={{
+                  color: activeSection === "account" ? "#0d2857" : "#ffffff",
+                  fontWeight: activeSection === "account" ? "600" : "400",
+                }}
               >
-                <i className="fas fa-user-cog me-2"></i>
+                <i className="fas fa-user-cog me-3"></i>
                 Account Settings
+                {activeSection === "account" && (
+                  <div className="position-absolute top-50 end-0 translate-middle-y me-2">
+                    <i className="fas fa-chevron-right"></i>
+                  </div>
+                )}
               </button>
-              <hr className="my-3" />
+
+              <hr className="my-3 border-white border-opacity-25" />
+
               <button
-                className="nav-link text-white border-0 bg-transparent text-start rounded"
+                className="nav-link text-white border-0 bg-transparent text-start rounded-3 p-3 opacity-75 hover-opacity-100"
                 onClick={handleLogout}
               >
-                <i className="fas fa-sign-out-alt me-2"></i>
+                <i className="fas fa-sign-out-alt me-3"></i>
                 Logout
               </button>
             </nav>
