@@ -25,17 +25,20 @@ export default function OrderDetails({
       className="modal show d-block"
       style={{ backgroundColor: "rgba(53, 84, 209, 0.15)" }}
     >
-      <div className="modal-dialog modal-xl">
-        <div className="modal-content border-0 shadow-lg">
+      <div className="modal-dialog" style={{ maxWidth: "80%", width: "80%" }}>
+        <div
+          className="modal-content border-0 shadow-lg"
+          style={{ maxHeight: "80vh", overflow: "auto" }}
+        >
           <div
             className="modal-header text-white position-relative overflow-hidden"
             style={{ backgroundColor: "#3554d1" }}
           >
             <div className="position-absolute top-0 end-0 opacity-25">
-              <i className="fas fa-mountain fa-4x"></i>
+              <i className="icon-mountain" style={{ fontSize: "4rem" }}></i>
             </div>
             <h5 className="modal-title position-relative">
-              <i className="fas fa-passport me-2"></i>
+              <i className="icon-file-text text-14 me-2"></i>
               Tour Booking Details - {selectedOrder.id}
             </h5>
             <button
@@ -57,7 +60,7 @@ export default function OrderDetails({
                 >
                   <div className="card-body">
                     <h6 className="text-primary mb-3 d-flex align-items-center">
-                      <i className="fas fa-map-marked-alt me-2"></i>
+                      <i className="icon-map text-14 me-2"></i>
                       Tour Package Information
                     </h6>
 
@@ -68,7 +71,7 @@ export default function OrderDetails({
                             Booking Reference
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-hashtag text-primary me-2"></i>
+                            <i className="icon-hash text-primary me-2"></i>
                             <strong className="text-primary fs-5">
                               {selectedOrder.id}
                             </strong>
@@ -80,7 +83,7 @@ export default function OrderDetails({
                             Destination
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-globe-americas text-success me-2"></i>
+                            <i className="icon-globe text-success me-2"></i>
                             <strong>{selectedOrder.tourName}</strong>
                           </div>
                         </div>
@@ -90,7 +93,7 @@ export default function OrderDetails({
                             Customer Name
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-user text-info me-2"></i>
+                            <i className="icon-user text-info me-2"></i>
                             <strong>{selectedOrder.customerName}</strong>
                           </div>
                         </div>
@@ -100,7 +103,7 @@ export default function OrderDetails({
                             Contact Email
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-envelope text-warning me-2"></i>
+                            <i className="icon-mail text-warning me-2"></i>
                             <small>{selectedOrder.customerEmail}</small>
                           </div>
                         </div>
@@ -111,28 +114,38 @@ export default function OrderDetails({
                           <label className="text-muted small">
                             Booking Status
                           </label>
-                          <div>
+                          <div className="d-flex align-items-center">
                             <span
-                              className={`badge fs-6 px-3 py-2 ${
+                              className={`badge fs-6 px-3 py-2 text-dark me-2 ${
                                 selectedOrder.status === "paid"
                                   ? "bg-success"
                                   : selectedOrder.status === "pending"
-                                  ? "bg-warning text-dark"
+                                  ? "bg-warning"
                                   : "bg-danger"
                               }`}
                             >
                               <i
                                 className={`${
                                   selectedOrder.status === "paid"
-                                    ? "fas fa-check-circle"
+                                    ? "icon-check-circle"
                                     : selectedOrder.status === "pending"
-                                    ? "fas fa-clock"
-                                    : "fas fa-times-circle"
-                                } me-2`}
+                                    ? "icon-clock"
+                                    : "icon-x-circle"
+                                } text-14 me-2`}
                               ></i>
                               {selectedOrder.status.charAt(0).toUpperCase() +
                                 selectedOrder.status.slice(1)}
                             </span>
+                            {selectedOrder.status === "pending" && (
+                              <button
+                                type="button"
+                                className="btn btn-success btn-sm"
+                                onClick={() => onPayment(selectedOrder.id)}
+                              >
+                                <i className="icon-credit-card text-14 me-2"></i>
+                                Process Payment
+                              </button>
+                            )}
                           </div>
                         </div>
 
@@ -141,7 +154,7 @@ export default function OrderDetails({
                             Number of Travelers
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-users text-info me-2"></i>
+                            <i className="icon-users text-info me-2"></i>
                             <strong className="fs-5">
                               {selectedOrder.participants} People
                             </strong>
@@ -153,7 +166,7 @@ export default function OrderDetails({
                             Booking Date
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-calendar-check text-warning me-2"></i>
+                            <i className="icon-calendar-check text-warning me-2"></i>
                             <strong>
                               {new Date(
                                 selectedOrder.datePurchased
@@ -172,7 +185,7 @@ export default function OrderDetails({
                             Total Investment
                           </label>
                           <div className="d-flex align-items-center">
-                            <i className="fas fa-dollar-sign text-success me-2"></i>
+                            <i className="icon-dollar-sign text-success me-2"></i>
                             <strong className="text-success fs-4">
                               {selectedOrder.totalPrice.toLocaleString()} USD
                             </strong>
@@ -186,7 +199,7 @@ export default function OrderDetails({
 
               {/* Tour Image */}
               <div className="col-md-4">
-                <div className="card border-0 shadow-sm h-200">
+                <div className="card border-0 shadow-sm h-100">
                   <div className="position-relative">
                     <img
                       src={
@@ -195,18 +208,18 @@ export default function OrderDetails({
                       }
                       alt={selectedOrder.tourName}
                       className="card-img-top"
-                      style={{ height: "200px", objectFit: "cover" }}
+                      style={{ objectFit: "cover" }}
                     />
                     <div className="position-absolute top-0 start-0 m-2">
                       <span className="badge bg-primary bg-opacity-90">
-                        <i className="fas fa-camera me-1"></i>
+                        <i className="icon-camera text-14 me-1"></i>
                         Tour Preview
                       </span>
                     </div>
                   </div>
                   <div className="card-body">
                     <h6 className="text-primary mb-2">
-                      <i className="fas fa-map-pin me-2"></i>
+                      <i className="icon-map-pin text-14 me-2"></i>
                       {selectedOrder.tourName}
                     </h6>
                     <p className="text-muted small mb-3">
@@ -221,11 +234,11 @@ export default function OrderDetails({
                       <div>
                         <small className="text-muted">Rating</small>
                         <div className="text-warning">
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
-                          <i className="fas fa-star"></i>
+                          <i className="icon-star"></i>
+                          <i className="icon-star"></i>
+                          <i className="icon-star"></i>
+                          <i className="icon-star"></i>
+                          <i className="icon-star"></i>
                           <small className="text-muted ms-1">4.9</small>
                         </div>
                       </div>
@@ -247,33 +260,45 @@ export default function OrderDetails({
                 >
                   <div className="card-body">
                     <h6 className="text-primary mb-3 d-flex align-items-center">
-                      <i className="fas fa-info-circle me-2"></i>
+                      <i className="icon-info text-14 me-2"></i>
                       Tour Package Highlights
                     </h6>
                     <div className="row">
                       <div className="col-md-3 text-center">
-                        <i className="fas fa-plane fa-2x text-primary mb-2"></i>
+                        <i
+                          className="icon-plane text-primary mb-2"
+                          style={{ fontSize: "2rem" }}
+                        ></i>
                         <div>
                           <strong>Flight Included</strong>
                         </div>
                         <small className="text-muted">Round trip airfare</small>
                       </div>
                       <div className="col-md-3 text-center">
-                        <i className="fas fa-hotel fa-2x text-success mb-2"></i>
+                        <i
+                          className="icon-home text-success mb-2"
+                          style={{ fontSize: "2rem" }}
+                        ></i>
                         <div>
                           <strong>Accommodation</strong>
                         </div>
                         <small className="text-muted">4-star hotel stay</small>
                       </div>
                       <div className="col-md-3 text-center">
-                        <i className="fas fa-utensils fa-2x text-warning mb-2"></i>
+                        <i
+                          className="icon-coffee text-warning mb-2"
+                          style={{ fontSize: "2rem" }}
+                        ></i>
                         <div>
                           <strong>Meals Included</strong>
                         </div>
                         <small className="text-muted">Breakfast & dinner</small>
                       </div>
                       <div className="col-md-3 text-center">
-                        <i className="fas fa-user-tie fa-2x text-info mb-2"></i>
+                        <i
+                          className="icon-user-check text-info mb-2"
+                          style={{ fontSize: "2rem" }}
+                        ></i>
                         <div>
                           <strong>Tour Guide</strong>
                         </div>
@@ -290,37 +315,27 @@ export default function OrderDetails({
             <div className="d-flex justify-content-between w-100 align-items-center">
               <div>
                 <small className="text-muted">
-                  <i className="fas fa-clock me-1"></i>
+                  <i className="icon-clock text-14 me-1"></i>
                   Last updated: {new Date().toLocaleString()}
                 </small>
               </div>
               <div>
                 {selectedOrder.status === "pending" && (
-                  <>
-                    <button
-                      type="button"
-                      className="btn btn-success me-2"
-                      onClick={() => onPayment(selectedOrder.id)}
-                    >
-                      <i className="fas fa-credit-card me-2"></i>
-                      Process Payment
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger me-2"
-                      onClick={() => onCancel(selectedOrder.id)}
-                    >
-                      <i className="fas fa-ban me-2"></i>
-                      Cancel Booking
-                    </button>
-                  </>
+                  <button
+                    type="button"
+                    className="btn btn-danger me-2"
+                    onClick={() => onCancel(selectedOrder.id)}
+                  >
+                    <i className="icon-x text-14 me-2"></i>
+                    Cancel Booking
+                  </button>
                 )}
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={onClose}
                 >
-                  <i className="fas fa-times me-2"></i>
+                  <i className="icon-x text-14 me-2"></i>
                   Close
                 </button>
               </div>

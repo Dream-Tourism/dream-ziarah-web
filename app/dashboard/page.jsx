@@ -79,6 +79,7 @@ function Dashboard() {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderData, setOrderData] = useState(mockOrderData);
+  console.log("travellerID", user?.traveller_id);
 
   useEffect(() => {
     if (!isAuthenticated && !loading) {
@@ -149,11 +150,7 @@ function Dashboard() {
         return <DashboardSummary orderData={orderData} />;
       case "tour-orders":
         return (
-          <TourOrders
-            orderData={orderData}
-            onOrderSelect={setSelectedOrder}
-            onPayment={handlePayment}
-          />
+          <TourOrders orderData={orderData} onOrderSelect={setSelectedOrder} />
         );
       case "returns":
         return <Returns />;
@@ -175,7 +172,7 @@ function Dashboard() {
           style={{ backgroundColor: "#3554d1", marginTop: "120px" }}
         >
           <div className="position-absolute top-0 end-0 opacity-10">
-            <i className="fas fa-compass fa-6x"></i>
+            <i className="icon-compass" style={{ fontSize: "6rem" }}></i>
           </div>
           <div className="p-3 position-relative">
             <div className="text-center mb-4 pb-3 border-bottom border-white border-opacity-25">
@@ -183,7 +180,7 @@ function Dashboard() {
                 className="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
                 style={{ width: "60px", height: "60px" }}
               >
-                <i className="fas fa-user-circle fa-2x"></i>
+                <i className="icon-user" style={{ fontSize: "2rem" }}></i>
               </div>
               <h6 className="mb-0 opacity-75">Welcome back,</h6>
               <h5 className="fw-bold">
@@ -202,11 +199,11 @@ function Dashboard() {
                   fontWeight: activeSection === "dashboard" ? "600" : "400",
                 }}
               >
-                <i className="fas fa-chart-pie me-3"></i>
+                <i className="icon-pie-chart text-14 me-3"></i>
                 Dashboard
                 {activeSection === "dashboard" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
-                    <i className="fas fa-chevron-right"></i>
+                    <i className="icon-chevron-right"></i>
                   </div>
                 )}
               </button>
@@ -222,11 +219,11 @@ function Dashboard() {
                   fontWeight: activeSection === "tour-orders" ? "600" : "400",
                 }}
               >
-                <i className="fas fa-briefcase me-3"></i>
+                <i className="icon-route text-14 me-3"></i>
                 Tour Orders
                 {activeSection === "tour-orders" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
-                    <i className="fas fa-chevron-right"></i>
+                    <i className="icon-chevron-right"></i>
                   </div>
                 )}
               </button>
@@ -241,11 +238,11 @@ function Dashboard() {
                   fontWeight: activeSection === "returns" ? "600" : "400",
                 }}
               >
-                <i className="fas fa-undo-alt me-3"></i>
+                <i className="icon-rotate-ccw text-14 me-3"></i>
                 Returns
                 {activeSection === "returns" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
-                    <i className="fas fa-chevron-right"></i>
+                    <i className="icon-chevron-right"></i>
                   </div>
                 )}
               </button>
@@ -260,11 +257,11 @@ function Dashboard() {
                   fontWeight: activeSection === "support" ? "600" : "400",
                 }}
               >
-                <i className="fas fa-life-ring me-3"></i>
+                <i className="icon-life-buoy text-14 me-3"></i>
                 Support Tickets
                 {activeSection === "support" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
-                    <i className="fas fa-chevron-right"></i>
+                    <i className="icon-chevron-right"></i>
                   </div>
                 )}
               </button>
@@ -279,11 +276,11 @@ function Dashboard() {
                   fontWeight: activeSection === "account" ? "600" : "400",
                 }}
               >
-                <i className="fas fa-user-cog me-3"></i>
+                <i className="icon-settings text-14 me-3"></i>
                 Account Settings
                 {activeSection === "account" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
-                    <i className="fas fa-chevron-right"></i>
+                    <i className="icon-chevron-right"></i>
                   </div>
                 )}
               </button>
@@ -294,7 +291,7 @@ function Dashboard() {
                 className="nav-link text-white border-0 bg-transparent text-start rounded-3 p-3 opacity-75 hover-opacity-100"
                 onClick={handleLogout}
               >
-                <i className="fas fa-sign-out-alt me-3"></i>
+                <i className="icon-log-out text-14 me-3"></i>
                 Logout
               </button>
             </nav>

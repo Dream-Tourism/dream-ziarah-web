@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 
-export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
+export default function TourOrders({ orderData, onOrderSelect }) {
   const [filters, setFilters] = useState({
     status: "all",
     dateFrom: "",
@@ -57,13 +57,13 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
   const getStatusIcon = (status) => {
     switch (status) {
       case "paid":
-        return "fas fa-check-circle";
+        return "icon-check-circle text-14 me-2";
       case "pending":
-        return "fas fa-clock";
+        return "icon-clock text-14 me-2";
       case "cancelled":
-        return "fas fa-times-circle";
+        return "icon-x-circle text-14 me-2";
       default:
-        return "fas fa-question-circle";
+        return "icon-help-circle text-14 me-2";
     }
   };
 
@@ -85,15 +85,10 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
     return orderData.orders.filter((order) => order.status === status).length;
   };
 
-  // const handlePaymentClick = (e, orderId) => {
-  //   e.stopPropagation(); // Prevent row click when clicking payment button
-  //   onPayment(orderId);
-  // };
-
   return (
     <div style={{ marginTop: "120px" }}>
       <div className="d-flex align-items-center mb-4">
-        <i className="fas fa-route fa-2x text-primary me-3"></i>
+        <i className="icon-route text-14 me-3" style={{ fontSize: "2rem" }}></i>
         <div>
           <h2 className="mb-0 text-primary">Tour Bookings</h2>
           <p className="text-muted mb-0">Manage all your tour reservations</p>
@@ -112,7 +107,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
           <div className="row mb-3">
             <div className="col-12">
               <label className="form-label text-primary fw-semibold mb-3">
-                <i className="fas fa-filter me-2"></i>
+                <i className="icon-filter text-14 me-2"></i>
                 Filter by Status
               </label>
               <div className="btn-group w-100" role="group">
@@ -131,7 +126,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                   }}
                   onClick={() => setFilters({ ...filters, status: "all" })}
                 >
-                  <i className="fas fa-list me-2"></i>
+                  <i className="icon-list text-14 me-2"></i>
                   All Tours
                   <span className="badge bg-light text-dark ms-2">
                     {getStatusCount("all")}
@@ -146,7 +141,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                   } position-relative`}
                   onClick={() => setFilters({ ...filters, status: "paid" })}
                 >
-                  <i className="fas fa-check-circle me-2"></i>
+                  <i className="icon-check-circle text-14 me-2"></i>
                   Confirmed
                   <span className="badge bg-light text-dark ms-2">
                     {getStatusCount("paid")}
@@ -161,7 +156,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                   } position-relative`}
                   onClick={() => setFilters({ ...filters, status: "pending" })}
                 >
-                  <i className="fas fa-clock me-2"></i>
+                  <i className="icon-clock text-14 me-2"></i>
                   Pending
                   <span className="badge bg-light text-dark ms-2">
                     {getStatusCount("pending")}
@@ -178,7 +173,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                     setFilters({ ...filters, status: "cancelled" })
                   }
                 >
-                  <i className="fas fa-times-circle me-2"></i>
+                  <i className="icon-x-circle text-14 me-2"></i>
                   Cancelled
                   <span className="badge bg-light text-dark ms-2">
                     {getStatusCount("cancelled")}
@@ -192,7 +187,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
           <div className="row g-3">
             <div className="col-md-4">
               <label className="form-label text-primary fw-semibold">
-                <i className="fas fa-calendar-alt me-2"></i>
+                <i className="icon-calendar text-14 me-2"></i>
                 From Date
               </label>
               <input
@@ -207,7 +202,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
             </div>
             <div className="col-md-4">
               <label className="form-label text-primary fw-semibold">
-                <i className="fas fa-calendar-alt me-2"></i>
+                <i className="icon-calendar text-14 me-2"></i>
                 To Date
               </label>
               <input
@@ -222,7 +217,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
             </div>
             <div className="col-md-4">
               <label className="form-label text-primary fw-semibold">
-                <i className="fas fa-search me-2"></i>
+                <i className="icon-search text-14 me-2"></i>
                 Search Tours
               </label>
               <input
@@ -251,11 +246,11 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                   })
                 }
               >
-                <i className="fas fa-undo me-2"></i>
+                <i className="icon-refresh-cw text-14 me-2"></i>
                 Clear Filters
               </button>
               <span className="text-muted">
-                <i className="fas fa-info-circle me-1"></i>
+                <i className="icon-info text-14 me-1"></i>
                 Showing {filteredOrders.length} of {orderData.orders.length}{" "}
                 bookings
               </span>
@@ -271,17 +266,20 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
           style={{ backgroundColor: "#3554d1" }}
         >
           <div className="position-absolute top-0 end-0 opacity-25">
-            <i className="fas fa-compass fa-4x"></i>
+            <i className="icon-compass" style={{ fontSize: "4rem" }}></i>
           </div>
           <h5 className="mb-0 position-relative">
-            <i className="fas fa-list-alt me-2"></i>
+            <i className="icon-list text-14 me-2"></i>
             Tour Reservations ({filteredOrders.length})
           </h5>
         </div>
         <div className="card-body p-0">
           {filteredOrders.length === 0 ? (
             <div className="text-center py-5">
-              <i className="fas fa-search fa-4x text-muted mb-3"></i>
+              <i
+                className="icon-search text-muted mb-3"
+                style={{ fontSize: "4rem" }}
+              ></i>
               <h4 className="text-muted">No tours found</h4>
               <p className="text-muted">
                 Try adjusting your filters or search criteria
@@ -293,27 +291,27 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                 <thead style={{ backgroundColor: "#f8f9fa" }}>
                   <tr>
                     <th className="text-primary fw-semibold border-0 py-3">
-                      <i className="fas fa-hashtag me-2"></i>
+                      <i className="icon-hash text-14 me-2"></i>
                       Booking ID
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
-                      <i className="fas fa-info-circle me-2"></i>
+                      <i className="icon-info text-14 me-2"></i>
                       Status
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
-                      <i className="fas fa-map-marker-alt me-2"></i>
+                      <i className="icon-map-pin text-14 me-2"></i>
                       Tour Destination
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
-                      <i className="fas fa-users me-2"></i>
+                      <i className="icon-users text-14 me-2"></i>
                       Travelers
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
-                      <i className="fas fa-calendar me-2"></i>
+                      <i className="icon-calendar text-14 me-2"></i>
                       Booking Date
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
-                      <i className="fas fa-dollar-sign me-2"></i>
+                      <i className="icon-dollar-sign text-14 me-2"></i>
                       Total Cost
                     </th>
                   </tr>
@@ -338,7 +336,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                       <td className="py-3">
                         <div className="d-flex align-items-center">
                           <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                            <i className="fas fa-ticket-alt text-primary"></i>
+                            <i className="icon-ticket text-primary"></i>
                           </div>
                           <div>
                             <strong className="text-primary">{order.id}</strong>
@@ -354,36 +352,24 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                           <span
                             className={`badge bg-${getStatusColor(
                               order.status
-                            )} d-flex align-items-center justify-content-center mb-2`}
+                            )} d-flex align-items-center justify-content-center mb-2 text-dark`}
                             style={{ width: "120px", padding: "8px" }}
                           >
-                            <i
-                              className={`${getStatusIcon(order.status)} me-2`}
-                            ></i>
+                            <i className={getStatusIcon(order.status)}></i>
                             {order.status.charAt(0).toUpperCase() +
                               order.status.slice(1)}
                           </span>
                           {order.status === "pending" && (
-                            <div className="d-flex flex-column align-items-start">
-                              <small className="text-warning fw-semibold mb-1">
-                                <i className="fas fa-hand-pointer me-1"></i>
-                                Click to pay
-                              </small>
-                              {/* <button
-                                className="btn btn-sm btn-success"
-                                onClick={(e) => handlePaymentClick(e, order.id)}
-                                style={{ fontSize: "11px", padding: "4px 8px" }}
-                              >
-                                <i className="fas fa-credit-card me-1"></i>
-                                Process Payment
-                              </button> */}
-                            </div>
+                            <small className="text-dark fw-semibold">
+                              <i className="icon-hand text-14 me-1"></i>
+                              Click to pay
+                            </small>
                           )}
                         </div>
                       </td>
                       <td className="py-3">
                         <div className="d-flex align-items-center">
-                          <i className="fas fa-globe-americas text-primary me-2"></i>
+                          <i className="icon-globe text-primary me-2"></i>
                           <div>
                             <strong>{order.tourName}</strong>
                             <br />
@@ -396,7 +382,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                       <td className="py-3">
                         <div className="d-flex align-items-center">
                           <div className="bg-info bg-opacity-10 rounded-circle p-2 me-2">
-                            <i className="fas fa-user-friends text-info"></i>
+                            <i className="icon-users text-info"></i>
                           </div>
                           <span className="fw-semibold">
                             {order.participants}
@@ -405,7 +391,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                       </td>
                       <td className="py-3">
                         <div className="d-flex align-items-center">
-                          <i className="fas fa-calendar-check text-success me-2"></i>
+                          <i className="icon-calendar-check text-success me-2"></i>
                           <div>
                             <strong>
                               {new Date(
@@ -424,7 +410,7 @@ export default function TourOrders({ orderData, onOrderSelect, onPayment }) {
                       </td>
                       <td className="py-3">
                         <div className="text-success fw-bold fs-5">
-                          <i className="fas fa-dollar-sign me-1"></i>
+                          <i className="icon-dollar-sign text-14 me-1"></i>
                           {order.totalPrice.toLocaleString()}
                         </div>
                         <small className="text-muted">USD</small>
