@@ -11,13 +11,13 @@ export default function OrderDetails({
   // Function to get tour image based on tour name
   const getTourImage = (tourName) => {
     const tourImages = {
-      "Bali Adventure Package": "/placeholder.png?height=300&width=400",
-      "Tokyo City Tour": "/placeholder.png?height=300&width=400",
+      "Bali Adventure Package": "/placeholder.png?height=200&width=400",
+      "Tokyo City Tour": "/placeholder.png?height=200&width=400",
       "European Explorer": "/placeholder.png?height=300&width=400",
       "Safari Adventure": "/placeholder.png?height=300&width=400",
       "Mountain Hiking": "/placeholder.png?height=300&width=400",
     };
-    return tourImages[tourName] || "/placeholder.png?height=300&width=400";
+    return tourImages[tourName] || "/placeholder.png?height=100&width=200";
   };
 
   return (

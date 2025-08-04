@@ -11,7 +11,7 @@ const MainMenu = ({ style = "" }) => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { user, loading, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const menuItems = useMenus(); // uses useSelector internally
 
   const handleLogout = async () => {
@@ -68,24 +68,49 @@ const MainMenu = ({ style = "" }) => {
             )}
           </li>
         ))}
-        <li className="mr-10 fw-500">
+        <li className="me-3 fw-500 dropdown hover-dropdown">
           {isAuthenticated ? (
-            <button onClick={handleLogout} className="btn btn-sm btn-dark">
-              Logout ({user?.last_name})
-            </button>
+            <>
+              <button
+                className="btn btn-sm btn-dark dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="icon-user text-14"></i>
+                {user?.first_name}
+              </button>
+              <ul className="dropdown-menu mt-2 shadow-sm border-0 rounded-3">
+                <li>
+                  <button
+                    onClick={() => router.push("/dashboard")}
+                    className="dropdown-item d-flex align-items-center gap-2"
+                  >
+                    <i className="icon-route text-14"></i>
+                    <span>Dashboard</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="dropdown-item d-flex align-items-center gap-2"
+                  >
+                    <i className="icon-route text-14"></i>
+                    <span>Logout</span>
+                  </button>
+                </li>
+              </ul>
+            </>
           ) : (
-            <Link href="/login" className="btn btn-sm btn-primary">
+            <Link
+              href="/login"
+              className="btn btn-sm btn-primary d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm"
+            >
+              <i className="icon-login text-14"></i>
               Login
             </Link>
           )}
         </li>
-        {isAuthenticated && (
-          <li>
-            <Link href="/dashboard" className="btn btn-sm btn-primary">
-              Show Orders
-            </Link>
-          </li>
-        )}
       </ul>
     </nav>
   );

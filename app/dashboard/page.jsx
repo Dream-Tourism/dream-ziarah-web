@@ -10,128 +10,81 @@ import AccountSettings from "@/components/dashboard/AccountSettings";
 import { logoutUserThunk, verifySessionThunk } from "@/features/auth/authSlice";
 import { ProtectedRoute } from "@/components/protected-route";
 import Returns from "@/components/dashboard/Returns";
-
-// Mock data - replace with your API calls
-const mockOrderData = {
-  summary: {
-    totalOrders: 156,
-    cancelledOrders: 12,
-    pendingPayment: 23,
-    paidOrders: 121,
-  },
-  orders: [
-    {
-      id: "TO001",
-      status: "pending",
-      participants: 4,
-      datePurchased: "2024-01-15",
-      totalPrice: 1200,
-      tourName: "Bali Adventure Package",
-      customerName: "John Doe",
-      customerEmail: "john@example.com",
-    },
-    {
-      id: "TO002",
-      status: "paid",
-      participants: 2,
-      datePurchased: "2024-01-14",
-      totalPrice: 800,
-      tourName: "Tokyo City Tour",
-      customerName: "Jane Smith",
-      customerEmail: "jane@example.com",
-    },
-    {
-      id: "TO003",
-      status: "cancelled",
-      participants: 6,
-      datePurchased: "2024-01-13",
-      totalPrice: 1800,
-      tourName: "European Explorer",
-      customerName: "Mike Johnson",
-      customerEmail: "mike@example.com",
-    },
-    {
-      id: "TO004",
-      status: "paid",
-      participants: 3,
-      datePurchased: "2024-01-12",
-      totalPrice: 1500,
-      tourName: "Safari Adventure",
-      customerName: "Sarah Wilson",
-      customerEmail: "sarah@example.com",
-    },
-    {
-      id: "TO005",
-      status: "pending",
-      participants: 2,
-      datePurchased: "2024-01-11",
-      totalPrice: 900,
-      tourName: "Mountain Hiking",
-      customerName: "David Brown",
-      customerEmail: "david@example.com",
-    },
-  ],
-};
+import { useTourBookings } from "@/hooks/useTourBookings";
 
 function Dashboard() {
   const dispatch = useDispatch();
-  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const {
+    user,
+    isAuthenticated,
+    loading: authLoading,
+  } = useSelector((state) => state.auth);
   const [activeSection, setActiveSection] = useState("dashboard");
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [orderData, setOrderData] = useState(mockOrderData);
-  console.log("travellerID", user?.traveller_id);
+
+  // Use the custom hook for tour bookings
+  const {
+    bookingData,
+    loading: bookingsLoading,
+    error: bookingsError,
+    updateBookingStatus,
+    refreshBookings,
+  } = useTourBookings(user?.traveller_id);
 
   useEffect(() => {
-    if (!isAuthenticated && !loading) {
+    if (!isAuthenticated && !authLoading) {
       dispatch(verifySessionThunk());
     }
-  }, [dispatch, isAuthenticated, loading]);
+  }, [dispatch, isAuthenticated, authLoading]);
 
   const handleLogout = () => {
     dispatch(logoutUserThunk());
   };
 
-  const handlePayment = (orderId) => {
-    console.log("Processing payment for order:", orderId);
-    setOrderData((prev) => ({
-      ...prev,
-      summary: {
-        ...prev.summary,
-        pendingPayment: prev.summary.pendingPayment - 1,
-        paidOrders: prev.summary.paidOrders + 1,
-      },
-      orders: prev.orders.map((order) =>
-        order.id === orderId ? { ...order, status: "paid" } : order
-      ),
-    }));
-    setSelectedOrder(null);
+  const handlePayment = async (orderId) => {
+    try {
+      console.log("Processing payment for order:", orderId);
+
+      // Here you would typically call a payment API
+      // For now, we'll just update the local state
+      updateBookingStatus(orderId, "paid");
+
+      // Close the modal
+      setSelectedOrder(null);
+
+      // Show success message (you can add toast notification here)
+      console.log("Payment processed successfully!");
+    } catch (error) {
+      console.error("Payment processing failed:", error);
+      // Show error message
+    }
   };
 
-  const handleCancelOrder = (orderId) => {
-    console.log("Cancelling order:", orderId);
-    setOrderData((prev) => ({
-      ...prev,
-      summary: {
-        ...prev.summary,
-        pendingPayment: prev.summary.pendingPayment - 1,
-        cancelledOrders: prev.summary.cancelledOrders + 1,
-      },
-      orders: prev.orders.map((order) =>
-        order.id === orderId ? { ...order, status: "cancelled" } : order
-      ),
-    }));
-    setSelectedOrder(null);
+  const handleCancelOrder = async (orderId) => {
+    try {
+      console.log("Cancelling order:", orderId);
+
+      // Here you would typically call a cancellation API
+      updateBookingStatus(orderId, "cancelled");
+
+      // Close the modal
+      setSelectedOrder(null);
+
+      // Show success message
+      console.log("Order cancelled successfully!");
+    } catch (error) {
+      console.error("Order cancellation failed:", error);
+      // Show error message
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
+  // Show loading spinner while authenticating or loading bookings
+  // if (
+  //   authLoading ||
+  //   (isAuthenticated && bookingsLoading && activeSection === "dashboard")
+  // ) {
+  //   return <LoadingSpinner />;
+  // }
 
   if (!isAuthenticated) {
     return (
@@ -144,13 +97,40 @@ function Dashboard() {
     );
   }
 
+  // Show error state if bookings failed to load
+  if (bookingsError && activeSection === "dashboard") {
+    return (
+      <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
+        <div className="text-center">
+          <i
+            className="icon-alert-circle text-danger mb-3"
+            style={{ fontSize: "4rem" }}
+          ></i>
+          <h3 className="text-danger">Failed to Load Bookings</h3>
+          <p className="text-muted">{bookingsError}</p>
+          <button className="btn btn-primary" onClick={refreshBookings}>
+            <i className="icon-refresh-cw text-14 me-2"></i>
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard":
-        return <DashboardSummary orderData={orderData} />;
+        return (
+          <DashboardSummary orderData={bookingData} loading={bookingsLoading} />
+        );
       case "tour-orders":
         return (
-          <TourOrders orderData={orderData} onOrderSelect={setSelectedOrder} />
+          <TourOrders
+            orderData={bookingData}
+            onOrderSelect={setSelectedOrder}
+            loading={bookingsLoading}
+            onRefresh={refreshBookings}
+          />
         );
       case "returns":
         return <Returns />;
@@ -159,7 +139,9 @@ function Dashboard() {
       case "account":
         return <AccountSettings user={user} />;
       default:
-        return <DashboardSummary orderData={orderData} />;
+        return (
+          <DashboardSummary orderData={bookingData} loading={bookingsLoading} />
+        );
     }
   };
 
@@ -171,9 +153,9 @@ function Dashboard() {
           className="col-md-3 col-lg-2 text-white min-vh-100 p-0 position-relative"
           style={{ backgroundColor: "#3554d1", marginTop: "120px" }}
         >
-          <div className="position-absolute top-0 end-0 opacity-10">
+          {/* <div className="position-absolute top-0 end-0 opacity-10">
             <i className="icon-compass" style={{ fontSize: "6rem" }}></i>
-          </div>
+          </div> */}
           <div className="p-3 position-relative">
             <div className="text-center mb-4 pb-3 border-bottom border-white border-opacity-25">
               <div
@@ -221,6 +203,14 @@ function Dashboard() {
               >
                 <i className="icon-route text-14 me-3"></i>
                 Tour Orders
+                {bookingsLoading && activeSection === "tour-orders" && (
+                  <div
+                    className="spinner-border spinner-border-sm ms-2"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
                 {activeSection === "tour-orders" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
                     <i className="icon-chevron-right"></i>

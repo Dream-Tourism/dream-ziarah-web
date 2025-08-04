@@ -1,6 +1,44 @@
 "use client";
 
-export default function DashboardSummary({ orderData }) {
+export default function DashboardSummary({ orderData, loading }) {
+  if (loading) {
+    return (
+      <div style={{ marginTop: "120px" }}>
+        <div className="d-flex align-items-center mb-4">
+          <i
+            className="icon-globe text-primary me-3"
+            style={{ fontSize: "2rem" }}
+          ></i>
+          <div>
+            <h2 className="mb-0 text-primary">Dashboard Overview</h2>
+            <p className="text-muted mb-0">
+              Loading your tour management data...
+            </p>
+          </div>
+        </div>
+
+        <div className="row g-4">
+          {[1, 2, 3, 4].map((index) => (
+            <div key={index} className="col-md-3">
+              <div className="card border-0 shadow-lg">
+                <div className="card-body">
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "120px" }}
+                  >
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ marginTop: "120px" }}>
       <div className="d-flex align-items-center mb-4">
@@ -170,8 +208,13 @@ export default function DashboardSummary({ orderData }) {
                       style={{ fontSize: "2rem" }}
                     ></i>
                     <div>
-                      <h4 className="mb-0 text-primary">1,247</h4>
-                      <small className="text-muted">Happy Travelers</small>
+                      <h4 className="mb-0 text-primary">
+                        {orderData.orders.reduce(
+                          (sum, order) => sum + order.participants,
+                          0
+                        )}
+                      </h4>
+                      <small className="text-muted">Total Travelers</small>
                     </div>
                   </div>
                 </div>
@@ -182,32 +225,59 @@ export default function DashboardSummary({ orderData }) {
                       style={{ fontSize: "2rem" }}
                     ></i>
                     <div>
-                      <h4 className="mb-0 text-success">45</h4>
+                      <h4 className="mb-0 text-success">
+                        {
+                          new Set(
+                            orderData.orders.map((order) => order.tourName)
+                          ).size
+                        }
+                      </h4>
+                      <small className="text-muted">Unique Tours</small>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="d-flex align-items-center justify-content-center">
+                    <i
+                      className="icon-calendar text-warning me-3"
+                      style={{ fontSize: "2rem" }}
+                    ></i>
+                    <div>
+                      <h4 className="mb-0 text-warning">
+                        {orderData.orders.length > 0
+                          ? new Date(
+                              Math.max(
+                                ...orderData.orders.map(
+                                  (order) => new Date(order.selectedDate)
+                                )
+                              )
+                            ).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })
+                          : "N/A"}
+                      </h4>
+                      <small className="text-muted">Next Adventure</small>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="d-flex align-items-center justify-content-center">
+                    <i
+                      className="icon-globe text-info me-3"
+                      style={{ fontSize: "2rem" }}
+                    ></i>
+                    <div>
+                      <h4 className="mb-0 text-info">
+                        {orderData.orders.length > 0
+                          ? new Set(
+                              orderData.orders.map(
+                                (order) => order.tourName.split(" ")[0]
+                              )
+                            ).size
+                          : 0}
+                      </h4>
                       <small className="text-muted">Destinations</small>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="d-flex align-items-center justify-content-center">
-                    <i
-                      className="icon-star text-warning me-3"
-                      style={{ fontSize: "2rem" }}
-                    ></i>
-                    <div>
-                      <h4 className="mb-0 text-warning">4.8</h4>
-                      <small className="text-muted">Average Rating</small>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="d-flex align-items-center justify-content-center">
-                    <i
-                      className="icon-calendar-check text-info me-3"
-                      style={{ fontSize: "2rem" }}
-                    ></i>
-                    <div>
-                      <h4 className="mb-0 text-info">98%</h4>
-                      <small className="text-muted">Success Rate</small>
                     </div>
                   </div>
                 </div>

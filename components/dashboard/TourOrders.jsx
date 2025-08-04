@@ -2,7 +2,12 @@
 
 import { useState, useMemo } from "react";
 
-export default function TourOrders({ orderData, onOrderSelect }) {
+export default function TourOrders({
+  orderData,
+  onOrderSelect,
+  loading,
+  onRefresh,
+}) {
   const [filters, setFilters] = useState({
     status: "all",
     dateFrom: "",
@@ -87,12 +92,39 @@ export default function TourOrders({ orderData, onOrderSelect }) {
 
   return (
     <div style={{ marginTop: "120px" }}>
-      <div className="d-flex align-items-center mb-4">
-        <i className="icon-route text-14 me-3" style={{ fontSize: "2rem" }}></i>
-        <div>
-          <h2 className="mb-0 text-primary">Tour Bookings</h2>
-          <p className="text-muted mb-0">Manage all your tour reservations</p>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <div className="d-flex align-items-center">
+          <i
+            className="icon-route text-14 me-3"
+            style={{ fontSize: "2rem" }}
+          ></i>
+          <div>
+            <h2 className="mb-0 text-primary">Tour Bookings</h2>
+            <p className="text-muted mb-0">Manage all your tour reservations</p>
+          </div>
         </div>
+        <button
+          className="btn btn-outline-primary"
+          onClick={onRefresh}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <div
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+              >
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              Refreshing...
+            </>
+          ) : (
+            <>
+              <i className="icon-refresh-cw text-14 me-2"></i>
+              Refresh
+            </>
+          )}
+        </button>
       </div>
 
       {/* Filters Section */}
@@ -193,7 +225,11 @@ export default function TourOrders({ orderData, onOrderSelect }) {
               <input
                 type="date"
                 className="form-control border-2"
-                style={{ borderColor: "#3554d1" }}
+                style={{
+                  borderColor: "#3554d1",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                }}
                 value={filters.dateFrom}
                 onChange={(e) =>
                   setFilters({ ...filters, dateFrom: e.target.value })
@@ -208,7 +244,11 @@ export default function TourOrders({ orderData, onOrderSelect }) {
               <input
                 type="date"
                 className="form-control border-2"
-                style={{ borderColor: "#3554d1" }}
+                style={{
+                  borderColor: "#3554d1",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                }}
                 value={filters.dateTo}
                 onChange={(e) =>
                   setFilters({ ...filters, dateTo: e.target.value })
@@ -223,7 +263,11 @@ export default function TourOrders({ orderData, onOrderSelect }) {
               <input
                 type="text"
                 className="form-control border-2"
-                style={{ borderColor: "#3554d1" }}
+                style={{
+                  borderColor: "#3554d1",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                }}
                 placeholder="Search by ID, tour, or customer..."
                 value={filters.searchTerm}
                 onChange={(e) =>
@@ -274,7 +318,14 @@ export default function TourOrders({ orderData, onOrderSelect }) {
           </h5>
         </div>
         <div className="card-body p-0">
-          {filteredOrders.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary mb-3" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <h5 className="text-muted">Loading tour bookings...</h5>
+            </div>
+          ) : filteredOrders.length === 0 ? (
             <div className="text-center py-5">
               <i
                 className="icon-search text-muted mb-3"
@@ -308,7 +359,7 @@ export default function TourOrders({ orderData, onOrderSelect }) {
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
                       <i className="icon-calendar text-14 me-2"></i>
-                      Booking Date
+                      Tour Date
                     </th>
                     <th className="text-primary fw-semibold border-0 py-3">
                       <i className="icon-dollar-sign text-14 me-2"></i>
@@ -374,7 +425,8 @@ export default function TourOrders({ orderData, onOrderSelect }) {
                             <strong>{order.tourName}</strong>
                             <br />
                             <small className="text-muted">
-                              Adventure Package
+                              {order.selectedTime} • ${order.pricePerPerson}
+                              /person
                             </small>
                           </div>
                         </div>
@@ -395,12 +447,12 @@ export default function TourOrders({ orderData, onOrderSelect }) {
                           <div>
                             <strong>
                               {new Date(
-                                order.datePurchased
+                                order.selectedDate
                               ).toLocaleDateString()}
                             </strong>
                             <br />
                             <small className="text-muted">
-                              {new Date(order.datePurchased).toLocaleDateString(
+                              {new Date(order.selectedDate).toLocaleDateString(
                                 "en-US",
                                 { weekday: "short" }
                               )}
