@@ -61,7 +61,7 @@ export default function DashboardSummary({ orderData, loading }) {
             style={{ backgroundColor: "#3554d1" }}
           >
             <div className="position-absolute top-0 end-0 opacity-25">
-              <i className="icon-mountain" style={{ fontSize: "4rem" }}></i>
+              <i className="icon-traveller" style={{ fontSize: "4rem" }}></i>
             </div>
             <div className="card-body position-relative">
               <div className="d-flex justify-content-between align-items-center">
@@ -94,13 +94,13 @@ export default function DashboardSummary({ orderData, loading }) {
             style={{ backgroundColor: "#28a745" }}
           >
             <div className="position-absolute top-0 end-0 opacity-25">
-              <i className="icon-palm-tree" style={{ fontSize: "4rem" }}></i>
+              <i className="icon-nearby" style={{ fontSize: "4rem" }}></i>
             </div>
             <div className="card-body position-relative">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
                   <h6 className="card-title mb-1">
-                    <i className="icon-check-circle text-14 me-2"></i>
+                    <i className="icon-check text-14 me-2"></i>
                     Confirmed Tours
                   </h6>
                   <h2 className="mb-0 fw-bold">
@@ -133,7 +133,7 @@ export default function DashboardSummary({ orderData, loading }) {
               <div className="d-flex justify-content-between align-items-center">
                 <div>
                   <h6 className="card-title mb-1 text-dark">
-                    <i className="icon-hourglass text-14 me-2"></i>
+                    <i className="icon-speedometer text-14 me-2"></i>
                     Pending Payment
                   </h6>
                   <h2 className="mb-0 fw-bold text-dark">
@@ -162,13 +162,13 @@ export default function DashboardSummary({ orderData, loading }) {
             style={{ backgroundColor: "#dc3545" }}
           >
             <div className="position-absolute top-0 end-0 opacity-25">
-              <i className="icon-ban" style={{ fontSize: "4rem" }}></i>
+              <i className="icon-trash" style={{ fontSize: "4rem" }}></i>
             </div>
             <div className="card-body position-relative">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
                   <h6 className="card-title mb-1">
-                    <i className="icon-x-circle text-14 me-2"></i>
+                    <i className="icon-trash-2 text-14 me-2"></i>
                     Cancelled Tours
                   </h6>
                   <h2 className="mb-0 fw-bold">
@@ -178,10 +178,7 @@ export default function DashboardSummary({ orderData, loading }) {
                 </div>
                 <div className="text-end">
                   <div className="bg-white bg-opacity-25 rounded-circle p-3">
-                    <i
-                      className="icon-refresh-cw"
-                      style={{ fontSize: "2rem" }}
-                    ></i>
+                    <i className="icon-share:" style={{ fontSize: "2rem" }}></i>
                   </div>
                 </div>
               </div>
@@ -204,7 +201,7 @@ export default function DashboardSummary({ orderData, loading }) {
                 <div className="col-md-3">
                   <div className="d-flex align-items-center justify-content-center">
                     <i
-                      className="icon-users text-primary me-3"
+                      className="icon-customer text-primary me-3"
                       style={{ fontSize: "2rem" }}
                     ></i>
                     <div>
@@ -221,7 +218,7 @@ export default function DashboardSummary({ orderData, loading }) {
                 <div className="col-md-3">
                   <div className="d-flex align-items-center justify-content-center">
                     <i
-                      className="icon-map text-success me-3"
+                      className="icon-location-pin text-success me-3"
                       style={{ fontSize: "2rem" }}
                     ></i>
                     <div>
