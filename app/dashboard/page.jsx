@@ -102,10 +102,7 @@ function Dashboard() {
     return (
       <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
         <div className="text-center">
-          <i
-            className="icon-alert-circle text-danger mb-3"
-            style={{ fontSize: "4rem" }}
-          ></i>
+          <i className="icon-alert-circle text-danger text-14 mb-3"></i>
           <h3 className="text-danger">Failed to Load Bookings</h3>
           <p className="text-muted">{bookingsError}</p>
           <button className="btn btn-primary" onClick={refreshBookings}>
@@ -150,8 +147,8 @@ function Dashboard() {
       <div className="row">
         {/* Sidebar */}
         <div
-          className="col-md-3 col-lg-2 text-white min-vh-100 p-0 position-relative"
-          style={{ backgroundColor: "#3554d1", marginTop: "120px" }}
+          className="col-md-3 col-lg-2 text-white min-vh-100 p-0 position-relative bg-blue-1"
+          style={{ marginTop: "120px" }}
         >
           {/* <div className="position-absolute top-0 end-0 opacity-10">
             <i className="icon-compass" style={{ fontSize: "6rem" }}></i>
@@ -172,14 +169,10 @@ function Dashboard() {
 
             <nav className="nav flex-column">
               <button
-                className={`nav-link border-0 bg-transparent text-start mb-2 rounded-3 p-3 position-relative ${
-                  activeSection === "dashboard" ? "bg-white bg-opacity-20" : ""
+                className={`nav-link border-0 mt-2  text-start mb-2 rounded-3 p-3 position-relative nav-button ${
+                  activeSection === "dashboard" ? "active-dark" : "inactive"
                 }`}
                 onClick={() => setActiveSection("dashboard")}
-                style={{
-                  color: activeSection === "dashboard" ? "#0d2857" : "#ffffff",
-                  fontWeight: activeSection === "dashboard" ? "600" : "400",
-                }}
               >
                 <i className="icon-pie-chart text-14 me-3"></i>
                 Dashboard
@@ -191,15 +184,10 @@ function Dashboard() {
               </button>
 
               <button
-                className="nav-link text-white border-0  text-start mb-2 rounded-3 p-3 position-relative"
+                className={`nav-link border-0  text-start mb-2 rounded-3 p-3 position-relative nav-button ${
+                  activeSection === "tour-orders" ? "active-dark" : "inactive"
+                }`}
                 onClick={() => setActiveSection("tour-orders")}
-                style={{
-                  backgroundColor:
-                    activeSection === "tour-orders" ? "#0d2857" : "transparent",
-                  color:
-                    activeSection === "tour-orders" ? "#ffffff" : "#ffffff",
-                  fontWeight: activeSection === "tour-orders" ? "600" : "400",
-                }}
               >
                 <i className="icon-route text-14 me-3"></i>
                 Tour Orders
@@ -219,17 +207,21 @@ function Dashboard() {
               </button>
 
               <button
-                className="nav-link text-white border-0  text-start mb-2 rounded-3 p-3 position-relative"
+                className={`nav-link border-0  text-start mb-2 rounded-3 p-3 position-relative nav-button ${
+                  activeSection === "returns" ? "active-dark" : "inactive"
+                }`}
                 onClick={() => setActiveSection("returns")}
-                style={{
-                  backgroundColor:
-                    activeSection === "returns" ? "#0d2857" : "transparent",
-                  color: activeSection === "returns" ? "#ffffff" : "#ffffff",
-                  fontWeight: activeSection === "returns" ? "600" : "400",
-                }}
               >
-                <i className="icon-rotate-ccw text-14 me-3"></i>
+                <i className="icon-route text-14 me-3"></i>
                 Returns
+                {bookingsLoading && activeSection === "returns" && (
+                  <div
+                    className="spinner-border spinner-border-sm ms-2"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
                 {activeSection === "returns" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
                     <i className="icon-chevron-right"></i>
@@ -238,17 +230,21 @@ function Dashboard() {
               </button>
 
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded-3 p-3 position-relative ${
-                  activeSection === "support" ? "bg-white bg-opacity-20" : ""
+                className={`nav-link border-0  text-start mb-2 rounded-3 p-3 position-relative nav-button ${
+                  activeSection === "support" ? "active-dark" : "inactive"
                 }`}
                 onClick={() => setActiveSection("support")}
-                style={{
-                  color: activeSection === "support" ? "#0d2857" : "#ffffff",
-                  fontWeight: activeSection === "support" ? "600" : "400",
-                }}
               >
-                <i className="icon-life-buoy text-14 me-3"></i>
-                Support Tickets
+                <i className="icon-route text-14 me-3"></i>
+                support
+                {bookingsLoading && activeSection === "support" && (
+                  <div
+                    className="spinner-border spinner-border-sm ms-2"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
                 {activeSection === "support" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
                     <i className="icon-chevron-right"></i>
@@ -257,17 +253,21 @@ function Dashboard() {
               </button>
 
               <button
-                className={`nav-link text-white border-0 bg-transparent text-start mb-2 rounded-3 p-3 position-relative ${
-                  activeSection === "account" ? "bg-white bg-opacity-20" : ""
+                className={`nav-link border-0  text-start mb-2 rounded-3 p-3 position-relative nav-button ${
+                  activeSection === "account" ? "active-dark" : "inactive"
                 }`}
                 onClick={() => setActiveSection("account")}
-                style={{
-                  color: activeSection === "account" ? "#0d2857" : "#ffffff",
-                  fontWeight: activeSection === "account" ? "600" : "400",
-                }}
               >
-                <i className="icon-settings text-14 me-3"></i>
-                Account Settings
+                <i className="icon-route text-14 me-3"></i>
+                Account Settiings
+                {bookingsLoading && activeSection === "account" && (
+                  <div
+                    className="spinner-border spinner-border-sm ms-2"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
                 {activeSection === "account" && (
                   <div className="position-absolute top-50 end-0 translate-middle-y me-2">
                     <i className="icon-chevron-right"></i>
@@ -278,7 +278,7 @@ function Dashboard() {
               <hr className="my-3 border-white border-opacity-25" />
 
               <button
-                className="nav-link text-white border-0 bg-transparent text-start rounded-3 p-3 opacity-75 hover-opacity-100"
+                className="nav-link text-white border-0  text-start rounded-3 p-3 opacity-75 hover-opacity-100"
                 onClick={handleLogout}
               >
                 <i className="icon-log-out text-14 me-3"></i>

@@ -1,0 +1,22 @@
+.nav-button {
+  color: var(--color-white);
+  font-weight: 400;
+
+  &.active-light {
+    color: var(--color-dark-2);
+    font-weight: 600;
+    background-color: rgba(map-get($colors, white), 0.2);
+  }
+
+  &.active-dark {
+    color: var(--color-white);
+    font-weight: 600;
+    background-color: var(--color-dark-2);
+  }
+
+  &.inactive {
+    color: var(--color-white);
+    font-weight: 400;
+    background-color: transparent;
+  }
+}

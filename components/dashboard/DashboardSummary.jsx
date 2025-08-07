@@ -56,10 +56,7 @@ export default function DashboardSummary({ orderData, loading }) {
 
       <div className="row g-4">
         <div className="col-md-3">
-          <div
-            className="card text-white border-0 shadow-lg position-relative overflow-hidden"
-            style={{ backgroundColor: "#3554d1" }}
-          >
+          <div className="card text-white border-0 shadow-lg position-relative overflow-hidden bg-blue-1">
             <div className="position-absolute top-0 end-0 opacity-25">
               <i className="icon-traveller" style={{ fontSize: "4rem" }}></i>
             </div>

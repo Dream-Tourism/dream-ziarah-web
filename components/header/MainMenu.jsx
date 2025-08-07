@@ -68,7 +68,7 @@ const MainMenu = ({ style = "" }) => {
             )}
           </li>
         ))}
-        <li className="me-3 fw-500 dropdown hover-dropdown">
+        <li className="me-3 fw-500 dropdown">
           {isAuthenticated ? (
             <>
               <button
