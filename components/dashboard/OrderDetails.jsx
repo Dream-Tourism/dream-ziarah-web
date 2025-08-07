@@ -21,19 +21,13 @@ export default function OrderDetails({
   };
 
   return (
-    <div
-      className="modal show d-block"
-      style={{ backgroundColor: "rgba(53, 84, 209, 0.15)" }}
-    >
+    <div className="modal show d-block bg-blue-3">
       <div className="modal-dialog" style={{ maxWidth: "80%", width: "80%" }}>
         <div
           className="modal-content border-0 shadow-lg"
           style={{ maxHeight: "80vh", overflow: "auto" }}
         >
-          <div
-            className="modal-header text-white position-relative overflow-hidden"
-            style={{ backgroundColor: "#3554d1" }}
-          >
+          <div className="modal-header text-white position-relative overflow-hidden bg-blue-1">
             <div className="position-absolute top-0 end-0 opacity-25">
               <i className="icon-mountain" style={{ fontSize: "4rem" }}></i>
             </div>
@@ -251,13 +245,7 @@ export default function OrderDetails({
             {/* Additional Tour Details */}
             <div className="row mt-4">
               <div className="col-12">
-                <div
-                  className="card border-0 shadow-sm"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
-                  }}
-                >
+                <div className="card border-0 shadow-sm bg-blue-3">
                   <div className="card-body">
                     <h6 className="text-primary mb-3 d-flex align-items-center">
                       <i className="icon-info text-14 me-2"></i>

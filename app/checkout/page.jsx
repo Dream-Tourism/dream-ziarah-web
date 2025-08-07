@@ -257,11 +257,10 @@ const CheckoutPage = () => {
                 <div className="bg-white rounded shadow-sm p-4">
                   <div className="d-flex align-items-center mb-4">
                     <div
-                      className="rounded-circle d-flex align-items-center justify-content-center me-3"
+                      className="rounded-circle d-flex align-items-center justify-content-center me-3 bg-blue-2"
                       style={{
                         width: "24px",
                         height: "24px",
-                        backgroundColor: "#e9ecef",
                         fontSize: "14px",
                         fontWeight: "bold",
                       }}
@@ -366,9 +365,9 @@ const CheckoutPage = () => {
                   </div>
 
                   <button
-                    className="btn btn-primary w-100 fw-bold"
+                    className="btn btn-primary w-100 fw-bold bg-blue-1"
                     style={{
-                      backgroundColor: "#1e4a72",
+                      
                       border: "none",
                       padding: "12px 16px",
                       fontSize: "16px",

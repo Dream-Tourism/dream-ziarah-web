@@ -40,10 +40,7 @@ export default function AccountSettings({ user }) {
       <div className="row">
         <div className="col-md-6">
           <div className="card border-0 shadow-lg">
-            <div
-              className="card-header text-white position-relative overflow-hidden"
-              style={{ backgroundColor: "#3554d1" }}
-            >
+            <div className="card-header text-white position-relative overflow-hidden bg-blue-1">
               <div className="position-absolute top-0 end-0 opacity-25">
                 <i className="fas fa-user-edit fa-4x"></i>
               </div>
@@ -61,8 +58,7 @@ export default function AccountSettings({ user }) {
                   </label>
                   <input
                     type="text"
-                    className="form-control border-2"
-                    style={{ borderColor: "#3554d1" }}
+                    className="form-control border-2 border-blue-1"
                     value={profileData.name}
                     onChange={(e) =>
                       setProfileData({ ...profileData, name: e.target.value })
@@ -76,8 +72,7 @@ export default function AccountSettings({ user }) {
                   </label>
                   <input
                     type="email"
-                    className="form-control border-2"
-                    style={{ borderColor: "#3554d1" }}
+                    className="form-control border-2 border-blue-1"
                     value={profileData.email}
                     onChange={(e) =>
                       setProfileData({ ...profileData, email: e.target.value })
@@ -91,8 +86,7 @@ export default function AccountSettings({ user }) {
                   </label>
                   <input
                     type="tel"
-                    className="form-control border-2"
-                    style={{ borderColor: "#3554d1" }}
+                    className="form-control border-2 border-blue-1"
                     value={profileData.phone}
                     onChange={(e) =>
                       setProfileData({ ...profileData, phone: e.target.value })
@@ -101,8 +95,7 @@ export default function AccountSettings({ user }) {
                 </div>
                 <button
                   type="submit"
-                  className="btn text-white w-100"
-                  style={{ backgroundColor: "#3554d1" }}
+                  className="btn text-white w-100 bg-blue-1"
                 >
                   <i className="fas fa-save me-2"></i>
                   Update Profile
@@ -114,10 +107,7 @@ export default function AccountSettings({ user }) {
 
         <div className="col-md-6">
           <div className="card border-0 shadow-lg">
-            <div
-              className="card-header text-white position-relative overflow-hidden"
-              style={{ backgroundColor: "#3554d1" }}
-            >
+            <div className="card-header text-white position-relative overflow-hidden bg-blue-1">
               <div className="position-absolute top-0 end-0 opacity-25">
                 <i className="fas fa-shield-alt fa-4x"></i>
               </div>
@@ -135,8 +125,7 @@ export default function AccountSettings({ user }) {
                   </label>
                   <input
                     type="password"
-                    className="form-control border-2"
-                    style={{ borderColor: "#3554d1" }}
+                    className="form-control border-2 border-blue-1"
                     value={passwordData.currentPassword}
                     onChange={(e) =>
                       setPasswordData({
@@ -153,8 +142,7 @@ export default function AccountSettings({ user }) {
                   </label>
                   <input
                     type="password"
-                    className="form-control border-2"
-                    style={{ borderColor: "#3554d1" }}
+                    className="form-control border-2 border-blue-1"
                     value={passwordData.newPassword}
                     onChange={(e) =>
                       setPasswordData({
@@ -171,8 +159,7 @@ export default function AccountSettings({ user }) {
                   </label>
                   <input
                     type="password"
-                    className="form-control border-2"
-                    style={{ borderColor: "#3554d1" }}
+                    className="form-control border-2 border-blue-1"
                     value={passwordData.confirmPassword}
                     onChange={(e) =>
                       setPasswordData({
@@ -184,8 +171,7 @@ export default function AccountSettings({ user }) {
                 </div>
                 <button
                   type="submit"
-                  className="btn text-white w-100"
-                  style={{ backgroundColor: "#3554d1" }}
+                  className="btn text-white w-100 bg-blue-1"
                 >
                   <i className="fas fa-save me-2"></i>
                   Change Password

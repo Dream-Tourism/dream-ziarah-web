@@ -86,10 +86,7 @@ export default function DashboardSummary({ orderData, loading }) {
         </div>
 
         <div className="col-md-3">
-          <div
-            className="card text-white border-0 shadow-lg position-relative overflow-hidden"
-            style={{ backgroundColor: "#28a745" }}
-          >
+          <div className="card text-white border-0 shadow-lg position-relative overflow-hidden bg-green-2">
             <div className="position-absolute top-0 end-0 opacity-25">
               <i className="icon-nearby" style={{ fontSize: "4rem" }}></i>
             </div>
@@ -119,10 +116,7 @@ export default function DashboardSummary({ orderData, loading }) {
         </div>
 
         <div className="col-md-3">
-          <div
-            className="card text-white border-0 shadow-lg position-relative overflow-hidden"
-            style={{ backgroundColor: "#ffc107" }}
-          >
+          <div className="card text-white border-0 shadow-lg position-relative overflow-hidden bg-yellow-3">
             <div className="position-absolute top-0 end-0 opacity-25">
               <i className="icon-clock" style={{ fontSize: "4rem" }}></i>
             </div>
@@ -154,10 +148,7 @@ export default function DashboardSummary({ orderData, loading }) {
         </div>
 
         <div className="col-md-3">
-          <div
-            className="card text-white border-0 shadow-lg position-relative overflow-hidden"
-            style={{ backgroundColor: "#dc3545" }}
-          >
+          <div className="card text-white border-0 shadow-lg position-relative overflow-hidden bg-red-2">
             <div className="position-absolute top-0 end-0 opacity-25">
               <i className="icon-trash" style={{ fontSize: "4rem" }}></i>
             </div>

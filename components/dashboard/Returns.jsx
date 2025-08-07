@@ -32,10 +32,7 @@ export default function Returns() {
           <p className="text-muted">
             All travelers are enjoying their adventures!
           </p>
-          <button
-            className="btn text-white"
-            style={{ backgroundColor: "#3554d1" }}
-          >
+          <button className="btn text-white bg-blue-1">
             <i className="fas fa-plus me-2"></i>
             Process New Return
           </button>

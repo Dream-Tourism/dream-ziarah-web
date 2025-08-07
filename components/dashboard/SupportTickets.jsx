@@ -31,8 +31,8 @@ export default function SupportTickets() {
           <h4 className="text-muted">All Caught Up!</h4>
           <p className="text-muted">No pending support tickets at the moment</p>
           <button
-            className="btn text-white"
-            style={{ backgroundColor: "#3554d1" }}
+            className="btn text-white bg-blue-1"
+           
           >
             <i className="fas fa-plus me-2"></i>
             Create Support Ticket

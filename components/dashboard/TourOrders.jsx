@@ -128,12 +128,7 @@ export default function TourOrders({
       </div>
 
       {/* Filters Section */}
-      <div
-        className="card border-0 shadow-sm mb-4"
-        style={{
-          background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-        }}
-      >
+      <div className="card border-0 shadow-sm mb-4 bg-blue-4">
         <div className="card-body">
           {/* Status Filter Buttons */}
           <div className="row mb-3">
@@ -152,9 +147,14 @@ export default function TourOrders({
                   } position-relative`}
                   style={{
                     backgroundColor:
-                      filters.status === "all" ? "#3554d1" : "transparent",
-                    borderColor: "#3554d1",
-                    color: filters.status === "all" ? "white" : "#3554d1",
+                      filters.status === "all"
+                        ? "var(--color-blue-1)"
+                        : "transparent",
+                    borderColor: "var(--color-blue-1)",
+                    color:
+                      filters.status === "all"
+                        ? "white"
+                        : "var(--color-blue-1)",
                   }}
                   onClick={() => setFilters({ ...filters, status: "all" })}
                 >
@@ -224,9 +224,8 @@ export default function TourOrders({
               </label>
               <input
                 type="date"
-                className="form-control border-2"
+                className="form-control border-2 border-blue-1"
                 style={{
-                  borderColor: "#3554d1",
                   borderWidth: "1px",
                   borderStyle: "solid",
                 }}
@@ -262,9 +261,8 @@ export default function TourOrders({
               </label>
               <input
                 type="text"
-                className="form-control border-2"
+                className="form-control border-blue-1"
                 style={{
-                  borderColor: "#3554d1",
                   borderWidth: "1px",
                   borderStyle: "solid",
                 }}
