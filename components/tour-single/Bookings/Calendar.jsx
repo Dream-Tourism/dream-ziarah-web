@@ -56,7 +56,7 @@ const Calendar = ({
   ];
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  console.log("Current Month:", isDateAvailable);
+  // console.log("Current Month:", isDateAvailable);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
