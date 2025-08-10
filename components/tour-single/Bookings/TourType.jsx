@@ -1,68 +1,29 @@
 "use client";
-
 import { useState } from "react";
+import CustomDropdown from "./CustomDropdown";
 
 const TourType = ({ onTourTypeChange, availableTourTypes = [] }) => {
-  const [selectedTourType, setSelectedTourType] = useState(
-    availableTourTypes[0]?.guide || ""
-  );
+  const initial = availableTourTypes[0]?.guide || "";
+  const [selected, setSelected] = useState(initial);
 
-  const handleTourTypeChange = (tourType) => {
-    setSelectedTourType(tourType);
-
-    // Find the full tour type object
+  const handleChange = (tourType) => {
+    setSelected(tourType);
     const tourTypeObject = availableTourTypes.find(
       (type) => type.guide === tourType
     );
-
-    // Notify parent component of changes
-    if (onTourTypeChange) {
-      onTourTypeChange(tourTypeObject);
-    }
+    if (onTourTypeChange) onTourTypeChange(tourTypeObject);
   };
 
-  if (availableTourTypes.length === 0) {
-    return null;
-  }
+  if (availableTourTypes.length === 0) return null;
 
   return (
-    <div className="tour-type-container">
-      <div className="mb-3">
-        <div
-          className="form-control d-flex align-items-center justify-content-between bg-white border-0 rounded"
-          style={{
-            padding: "12px 16px",
-            height: "48px",
-            borderTop: "1px solid #e9ecef",
-          }}
-        >
-          <div className="d-flex align-items-center">
-            <i className={`icon-twitter text-14 me-2`} />
-            <span>Tour Type</span>
-          </div>
-          <div
-            className="d-flex align-items-center"
-            style={{ borderLeft: "1px solid black" }}
-          >
-            <select
-              title={selectedTourType}
-              className="form-select border-0 bg-transparent text-center fw-bold"
-              style={{
-                width: "180px",
-              }}
-              value={selectedTourType}
-              onChange={(e) => handleTourTypeChange(e.target.value)}
-            >
-              {availableTourTypes.map((tourType, index) => (
-                <option key={index} value={tourType.guide}>
-                  {tourType.guide}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
+    <CustomDropdown
+      label="Tour Type"
+      icon="icon-twitter"
+      value={selected}
+      options={availableTourTypes.map((t) => t.guide)}
+      onChange={handleChange}
+    />
   );
 };
 

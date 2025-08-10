@@ -5,6 +5,7 @@ import Calendar from "./Calendar";
 import TourType from "./TourType";
 import Participants from "./Participants";
 import BookingPreview from "./BookingPreview";
+import CustomDropdown from "./CustomDropdown";
 
 const AgentCalendar = ({ tourData = null }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -361,36 +362,13 @@ const AgentCalendar = ({ tourData = null }) => {
         </div>
 
         {/* Time Selection */}
-        <div className="mb-3">
-          <div className="position-relative">
-            <i
-              className="icon-twitter position-absolute top-50 start-0 translate-middle-y text-black text-muted ps-3"
-              style={{ fontSize: "14px" }}
-            ></i>
-            <select
-              className="form-select bg-white border-0 rounded"
-              style={{
-                padding: "12px 16px 12px 45px",
-                height: "48px",
-                fontSize: isMobile ? "14px" : "16px",
-              }}
-              value={selectedTime}
-              onChange={(e) => handleTimeChange(e.target.value)}
-              disabled={availableTimes.length === 0}
-            >
-              <option value="">
-                {availableTimes.length === 0
-                  ? "No times available"
-                  : "Select Time"}
-              </option>
-              {availableTimes.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <CustomDropdown
+          label="Select Time"
+          icon="icon-twitter"
+          value={selectedTime}
+          options={availableTimes}
+          onChange={handleTimeChange}
+        />
 
         {/* Price Display */}
         {currentPriceOption && participantCount && (
