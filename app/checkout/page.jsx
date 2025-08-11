@@ -2,6 +2,8 @@
 
 import { CHECKOUTDATA } from "@/constant/constants";
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useGetLogoUrlQuery } from "@/features/site-setting/siteSettingApi";
 
 const CheckoutPage = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -53,6 +55,17 @@ const CheckoutPage = () => {
     loadBookingData();
   }, []);
   // console.log("Booking Data:", bookingData);
+
+  //header logo
+  const {
+    data,
+    isSuccess: logoSuccess,
+    isLoading: logoLoading,
+  } = useGetLogoUrlQuery(null);
+
+  const logoUrl = logoSuccess
+    ? data?.general_settings?.[0]?.cloudflare_favicon
+    : "";
 
   const formatDate = (date) => {
     const options = {
@@ -231,20 +244,47 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div
-      className="min-vh-100"
-      style={{ marginTop: "70px", paddingTop: "20px" }}
-    >
+    <div className="min-vh-100">
       {/* Header */}
       <div
-        className=" border-bottom py-3"
+        className="border-bottom py-3"
         style={{
           fontSize: "14px",
           borderRadius: "4px",
         }}
       >
-        <div className="container">
-          <h4 className="mb-0 text-black">Secure Checkout</h4>
+        <div className="container d-flex justify-content-between align-items-center">
+          {/* Left Side: Logo + Title */}
+          <div className="d-flex align-items-center gap-2">
+            {!logoLoading && logoUrl && (
+              <Image
+                src={logoUrl}
+                alt="Logo"
+                width={120}
+                height={120}
+                style={{ objectFit: "contain" }}
+              />
+            )}
+            <h4 className="mb-0 text-black">Secure Checkout</h4>
+          </div>
+
+          {/* Right Side: WhatsApp Icon */}
+          <div className="d-flex">
+            <a
+              className="btn-whatsapp-pulse whatsapp_icon"
+              href="https://api.whatsapp.com/send/?phone=966548037409&amp;text=Hi DreamZiarah, I need assistance&amp;type=phone_number&amp;lang=en"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                style={{ cursor: "pointer" }}
+                src="/img/whatsapp.svg"
+                width={50}
+                height={50}
+                alt="WhatsApp"
+              />
+            </a>
+          </div>
         </div>
       </div>
 
@@ -367,7 +407,6 @@ const CheckoutPage = () => {
                   <button
                     className="btn btn-primary w-100 fw-bold bg-blue-1"
                     style={{
-                      
                       border: "none",
                       padding: "12px 16px",
                       fontSize: "16px",

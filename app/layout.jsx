@@ -16,7 +16,6 @@ import { store } from "../store/store";
 import "../styles/index.scss";
 import CookieConsent from "@/components/cookie/CookieConsent";
 import { usePathname } from "next/navigation";
-import Customheader from "@/components/customHeader";
 import AuthInitializer from "@/components/authInitializer/AuthInitializer";
 
 if (typeof window !== "undefined") {
@@ -120,7 +119,7 @@ export default function RootLayout({ children }) {
         <main>
           <Provider store={store}>
             <AuthInitializer />
-            {isCheckout ? <Customheader /> : <Header />}
+            {!isCheckout && <Header />}
             {children}
             <DefaultFooter />
             <SrollTop />

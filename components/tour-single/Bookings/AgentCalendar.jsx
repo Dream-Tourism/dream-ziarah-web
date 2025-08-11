@@ -40,6 +40,8 @@ const AgentCalendar = ({ tourData = null }) => {
   // Use provided tourData or sample data
   const priceList = tourData?.day_tour_price_list;
 
+  // console.log("selectedTime", availableTimes);
+
   // Get unique tour types
   const getUniqueTourTypes = () => {
     const uniqueGuides = [...new Set(priceList.map((item) => item.guide))];
@@ -381,7 +383,7 @@ const AgentCalendar = ({ tourData = null }) => {
         <CustomDropdown
           label="Select Time"
           icon="icon-twitter"
-          value={selectedTime}
+          value={availableTimes[0]}
           options={availableTimes}
           onChange={handleTimeChange}
         />
