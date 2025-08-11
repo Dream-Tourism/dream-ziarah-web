@@ -1,14 +1,20 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import CustomDropdown from "./CustomDropdown";
 
 const Participants = ({
   onParticipantChange,
-  availableParticipantCounts = [1],
+  availableParticipantCounts = [],
 }) => {
-  const initial = availableParticipantCounts[0] || 1;
-  const [selected, setSelected] = useState(initial);
+  const [selected, setSelected] = useState(null);
+
+  // Set initial value when availableParticipantCounts changes
+  useEffect(() => {
+    if (availableParticipantCounts.length > 0) {
+      setSelected(availableParticipantCounts[0]);
+    }
+  }, [availableParticipantCounts]);
 
   const handleChange = (count) => {
     setSelected(count);
@@ -19,7 +25,7 @@ const Participants = ({
     <CustomDropdown
       label="Participants"
       icon="icon-twitter"
-      value={selected}
+      value={selected ?? ""}
       options={availableParticipantCounts}
       onChange={handleChange}
     />

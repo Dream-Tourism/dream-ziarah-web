@@ -123,6 +123,22 @@ const AgentCalendar = ({ tourData = null }) => {
     }
   }, [showCalendar, isMobile]);
 
+  // Close dropdown if click is outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dateButtonRef.current &&
+        !dateButtonRef.current.contains(event.target)
+      ) {
+        setShowCalendar(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const formatDate = (date) => {
     const options = {
       weekday: "short",
