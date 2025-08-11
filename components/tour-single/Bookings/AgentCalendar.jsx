@@ -10,6 +10,7 @@ import CustomDropdown from "./CustomDropdown";
 const AgentCalendar = ({ tourData = null }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
+  const [dropDownTime, setDropDownTime] = useState("");
   const [selectedTourType, setSelectedTourType] = useState(null);
   const [participantCount, setParticipantCount] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -180,6 +181,7 @@ const AgentCalendar = ({ tourData = null }) => {
 
   const handleTimeChange = (time) => {
     setSelectedTime(time);
+    setDropDownTime(time);
     // Reset booking availability when time changes
     setBookingAvailable(false);
     setBookingData(null);
@@ -343,7 +345,11 @@ const AgentCalendar = ({ tourData = null }) => {
         />
 
         {/* Date Selection */}
-        <div className="mb-3 position-relative" ref={dateButtonRef}>
+        <div
+          className="mb-3 position-relative"
+          style={{ overflow: "visible" }}
+          ref={dateButtonRef}
+        >
           <div
             className="form-control d-flex align-items-center bg-white border-0 rounded"
             style={{
@@ -383,7 +389,7 @@ const AgentCalendar = ({ tourData = null }) => {
         <CustomDropdown
           label="Select Time"
           icon="icon-twitter"
-          value={availableTimes[0]}
+          value={dropDownTime}
           options={availableTimes}
           onChange={handleTimeChange}
         />
