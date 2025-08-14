@@ -27,7 +27,7 @@ const AgentCalendar = ({ tourData = null }) => {
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  console.log("tour", tourData);
+  // console.log("tour", tourData);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);

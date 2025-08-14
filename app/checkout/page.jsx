@@ -21,7 +21,7 @@ const CheckoutPage = () => {
   const [touched, setTouched] = useState({})
 
   const { user, isAuthenticated } = useSelector((state) => state.auth)
-  console.log("User:", user, "Authenticated:", isAuthenticated)
+  // console.log("User:", user, "Authenticated:", isAuthenticated)
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`

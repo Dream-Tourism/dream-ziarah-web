@@ -153,7 +153,7 @@ const index = ({
               height={600}
               alt="image"
               priority={true}
-              onLoad={onDataAvailable(true)}
+              onLoad={() => onDataAvailable(true)}
             />
           </div>
 
