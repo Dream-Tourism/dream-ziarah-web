@@ -1,34 +1,62 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import CustomDropdown from "./CustomDropdown";
 
 const Participants = ({
   onParticipantChange,
-  availableParticipantCounts = [],
+  maxParticipants = 1,
+  hasError = false,
 }) => {
-  const [selected, setSelected] = useState(null);
+  const [participantCount, setParticipantCount] = useState(1);
 
-  // Set initial value when availableParticipantCounts changes
   useEffect(() => {
-    if (availableParticipantCounts.length > 0) {
-      setSelected(availableParticipantCounts[0]);
+    // Set initial value and notify parent
+    if (onParticipantChange) {
+      onParticipantChange(participantCount);
     }
-  }, [availableParticipantCounts]);
+  }, []);
 
-  const handleChange = (count) => {
-    setSelected(count);
-    if (onParticipantChange) onParticipantChange(count);
+  const handleParticipantCountChange = (e) => {
+    const value = Number.parseInt(e.target.value) || 1;
+    const clampedValue = Math.min(Math.max(1, value), maxParticipants);
+    setParticipantCount(clampedValue);
+
+    // Notify parent component of changes
+    if (onParticipantChange) {
+      onParticipantChange(clampedValue);
+    }
   };
 
   return (
-    <CustomDropdown
-      label="Participants"
-      icon="icon-twitter"
-      value={selected ?? ""}
-      options={availableParticipantCounts}
-      onChange={handleChange}
-    />
+    <div className="participants-container">
+      <div className="mb-3">
+        <div
+          className="form-control d-flex align-items-center justify-content-between bg-white border-0 rounded"
+          style={{
+            padding: "12px 16px",
+            height: "48px",
+            border: hasError ? "2px solid #dc3545" : "none",
+          }}
+        >
+          <div className="d-flex align-items-center">
+            <i className="fas fa-users me-2 text-muted"></i>
+            <span>Participants</span>
+          </div>
+          <div className="d-flex align-items-center">
+            <input
+              type="number"
+              className="form-control border-0 bg-transparent text-end fw-bold"
+              style={{ width: "80px", minWidth: "60px" }}
+              value={participantCount}
+              onChange={handleParticipantCountChange}
+              min="1"
+              max={maxParticipants}
+            />
+            <span className="text-muted ms-1">/ {maxParticipants}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

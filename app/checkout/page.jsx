@@ -4,6 +4,7 @@ import { CHECKOUTDATA } from "@/constant/constants";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useGetLogoUrlQuery } from "@/features/site-setting/siteSettingApi";
+import { useSelector } from "react-redux";
 
 const CheckoutPage = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -16,6 +17,11 @@ const CheckoutPage = () => {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState({}); // Add errors state
+  const [touched, setTouched] = useState({}); // Add touched state to track which fields have been interacted with
+
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  console.log("User:", user, "Authenticated:", isAuthenticated);
 
   // Get cookie value
   const getCookie = (name) => {
@@ -30,6 +36,76 @@ const CheckoutPage = () => {
       }
     }
     return null;
+  };
+
+  // Validation functions
+  const validateField = (name, value) => {
+    switch (name) {
+      case "firstName":
+        if (!value || value.trim().length === 0) {
+          return "First name is required";
+        }
+        if (value.trim().length < 2) {
+          return "First name must be at least 2 characters";
+        }
+        if (!/^[a-zA-Z\s]+$/.test(value.trim())) {
+          return "First name can only contain letters and spaces";
+        }
+        return "";
+
+      case "lastName":
+        if (!value || value.trim().length === 0) {
+          return "Last name is required";
+        }
+        if (value.trim().length < 2) {
+          return "Last name must be at least 2 characters";
+        }
+        if (!/^[a-zA-Z\s]+$/.test(value.trim())) {
+          return "Last name can only contain letters and spaces";
+        }
+        return "";
+
+      case "phone":
+        if (!value || value.trim().length === 0) {
+          return "Phone number is required";
+        }
+        // Remove all non-digit characters for validation
+        const phoneDigits = value.replace(/\D/g, "");
+        if (phoneDigits.length < 10) {
+          return "Phone number must be at least 10 digits";
+        }
+        if (phoneDigits.length > 15) {
+          return "Phone number cannot exceed 15 digits";
+        }
+        return "";
+
+      case "email":
+        if (!value || value.trim().length === 0) {
+          return "Email is required";
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value.trim())) {
+          return "Please enter a valid email address";
+        }
+        return "";
+
+      default:
+        return "";
+    }
+  };
+
+  // Validate all fields
+  const validateAllFields = () => {
+    const newErrors = {};
+    Object.keys(formData).forEach((field) => {
+      if (field !== "acceptOffers") {
+        const error = validateField(field, formData[field]);
+        if (error) {
+          newErrors[field] = error;
+        }
+      }
+    });
+    return newErrors;
   };
 
   // Load booking data from cookies
@@ -54,7 +130,33 @@ const CheckoutPage = () => {
 
     loadBookingData();
   }, []);
-  // console.log("Booking Data:", bookingData);
+
+  // Populate form with user data when authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const newFormData = {
+        firstName: user.first_name || "",
+        lastName: user.last_name || "",
+        phone: user.phone || "",
+        email: user.email || "",
+        acceptOffers: user.acceptOffers || false,
+      };
+
+      setFormData(newFormData);
+
+      // Validate pre-populated fields
+      const newErrors = {};
+      Object.keys(newFormData).forEach((field) => {
+        if (field !== "acceptOffers") {
+          const error = validateField(field, newFormData[field]);
+          if (error) {
+            newErrors[field] = error;
+          }
+        }
+      });
+      setErrors(newErrors);
+    }
+  }, [isAuthenticated, user]);
 
   //header logo
   const {
@@ -95,20 +197,88 @@ const CheckoutPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: newValue,
+    }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+
+    // Real-time validation for non-checkbox fields
+    if (type !== "checkbox") {
+      const error = validateField(name, newValue);
+      if (error && touched[name]) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: error,
+        }));
+      }
+    }
+  };
+
+  const handleInputBlur = (e) => {
+    const { name, value } = e.target;
+
+    // Mark field as touched
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+
+    // Validate on blur
+    const error = validateField(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
     }));
   };
 
   const handleProceedToPayment = async () => {
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.phone ||
-      !formData.email
-    ) {
-      alert("Please fill in all required fields");
+    // Validate all fields before proceeding
+    const validationErrors = validateAllFields();
+
+    // Mark all fields as touched
+    setTouched({
+      firstName: true,
+      lastName: true,
+      phone: true,
+      email: true,
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+
+      // Create a user-friendly error message
+      const errorMessages = Object.values(validationErrors);
+      alert(
+        `Please fix the following errors:\n• ${errorMessages.join("\n• ")}`
+      );
+
+      // Focus on the first field with an error
+      const firstErrorField = Object.keys(validationErrors)[0];
+      const fieldElement = document.querySelector(
+        `input[name="${firstErrorField}"]`
+      );
+      if (fieldElement) {
+        fieldElement.focus();
+      }
+
+      return;
+    }
+
+    // Check if acceptOffers is checked (if required)
+    if (!formData.acceptOffers) {
+      alert(
+        "Please accept the terms to receive special offers and information"
+      );
       return;
     }
 
@@ -118,15 +288,15 @@ const CheckoutPage = () => {
       // Prepare complete booking data for API
       const completeBookingDetails = {
         //Travel info
-        travellerInfo: {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          phone: formData.phone,
-          email: formData.email,
+        traveller_info: {
+          first_name: formData.firstName.trim(),
+          last_name: formData.lastName.trim(),
+          phone: formData.phone.trim(),
+          email: formData.email.trim(),
           acceptOffers: formData.acceptOffers,
         },
         // Tour Details
-        tourDetails: {
+        tour_details: {
           tour_id: bookingData?.tourId || null,
           // tourName: bookingData?.tourName,
           // description:
@@ -136,9 +306,9 @@ const CheckoutPage = () => {
           // duration: bookingData.duration,
           total_participants: bookingData.participantCount,
           total_price: bookingData.totalPrice,
-          price_per_person: bookingData.priceOption
-            ? Number.parseFloat(bookingData.priceOption.price)
-            : 0,
+          // price_per_person: bookingData.priceOption
+          //   ? Number.parseFloat(bookingData.priceOption.price)
+          //   : 0,
           // tourImage: bookingData.tourImage,
         },
       };
@@ -216,6 +386,27 @@ const CheckoutPage = () => {
     return stars;
   };
 
+  // Helper function to get input styling based on validation state
+  const getInputStyling = (fieldName) => {
+    const hasError = errors[fieldName] && touched[fieldName];
+    const isValid =
+      !errors[fieldName] && touched[fieldName] && formData[fieldName];
+
+    return {
+      padding: "12px 16px",
+      border: hasError
+        ? "2px solid #dc3545"
+        : isValid
+        ? "2px solid #28a745"
+        : "1px solid #007bff",
+      boxShadow: hasError
+        ? "0 2px 6px rgba(220, 53, 69, 0.2)"
+        : isValid
+        ? "0 2px 6px rgba(40, 167, 69, 0.2)"
+        : "0 2px 6px rgba(0, 123, 255, 0.2)",
+    };
+  };
+
   if (isLoading) {
     return (
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
@@ -258,7 +449,7 @@ const CheckoutPage = () => {
           <div className="d-flex align-items-center gap-2">
             {!logoLoading && logoUrl && (
               <Image
-                src={logoUrl}
+                src={logoUrl || "/placeholder.svg"}
                 alt="Logo"
                 width={120}
                 height={120}
@@ -321,13 +512,18 @@ const CheckoutPage = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
+                        onBlur={handleInputBlur}
                         placeholder="First name"
-                        style={{
-                          padding: "12px 16px",
-                          border: "1px solid #007bff",
-                          boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)",
-                        }}
+                        style={getInputStyling("firstName")}
                       />
+                      {errors.firstName && touched.firstName && (
+                        <div
+                          className="text-danger mt-1"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.firstName}
+                        </div>
+                      )}
                     </div>
                     <div className="col-md-6">
                       <label className="form-label">
@@ -339,31 +535,41 @@ const CheckoutPage = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
+                        onBlur={handleInputBlur}
                         placeholder="Last name"
-                        style={{
-                          padding: "12px 16px",
-                          border: "1px solid #007bff",
-                          boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)",
-                        }}
+                        style={getInputStyling("lastName")}
                       />
+                      {errors.lastName && touched.lastName && (
+                        <div
+                          className="text-danger mt-1"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.lastName}
+                        </div>
+                      )}
                     </div>
                     <div className="col-12">
                       <label className="form-label">
-                        phone <span className="text-danger">*</span>
+                        Phone <span className="text-danger">*</span>
                       </label>
                       <input
-                        type="phone"
+                        type="tel"
                         className="form-control"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
+                        onBlur={handleInputBlur}
                         placeholder="Phone"
-                        style={{
-                          padding: "12px 16px",
-                          border: "1px solid #007bff",
-                          boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)",
-                        }}
+                        style={getInputStyling("phone")}
                       />
+                      {errors.phone && touched.phone && (
+                        <div
+                          className="text-danger mt-1"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.phone}
+                        </div>
+                      )}
                     </div>
                     <div className="col-12">
                       <label className="form-label">
@@ -378,13 +584,18 @@ const CheckoutPage = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
+                        onBlur={handleInputBlur}
                         placeholder="Email"
-                        style={{
-                          padding: "12px 16px",
-                          border: "1px solid #007bff",
-                          boxShadow: "0 2px 6px rgba(0, 123, 255, 0.2)",
-                        }}
+                        style={getInputStyling("email")}
                       />
+                      {errors.email && touched.email && (
+                        <div
+                          className="text-danger mt-1"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.email}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -412,7 +623,7 @@ const CheckoutPage = () => {
                       fontSize: "16px",
                     }}
                     onClick={handleProceedToPayment}
-                    disabled={isProcessing || !formData.acceptOffers}
+                    disabled={isProcessing}
                   >
                     {isProcessing ? (
                       <>
@@ -445,7 +656,8 @@ const CheckoutPage = () => {
                         <img
                           src={
                             bookingData.tourImage ||
-                            "/placeholder.svg?height=80&width=120"
+                            "/placeholder.svg?height=80&width=120" ||
+                            "/placeholder.svg"
                           }
                           className="img-fluid rounded-start h-100 object-fit-cover"
                           alt="Tour"

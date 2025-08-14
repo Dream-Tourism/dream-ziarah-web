@@ -10,7 +10,7 @@ import CustomDropdown from "./CustomDropdown";
 const AgentCalendar = ({ tourData = null }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
-  const [dropDownTime, setDropDownTime] = useState("");
+  const [dropDownTime, setDropDownTime] = useState("00:00");
   const [selectedTourType, setSelectedTourType] = useState(null);
   const [participantCount, setParticipantCount] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -23,10 +23,11 @@ const AgentCalendar = ({ tourData = null }) => {
     []
   );
   const [isMobile, setIsMobile] = useState(false);
+  const [errors, setErrors] = useState({}); // Added error state
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  // console.log("tour", tourData);
+  console.log("tour", tourData);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -45,6 +46,7 @@ const AgentCalendar = ({ tourData = null }) => {
 
   // Get unique tour types
   const getUniqueTourTypes = () => {
+    if (!priceList) return [];
     const uniqueGuides = [...new Set(priceList.map((item) => item.guide))];
     return uniqueGuides.map((guide) => {
       const firstMatch = priceList.find((item) => item.guide === guide);
@@ -65,33 +67,22 @@ const AgentCalendar = ({ tourData = null }) => {
 
   // Update available participant counts when tour type changes
   useEffect(() => {
-    if (selectedTourType) {
-      const filteredOptions = priceList.filter(
-        (option) => option.guide === selectedTourType.guide
-      );
-      const participantCounts = filteredOptions.map((option) =>
-        Number.parseInt(option.person)
-      );
-      const uniqueCounts = [...new Set(participantCounts)].sort(
-        (a, b) => a - b
-      );
+    if (selectedTourType && tourData) {
+      // Set max participants from group_size
+      const maxParticipants = Number.parseInt(tourData.group_size) || 1;
 
-      setAvailableParticipantCounts(uniqueCounts);
-
-      // Set first available participant count as default
-      if (uniqueCounts.length > 0) {
-        setParticipantCount(uniqueCounts[0]);
+      // Set first participant count as default (1)
+      if (!participantCount) {
+        setParticipantCount(1);
       }
     }
-  }, [selectedTourType, priceList]);
+  }, [selectedTourType, tourData]);
 
   // Update available times and dates when tour type and participant count change
   useEffect(() => {
-    if (selectedTourType && participantCount) {
+    if (selectedTourType && participantCount && priceList) {
       const matchingOption = priceList.find(
-        (option) =>
-          option.guide === selectedTourType.guide &&
-          Number.parseInt(option.person) === participantCount
+        (option) => option.guide === selectedTourType.guide
       );
 
       if (matchingOption) {
@@ -163,16 +154,22 @@ const AgentCalendar = ({ tourData = null }) => {
 
   const handleTourTypeChange = (tourType) => {
     setSelectedTourType(tourType);
+    // Clear tour type error when tour type is selected
+    setErrors((prev) => ({ ...prev, tourType: false }));
   };
 
   const handleParticipantChange = (newCount) => {
     setParticipantCount(newCount);
+    // Clear participant error when participant count is changed
+    setErrors((prev) => ({ ...prev, participants: false }));
   };
 
   const handleDateSelect = (date) => {
     if (isDateAvailable(date)) {
       setSelectedDate(date);
       setShowCalendar(false);
+      // Clear date error when date is selected
+      setErrors((prev) => ({ ...prev, date: false }));
       // Reset booking availability when date changes
       setBookingAvailable(false);
       setBookingData(null);
@@ -182,25 +179,34 @@ const AgentCalendar = ({ tourData = null }) => {
   const handleTimeChange = (time) => {
     setSelectedTime(time);
     setDropDownTime(time);
+    // Clear time error when time is selected
+    setErrors((prev) => ({ ...prev, time: false }));
     // Reset booking availability when time changes
     setBookingAvailable(false);
     setBookingData(null);
   };
 
   const getCurrentPriceOption = () => {
-    if (!selectedTourType || !participantCount) return null;
+    if (!selectedTourType || !priceList) return null;
 
-    return priceList.find(
-      (option) =>
-        option.guide === selectedTourType.guide &&
-        Number.parseInt(option.person) === participantCount
-    );
+    return priceList.find((option) => option.guide === selectedTourType.guide);
   };
 
   const calculateTotalPrice = () => {
     const currentOption = getCurrentPriceOption();
-    if (!currentOption) return 0;
-    return Number.parseFloat(currentOption.price) * participantCount;
+    if (!currentOption || !tourData) return 0;
+
+    if (tourData.price_by_vehicle) {
+      // Group price - return the full group price regardless of participant count
+      return Number.parseFloat(currentOption.group_price);
+    } else if (tourData.price_by_passenger) {
+      // Per person price - multiply by participant count
+      return (
+        Number.parseFloat(currentOption.price_per_person) * participantCount
+      );
+    }
+
+    return 0;
   };
 
   const checkAvailabilityFromBackend = async (bookingDetails) => {
@@ -235,23 +241,35 @@ const AgentCalendar = ({ tourData = null }) => {
   };
 
   const handleCheckAvailability = async () => {
+    // Clear previous errors
+    setErrors({});
+    const newErrors = {};
+
     if (!selectedTourType) {
+      newErrors.tourType = true;
       alert("Please select a tour type");
+      setErrors(newErrors);
       return;
     }
 
     if (!participantCount) {
+      newErrors.participants = true;
       alert("Please select number of participants");
+      setErrors(newErrors);
       return;
     }
 
     if (!selectedDate) {
+      newErrors.date = true;
       alert("Please select a date");
+      setErrors(newErrors);
       return;
     }
 
     if (!selectedTime) {
+      newErrors.time = true;
       alert("Please select a time");
+      setErrors(newErrors);
       return;
     }
 
@@ -267,7 +285,7 @@ const AgentCalendar = ({ tourData = null }) => {
       time: selectedTime,
       totalPrice,
       priceOption: currentPriceOption,
-      pricePerPerson: Number.parseFloat(currentPriceOption.price),
+      pricePerPerson: Number.parseFloat(currentPriceOption.price_per_person),
     };
 
     try {
@@ -316,14 +334,26 @@ const AgentCalendar = ({ tourData = null }) => {
         <small className="text-muted">From</small>
         <h4 className="mb-0 fw-bold">
           $
-          {currentPriceOption
-            ? Number.parseFloat(currentPriceOption.price).toFixed(2)
+          {currentPriceOption && tourData
+            ? tourData.price_by_vehicle
+              ? (
+                  Number.parseFloat(currentPriceOption.group_price) /
+                  Number.parseInt(tourData.group_size)
+                ).toFixed(2)
+              : tourData.price_by_passenger
+              ? Number.parseFloat(currentPriceOption.price_per_person).toFixed(
+                  2
+                )
+              : "0.00"
             : "0.00"}
         </h4>
-        {currentPriceOption && (
+        {currentPriceOption && tourData && (
           <small className="text-muted">
-            per person • {currentPriceOption.guide} • Up to{" "}
-            {currentPriceOption.person} people
+            {tourData.price_by_vehicle
+              ? `per person (group price divided by ${tourData.group_size}) • ${currentPriceOption.guide} • Up to ${tourData.group_size} people`
+              : tourData.price_by_passenger
+              ? `per person • ${currentPriceOption.guide} • Up to ${tourData.group_size} people`
+              : `${currentPriceOption.guide} • Up to ${tourData.group_size} people`}
           </small>
         )}
       </div>
@@ -336,12 +366,14 @@ const AgentCalendar = ({ tourData = null }) => {
         <TourType
           onTourTypeChange={handleTourTypeChange}
           availableTourTypes={getUniqueTourTypes()}
+          hasError={errors.tourType}
         />
 
         {/* Participants Selection */}
         <Participants
           onParticipantChange={handleParticipantChange}
-          availableParticipantCounts={availableParticipantCounts}
+          maxParticipants={Number.parseInt(tourData?.group_size) || 1}
+          hasError={errors.participants}
         />
 
         {/* Date Selection */}
@@ -358,6 +390,7 @@ const AgentCalendar = ({ tourData = null }) => {
               height: "48px",
               width: "100%",
               minWidth: isMobile ? "auto" : "280px",
+              border: errors.date ? "2px solid #dc3545" : "none", // Added error styling
             }}
             onClick={() => setShowCalendar(!showCalendar)}
           >
@@ -392,15 +425,19 @@ const AgentCalendar = ({ tourData = null }) => {
           value={dropDownTime}
           options={availableTimes}
           onChange={handleTimeChange}
+          hasError={errors.time}
         />
 
         {/* Price Display */}
-        {currentPriceOption && participantCount && (
+        {currentPriceOption && participantCount && tourData && (
           <div className="mb-3 p-3 bg-white bg-opacity-10 rounded">
             <div className="d-flex justify-content-between text-black">
               <span>
-                {participantCount} × $
-                {Number.parseFloat(currentPriceOption.price).toFixed(2)}
+                {tourData.price_by_vehicle
+                  ? `Group Price (${participantCount} participants)`
+                  : `${participantCount} × $${Number.parseFloat(
+                      currentPriceOption.price_per_person
+                    ).toFixed(2)}`}
               </span>
               <span className="fw-bold">${totalPrice.toFixed(2)}</span>
             </div>
