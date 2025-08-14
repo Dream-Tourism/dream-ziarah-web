@@ -67,9 +67,12 @@ const TourSingleV1Dynamic = ({ params, children }) => {
   const { data: itenarayItems, isSuccess: isItenariesSuccess } =
     useGetItenariesByMenuContentIdQuery(data?.id);
 
-  if (isItenariesSuccess) {
-    dispatch(addItenarayItems(itenarayItems));
-  }
+  useEffect(() => {
+    if (isItenariesSuccess && itenarayItems) {
+      dispatch(addItenarayItems(itenarayItems));
+    }
+  }, [isItenariesSuccess, itenarayItems, dispatch]);
+
   let tour = {};
   if (isSuccess && isImageContentsSuccess) {
     tour = {
@@ -90,8 +93,15 @@ const TourSingleV1Dynamic = ({ params, children }) => {
     };
     // checkLocation(params?.name);
 
-    dispatch(addtourItem(data));
+    // dispatch(addtourItem(data));
   }
+
+  useEffect(() => {
+    if (isSuccess && isImageContentsSuccess && data) {
+      dispatch(addtourItem(data));
+    }
+  }, [isSuccess, isImageContentsSuccess, data, dispatch]);
+
   useEffect(() => {
     const hasReloaded = localStorage.getItem("tourHasReloaded" || "");
 
