@@ -55,7 +55,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
   // const {data, isSuccess, isFulfilled} = useGetContentsByMenuContentIdQuery(id);
   const { data, isSuccess, isFulfilled } =
     useGetContentsByMenuContentTitleQuery(capitalize(params?.name));
-
+  console.log("params", capitalize(params?.name));
   // const {data : itenarayItems, isSuccess: isItenariesSuccess} = useGetItenariesByMenuContentIdQuery(id);
 
   const {
@@ -63,6 +63,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
     isSuccess: isImageContentsSuccess,
     isLoading,
   } = useGetImagesByMenuIdQuery(tourId);
+  console.log("imageContents", imageContents);
 
   const { data: itenarayItems, isSuccess: isItenariesSuccess } =
     useGetItenariesByMenuContentIdQuery(data?.id);
