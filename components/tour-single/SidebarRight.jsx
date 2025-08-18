@@ -57,7 +57,7 @@ const SidebarRight = () => {
     isSuccess: isSuccess2,
     isLoading: isLoading2,
     error,
-  } = useGetTourEntryByIdQuery(34);
+  } = useGetTourEntryByIdQuery(35);
 
   const is_bokun_url = false;
 

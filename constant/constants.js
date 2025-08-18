@@ -570,6 +570,7 @@ export const GET_MENUS_WITHOUT_PAGINATION = `${BASE_URL}/cms_menu/api/v1/cms_men
 export const GET_TOUR_ENTRYID = `${BASE_URL2}/tour_content/api/v1/tour`;
 export const CHECKOUTDATA = `${BASE_URL2}/payments/api/v1/payments/checkout/create/`;
 export const getAllTourBookingByTravellerID = `${BASE_URL2}/tour_booking/api/v1/tour_booking/get_all_tour_booking_by_traveller_id/`;
+export const checkAvailability = `${BASE_URL2}/payments/api/v1/payments/availability/check/`;
 //menu content
 
 export const CREATE_CONTENT = `${BASE_URL}/cms_menu_content/api/v1/cms_menu_content/create/`;

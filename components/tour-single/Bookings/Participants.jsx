@@ -17,13 +17,34 @@ const Participants = ({
   }, []);
 
   const handleParticipantCountChange = (e) => {
-    const value = Number.parseInt(e.target.value) || 1;
-    const clampedValue = Math.min(Math.max(1, value), maxParticipants);
-    setParticipantCount(clampedValue);
+    const value = e.target.value;
 
-    // Notify parent component of changes
+    // Allow only numbers
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+
+    const numValue = Number.parseInt(value) || 0;
+
+    // Don't allow 0 or empty, set to 1 as minimum
+    if (numValue === 0 && value !== "") {
+      return;
+    }
+
+    // Clamp to max participants
+    const clampedValue =
+      numValue > maxParticipants ? maxParticipants : numValue;
+
+    // If empty string, allow it temporarily for user input
+    if (value === "") {
+      setParticipantCount("");
+    } else {
+      setParticipantCount(clampedValue);
+    }
+
+    // Notify parent component of changes (use 1 as minimum if empty)
     if (onParticipantChange) {
-      onParticipantChange(clampedValue);
+      onParticipantChange(clampedValue || 1);
     }
   };
 
@@ -42,17 +63,36 @@ const Participants = ({
             <i className="fas fa-users me-2 text-muted"></i>
             <span>Participants</span>
           </div>
-          <div className="d-flex align-items-center">
+          <div
+            className="d-flex align-items-center"
+            style={{
+              borderLeft: "1px solid black",
+              paddingLeft: "12px",
+              width: "150px",
+              justifyContent: "space-between",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             <input
-              type="number"
+              type="text"
               className="form-control border-0 bg-transparent text-end fw-bold"
-              style={{ width: "80px", minWidth: "60px" }}
+              style={{
+                width: "80px",
+                minWidth: "60px",
+                border: "1px solid #dee2e6", // subtle border
+                boxShadow: "0 1px 3px rgba(0,0,0,0.5)", // soft shadow
+                borderRadius: "6px", // slight rounding
+              }}
               value={participantCount}
               onChange={handleParticipantCountChange}
               min="1"
               max={maxParticipants}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
-            <span className="text-muted ms-1">/ {maxParticipants}</span>
+            <span className="text-muted ms-1">/max {maxParticipants}</span>
           </div>
         </div>
       </div>

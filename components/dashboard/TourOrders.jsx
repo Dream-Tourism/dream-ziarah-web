@@ -423,14 +423,14 @@ export default function TourOrders({
       ) : (
         <>
           {/* Mobile View - Cards */}
-          <div className="d-md-none">
+          <div className="d-sm-none">
             {filteredOrders.map((order) => (
               <MobileOrderCard key={order.id} order={order} />
             ))}
           </div>
 
           {/* Desktop View - Table */}
-          <div className="d-none d-md-block">
+          <div className="d-none d-sm-block">
             <div className="card border-0 shadow-lg">
               <div
                 className="card-header text-white position-relative overflow-hidden"

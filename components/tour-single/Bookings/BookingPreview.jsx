@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const BookingPreview = ({
@@ -11,11 +12,12 @@ const BookingPreview = ({
   participantCount,
   totalPrice,
   priceOption,
-  tourName = "Makkah City Ziarah Luxury Private Vehicle",
-  duration = "4 Hours",
+  tourName,
+  duration,
 }) => {
   const [isBooking, setIsBooking] = useState(false);
-
+  // console.log("selectedTime", selectedTime);
+  const router = useRouter();
   const formatDate = (date) => {
     const options = {
       weekday: "short",
@@ -24,12 +26,6 @@ const BookingPreview = ({
       day: "numeric",
     };
     return date.toLocaleDateString("en-US", options);
-  };
-
-  const getTimeRange = () => {
-    const startTime = selectedTime;
-    const endTime = selectedTime; // You can calculate end time based on duration
-    return `${startTime} - ${endTime}`;
   };
 
   const setCookie = (name, value, days = 1) => {
@@ -66,11 +62,7 @@ const BookingPreview = ({
       setCookie("booking_info", bookingInfo, 1); // Expires in 1 day
       setCookie("channel_id", "12130", 1);
 
-      // Simple checkout URL - only channel_id parameter
-      const checkoutUrl = `/checkout/`;
-
-      // Open in new tab
-      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+      router.push("/checkout");
     } catch (error) {
       console.error("Error preparing checkout:", error);
       alert("Error preparing checkout. Please try again.");
@@ -106,6 +98,9 @@ const BookingPreview = ({
 
         {/* Date */}
         <div className="mb-3">
+          <p className="mb-1 text-muted" style={{ fontSize: "14px" }}>
+            Date
+          </p>
           <p
             className="mb-1 fw-bold"
             style={{ color: "#333", fontSize: "16px" }}
@@ -114,8 +109,21 @@ const BookingPreview = ({
           </p>
         </div>
 
-        {/* Customisation Section */}
+        {/* Time */}
         <div className="mb-3">
+          <p className="mb-1 text-muted" style={{ fontSize: "14px" }}>
+            Time
+          </p>
+          <p
+            className="mb-1 fw-bold"
+            style={{ color: "#333", fontSize: "16px" }}
+          >
+            {selectedTime}
+          </p>
+        </div>
+
+        {/* Customisation Section */}
+        {/* <div className="mb-3">
           <p className="mb-1 text-muted" style={{ fontSize: "14px" }}>
             Customisation
           </p>
@@ -125,7 +133,7 @@ const BookingPreview = ({
           >
             {getTimeRange()}
           </p>
-        </div>
+        </div> */}
 
         {/* Duration */}
         <div className="mb-4">

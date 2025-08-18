@@ -6,6 +6,7 @@ import TourType from "./TourType";
 import Participants from "./Participants";
 import BookingPreview from "./BookingPreview";
 import CustomDropdown from "./CustomDropdown";
+import { checkAvailability } from "@/constant/constants";
 
 const AgentCalendar = ({ tourData = null }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -19,15 +20,15 @@ const AgentCalendar = ({ tourData = null }) => {
   const [bookingData, setBookingData] = useState(null);
   const [availableTimes, setAvailableTimes] = useState([]);
   const [availableDates, setAvailableDates] = useState([]);
-  const [availableParticipantCounts, setAvailableParticipantCounts] = useState(
-    []
-  );
+  const [booking, setboooking] = useState(null);
+  const [availabilityMessage, setAvailabilityMessage] =
+    useState("Check Availability");
   const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState({}); // Added error state
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  // console.log("tour", tourData);
+  console.log("tour", tourData);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -41,6 +42,14 @@ const AgentCalendar = ({ tourData = null }) => {
 
   // Use provided tourData or sample data
   const priceList = tourData?.day_tour_price_list;
+
+  const formatDateToYYYYMMDD = (date) => {
+    const d = new Date(date);
+    const month = `${d.getMonth() + 1}`.padStart(2, "0");
+    const day = `${d.getDate()}`.padStart(2, "0");
+    const year = d.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
 
   // console.log("selectedTime", availableTimes);
 
@@ -213,7 +222,7 @@ const AgentCalendar = ({ tourData = null }) => {
     // Simulate API call to backend
     try {
       // Replace this with your actual API call
-      const response = await fetch("/api/check-availability", {
+      const response = await fetch(checkAvailability, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -247,55 +256,69 @@ const AgentCalendar = ({ tourData = null }) => {
 
     if (!selectedTourType) {
       newErrors.tourType = true;
-      alert("Please select a tour type");
+      setAvailabilityMessage("Please select a tour type");
       setErrors(newErrors);
       return;
     }
 
     if (!participantCount) {
       newErrors.participants = true;
-      alert("Please select number of participants");
+      setAvailabilityMessage("Please select number of participants");
       setErrors(newErrors);
       return;
     }
 
     if (!selectedDate) {
-      newErrors.date = true;
-      alert("Please select a date");
+      newErrors.date = true; // mark error for styling
       setErrors(newErrors);
+      setAvailabilityMessage("Please select a date"); // show message
       return;
     }
 
     if (!selectedTime) {
       newErrors.time = true;
-      alert("Please select a time");
+      setAvailabilityMessage("Please select a time");
       setErrors(newErrors);
       return;
     }
 
     setIsCheckingAvailability(true);
+    setAvailabilityMessage("Checking...");
 
-    const currentPriceOption = getCurrentPriceOption();
     const totalPrice = calculateTotalPrice();
 
     const bookingDetails = {
-      tourType: selectedTourType,
-      participantCount,
-      date: selectedDate,
-      time: selectedTime,
-      totalPrice,
-      priceOption: currentPriceOption,
-      pricePerPerson: Number.parseFloat(currentPriceOption.price_per_person),
+      tour_details: {
+        tour_id: tourData?.id,
+        selected_date: formatDateToYYYYMMDD(selectedDate),
+        selected_time: selectedTime,
+        total_participants: participantCount,
+        total_price: totalPrice,
+        guide: selectedTourType?.guide,
+      },
     };
+    setboooking(bookingDetails);
 
     try {
       const availabilityResult = await checkAvailabilityFromBackend(
         bookingDetails
       );
 
+      // Handle error response from backend
+      if (availabilityResult.status === "error") {
+        const errorMessages = Object.values(availabilityResult.errors).join(
+          " "
+        );
+        setBookingAvailable(false);
+        setAvailabilityMessage(errorMessages);
+        return;
+      }
+
+      // Handle success response
       if (availabilityResult.available) {
         setBookingAvailable(true);
         setBookingData(availabilityResult);
+        setAvailabilityMessage("Available");
 
         // Scroll to booking preview section
         setTimeout(() => {
@@ -306,15 +329,17 @@ const AgentCalendar = ({ tourData = null }) => {
         }, 100);
       } else {
         setBookingAvailable(false);
-        alert("Sorry, no availability for the selected date and time.");
+        setAvailabilityMessage("Not available");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error checking availability. Please try again.");
+      setAvailabilityMessage("Error, try again");
     } finally {
       setIsCheckingAvailability(false);
     }
   };
+
+  console.log("bookingdetails", booking);
 
   const currentPriceOption = getCurrentPriceOption();
   const totalPrice = calculateTotalPrice();
@@ -350,7 +375,7 @@ const AgentCalendar = ({ tourData = null }) => {
         {currentPriceOption && tourData && (
           <small className="text-muted">
             {tourData.price_by_vehicle
-              ? `per person (group price divided by ${tourData.group_size}) • ${currentPriceOption.guide} • Up to ${tourData.group_size} people`
+              ? `per person  • ${currentPriceOption.guide} • Up to ${tourData.group_size} people`
               : tourData.price_by_passenger
               ? `per person • ${currentPriceOption.guide} • Up to ${tourData.group_size} people`
               : `${currentPriceOption.guide} • Up to ${tourData.group_size} people`}
@@ -359,7 +384,7 @@ const AgentCalendar = ({ tourData = null }) => {
       </div>
 
       {/* Booking Form */}
-      <div className="p-3" style={{ backgroundColor: "#3554d1" }}>
+      <div className="p-3 bg-blue-5">
         <h5 className="text-white mb-3 fw-bold">Select date & participants</h5>
 
         {/* Tour Type Selection */}
@@ -383,14 +408,17 @@ const AgentCalendar = ({ tourData = null }) => {
           ref={dateButtonRef}
         >
           <div
-            className="form-control d-flex align-items-center bg-white border-0 rounded"
+            className="form-control d-flex align-items-center bg-white rounded"
             style={{
               cursor: "pointer",
               padding: "12px 16px",
               height: "48px",
               width: "100%",
               minWidth: isMobile ? "auto" : "280px",
-              border: errors.date ? "2px solid #dc3545" : "none", // Added error styling
+              border: errors.date ? "2px solid #ff4d4f" : "none",
+              boxShadow: errors.date
+                ? "0 0 6px rgba(255, 77, 79, 0.8)"
+                : "none",
             }}
             onClick={() => setShowCalendar(!showCalendar)}
           >
@@ -407,6 +435,13 @@ const AgentCalendar = ({ tourData = null }) => {
               } text-muted ms-2`}
             ></i>
           </div>
+          {errors.date && (
+            <div
+              style={{ color: "#ff4d4f", fontSize: "13px", marginTop: "4px" }}
+            >
+              Please select a date
+            </div>
+          )}
 
           <Calendar
             selectedDate={selectedDate}
@@ -457,18 +492,7 @@ const AgentCalendar = ({ tourData = null }) => {
           onClick={handleCheckAvailability}
           disabled={isCheckingAvailability || !currentPriceOption}
         >
-          {isCheckingAvailability ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Checking...
-            </>
-          ) : (
-            "Check Availability"
-          )}
+          {availabilityMessage}
         </button>
       </div>
 
@@ -485,6 +509,7 @@ const AgentCalendar = ({ tourData = null }) => {
             totalPrice={totalPrice}
             priceOption={currentPriceOption}
             tourName={tourData?.name}
+            duration={tourData?.duration}
           />
         </div>
       )}
