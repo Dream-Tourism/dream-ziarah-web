@@ -1,11 +1,16 @@
 "use client";
 
+import { useState } from "react";
+import { processStripePayment } from "@/services/tourBookingService";
+
 export default function OrderDetails({
   selectedOrder,
   onClose,
   onPayment,
   onCancel,
 }) {
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
   if (!selectedOrder) return null;
 
   // Function to get tour image based on tour name
@@ -17,7 +22,75 @@ export default function OrderDetails({
       "Safari Adventure": "/placeholder.png?height=300&width=400",
       "Mountain Hiking": "/placeholder.png?height=300&width=400",
     };
-    return tourImages[tourName] || "/placeholder.png?height=100&width=200";
+    return tourImages[tourName] || "/placeholder.png?height=240&width=320";
+  };
+
+  const handleStripePayment = async () => {
+    if (!selectedOrder.paymentUrl) {
+      alert("Payment URL not available. Please contact support.");
+      return;
+    }
+
+    try {
+      setIsProcessingPayment(true);
+
+      // Open checkout URL in a new tab/window
+      const checkoutWindow = window.open(selectedOrder.paymentUrl, "_blank");
+
+      // For mobile devices (iPhone Safari), ensure the URL opens properly
+      if (
+        !checkoutWindow ||
+        checkoutWindow.closed ||
+        typeof checkoutWindow.closed == "undefined"
+      ) {
+        // Fallback: redirect current window if popup was blocked
+        window.location.href = selectedOrder.paymentUrl;
+        return;
+      }
+
+      // Clear any existing booking cookies
+      // document.cookie =
+      //   "booking_info=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // document.cookie =
+      //   "channel_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      // Show success message
+      alert("Redirecting to payment gateway...");
+
+      // Close the modal immediately
+      onClose();
+
+      // Optional: Monitor the payment window and refresh data when it closes
+      const checkClosed = setInterval(() => {
+        if (checkoutWindow.closed) {
+          clearInterval(checkClosed);
+          // Refresh bookings to get updated status after payment window closes
+          setTimeout(() => {
+            window.location.reload(); // Refresh the entire page to get latest data
+          }, 1000);
+        }
+      }, 1000);
+
+      // Set a timeout to stop monitoring after 30 minutes
+      setTimeout(() => {
+        clearInterval(checkClosed);
+      }, 1800000); // 30 minutes
+    } catch (error) {
+      console.error("Payment processing failed:", error);
+      alert(`Payment failed: ${error.message}`);
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  const handleProcessPayment = () => {
+    if (selectedOrder.paymentUrl) {
+      // Use Stripe payment flow with new tab opening
+      handleStripePayment();
+    } else {
+      // Fallback to original payment flow
+      onPayment(selectedOrder.id);
+    }
   };
 
   return (
@@ -84,6 +157,18 @@ export default function OrderDetails({
 
                         <div className="mb-3">
                           <label className="text-muted small">
+                            Guide Service
+                          </label>
+                          <div className="d-flex align-items-center">
+                            <i className="icon-user-check text-info me-2"></i>
+                            <strong>
+                              {selectedOrder.guide || "Not specified"}
+                            </strong>
+                          </div>
+                        </div>
+
+                        <div className="mb-3">
+                          <label className="text-muted small">
                             Customer Name
                           </label>
                           <div className="d-flex align-items-center">
@@ -134,10 +219,29 @@ export default function OrderDetails({
                               <button
                                 type="button"
                                 className="btn btn-success btn-sm"
-                                onClick={() => onPayment(selectedOrder.id)}
+                                onClick={handleProcessPayment}
+                                disabled={isProcessingPayment}
                               >
-                                <i className="icon-credit-card text-14 me-2"></i>
-                                Process Payment
+                                {isProcessingPayment ? (
+                                  <>
+                                    <div
+                                      className="spinner-border spinner-border-sm me-2"
+                                      role="status"
+                                    >
+                                      <span className="visually-hidden">
+                                        Processing...
+                                      </span>
+                                    </div>
+                                    Processing...
+                                  </>
+                                ) : (
+                                  <>
+                                    <i className="icon-credit-card text-14 me-2"></i>
+                                    {selectedOrder.paymentUrl
+                                      ? "Pay with Stripe"
+                                      : "Process Payment"}
+                                  </>
+                                )}
                               </button>
                             )}
                           </div>
@@ -157,34 +261,78 @@ export default function OrderDetails({
 
                         <div className="mb-3">
                           <label className="text-muted small">
-                            Booking Date
+                            Tour Date & Time
                           </label>
                           <div className="d-flex align-items-center">
                             <i className="icon-calendar-check text-warning me-2"></i>
-                            <strong>
-                              {new Date(
-                                selectedOrder.datePurchased
-                              ).toLocaleDateString("en-US", {
-                                weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}
-                            </strong>
+                            <div>
+                              <strong>
+                                {new Date(
+                                  selectedOrder.selectedDate
+                                ).toLocaleDateString("en-US", {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}
+                              </strong>
+                              <br />
+                              <small className="text-muted">
+                                at {selectedOrder.selectedTime}
+                              </small>
+                            </div>
                           </div>
                         </div>
 
                         <div className="mb-3">
                           <label className="text-muted small">
-                            Total Investment
+                            Pricing Details
                           </label>
                           <div className="d-flex align-items-center">
                             <i className="icon-dollar-sign text-success me-2"></i>
-                            <strong className="text-success fs-4">
-                              {selectedOrder.totalPrice.toLocaleString()} USD
-                            </strong>
+                            <div>
+                              {selectedOrder.priceByVehicle ? (
+                                <>
+                                  <strong className="text-success fs-4">
+                                    $
+                                    {selectedOrder.groupPrice?.toLocaleString()}{" "}
+                                    USD
+                                  </strong>
+                                  <br />
+                                  <small className="text-muted">
+                                    Group Price (Vehicle)
+                                  </small>
+                                </>
+                              ) : (
+                                <>
+                                  <strong className="text-success fs-4">
+                                    ${selectedOrder.totalPrice.toLocaleString()}{" "}
+                                    USD
+                                  </strong>
+                                  <br />
+                                  <small className="text-muted">
+                                    ${selectedOrder.pricePerPerson}/person ×{" "}
+                                    {selectedOrder.participants}
+                                  </small>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
+
+                        {selectedOrder.paymentKey && (
+                          <div className="mb-3">
+                            <label className="text-muted small">
+                              Payment Reference
+                            </label>
+                            <div className="d-flex align-items-center">
+                              <i className="icon-key text-primary me-2"></i>
+                              <small className="font-monospace">
+                                {selectedOrder.paymentKey}
+                              </small>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -198,7 +346,7 @@ export default function OrderDetails({
                     <img
                       src={
                         getTourImage(selectedOrder.tourName) ||
-                        "/placeholder.svg"
+                        "/placeholder.png"
                       }
                       alt={selectedOrder.tourName}
                       className="card-img-top"
@@ -214,7 +362,7 @@ export default function OrderDetails({
                   <div className="card-body">
                     <h6 className="text-primary mb-2">
                       <i className="icon-map-pin text-14 me-2"></i>
-                      {selectedOrder.tourName}
+                      {selectedOrder.tourName.split("(")[0].trim()}
                     </h6>
                     <p className="text-muted small mb-3">
                       Experience the adventure of a lifetime with our carefully
@@ -222,18 +370,24 @@ export default function OrderDetails({
                     </p>
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
-                        <small className="text-muted">Duration</small>
-                        <div className="fw-semibold">7 Days</div>
+                        <small className="text-muted">Vehicle Type</small>
+                        <div className="fw-semibold">
+                          {selectedOrder.tourName.includes("Luxury")
+                            ? "Luxury"
+                            : "Standard"}
+                        </div>
                       </div>
                       <div>
-                        <small className="text-muted">Rating</small>
+                        <small className="text-muted">Guide</small>
                         <div className="text-warning">
-                          <i className="icon-star"></i>
-                          <i className="icon-star"></i>
-                          <i className="icon-star"></i>
-                          <i className="icon-star"></i>
-                          <i className="icon-star"></i>
-                          <small className="text-muted ms-1">4.9</small>
+                          {selectedOrder.guide === "Without Guide" ? (
+                            <i className="icon-x-circle"></i>
+                          ) : (
+                            <i className="icon-user-check"></i>
+                          )}
+                          <small className="text-muted ms-1">
+                            {selectedOrder.guide}
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -245,7 +399,13 @@ export default function OrderDetails({
             {/* Additional Tour Details */}
             <div className="row mt-4">
               <div className="col-12">
-                <div className="card border-0 shadow-sm bg-blue-3">
+                <div
+                  className="card border-0 shadow-sm"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
+                  }}
+                >
                   <div className="card-body">
                     <h6 className="text-primary mb-3 d-flex align-items-center">
                       <i className="icon-info text-14 me-2"></i>
@@ -254,43 +414,57 @@ export default function OrderDetails({
                     <div className="row">
                       <div className="col-md-3 text-center">
                         <i
-                          className="icon-plane text-primary mb-2"
+                          className="icon-car text-primary mb-2"
                           style={{ fontSize: "2rem" }}
                         ></i>
                         <div>
-                          <strong>Flight Included</strong>
+                          <strong>Private Vehicle</strong>
                         </div>
-                        <small className="text-muted">Round trip airfare</small>
+                        <small className="text-muted">
+                          Luxury transportation
+                        </small>
                       </div>
                       <div className="col-md-3 text-center">
                         <i
-                          className="icon-home text-success mb-2"
+                          className="icon-clock text-success mb-2"
                           style={{ fontSize: "2rem" }}
                         ></i>
                         <div>
-                          <strong>Accommodation</strong>
+                          <strong>Flexible Timing</strong>
                         </div>
-                        <small className="text-muted">4-star hotel stay</small>
+                        <small className="text-muted">
+                          Choose your schedule
+                        </small>
                       </div>
                       <div className="col-md-3 text-center">
                         <i
-                          className="icon-coffee text-warning mb-2"
+                          className="icon-map text-warning mb-2"
                           style={{ fontSize: "2rem" }}
                         ></i>
                         <div>
-                          <strong>Meals Included</strong>
+                          <strong>Scenic Route</strong>
                         </div>
-                        <small className="text-muted">Breakfast & dinner</small>
+                        <small className="text-muted">
+                          Beautiful landscapes
+                        </small>
                       </div>
                       <div className="col-md-3 text-center">
                         <i
-                          className="icon-user-check text-info mb-2"
+                          className={`${
+                            selectedOrder.guide === "Without Guide"
+                              ? "icon-x-circle text-danger"
+                              : "icon-user-check text-info"
+                          } mb-2`}
                           style={{ fontSize: "2rem" }}
                         ></i>
                         <div>
-                          <strong>Tour Guide</strong>
+                          <strong>{selectedOrder.guide}</strong>
                         </div>
-                        <small className="text-muted">Professional guide</small>
+                        <small className="text-muted">
+                          {selectedOrder.guide === "Without Guide"
+                            ? "Self-guided tour"
+                            : "Professional guide"}
+                        </small>
                       </div>
                     </div>
                   </div>
@@ -304,7 +478,8 @@ export default function OrderDetails({
               <div>
                 <small className="text-muted">
                   <i className="icon-clock text-14 me-1"></i>
-                  Last updated: {new Date().toLocaleString()}
+                  Last updated:{" "}
+                  {new Date(selectedOrder.updatedAt).toLocaleString()}
                 </small>
               </div>
               <div>

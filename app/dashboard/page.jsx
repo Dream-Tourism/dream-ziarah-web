@@ -21,7 +21,7 @@ function Dashboard() {
   } = useSelector((state) => state.auth);
   const [activeSection, setActiveSection] = useState("dashboard");
   const [selectedOrder, setSelectedOrder] = useState(null);
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Use the custom hook for tour bookings
   const {
     bookingData,
@@ -37,6 +37,39 @@ function Dashboard() {
     }
   }, [dispatch, isAuthenticated, authLoading]);
 
+  // Listen for payment completion (when user returns from Stripe)
+  useEffect(() => {
+    const handlePaymentReturn = () => {
+      // Check if we're returning from a payment
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get("payment_status");
+
+      if (paymentStatus === "success") {
+        // Payment was successful, refresh bookings
+        refreshBookings();
+        // Show success message
+        alert("Payment completed successfully!");
+        // Clean up URL
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      } else if (paymentStatus === "cancelled") {
+        // Payment was cancelled
+        alert("Payment was cancelled.");
+        // Clean up URL
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
+    };
+
+    handlePaymentReturn();
+  }, [refreshBookings]);
+
   const handleLogout = () => {
     dispatch(logoutUserThunk());
   };
@@ -45,18 +78,49 @@ function Dashboard() {
     try {
       console.log("Processing payment for order:", orderId);
 
-      // Here you would typically call a payment API
-      // For now, we'll just update the local state
-      updateBookingStatus(orderId, "paid");
+      // Find the order to get payment URL
+      const order = bookingData.orders.find((o) => o.id === orderId);
 
-      // Close the modal
-      setSelectedOrder(null);
+      if (order && order.paymentUrl) {
+        // Use Stripe payment flow
+        const paymentWindow = window.open(
+          order.paymentUrl,
+          "_blank",
+          "width=800,height=600,scrollbars=yes,resizable=yes"
+        );
 
-      // Show success message (you can add toast notification here)
-      console.log("Payment processed successfully!");
+        if (!paymentWindow) {
+          alert(
+            "Payment window was blocked. Please allow popups and try again."
+          );
+          return;
+        }
+
+        // Close the modal
+        setSelectedOrder(null);
+
+        // Monitor the payment window
+        const checkClosed = setInterval(() => {
+          if (paymentWindow.closed) {
+            clearInterval(checkClosed);
+            // Refresh bookings to get updated status
+            setTimeout(() => {
+              refreshBookings();
+            }, 2000);
+          }
+        }, 1000);
+
+        // Show success message
+        console.log("Payment window opened successfully!");
+      } else {
+        // Fallback to original payment flow
+        updateBookingStatus(orderId, "paid");
+        setSelectedOrder(null);
+        console.log("Payment processed successfully!");
+      }
     } catch (error) {
       console.error("Payment processing failed:", error);
-      // Show error message
+      alert(`Payment failed: ${error.message}`);
     }
   };
 
@@ -145,15 +209,26 @@ function Dashboard() {
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar */}
+        {/* Toggle button (mobile only) */}
+        <button
+          className="btn btn-primary d-md-none"
+          style={{ marginTop: "120px" }}
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <i className="icon-menu"></i> Menu
+        </button>
+
+        {/* Desktop view Sidebar */}
+
         <div
-          className="col-md-3 col-lg-2 text-white min-vh-100 p-0 position-relative bg-blue-1"
+          className={`
+        sidebar bg-blue-1 text-white min-vh-100 p-0 
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+        col-md-3 col-lg-2
+      `}
           style={{ marginTop: "120px" }}
         >
-          {/* <div className="position-absolute top-0 end-0 opacity-10">
-            <i className="icon-compass" style={{ fontSize: "6rem" }}></i>
-          </div> */}
-          <div className="p-3 position-relative">
+          <div className="p-3">
             <div className="text-center mb-4 pb-3 border-bottom border-white border-opacity-25">
               <div
                 className="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
@@ -276,9 +351,8 @@ function Dashboard() {
               </button>
 
               <hr className="my-3 border-white border-opacity-25" />
-
               <button
-                className="nav-link text-white border-0  text-start rounded-3 p-3 opacity-75 hover-opacity-100"
+                className="nav-link text-white border-0 text-start rounded-3 p-3 opacity-75 hover-opacity-100"
                 onClick={handleLogout}
               >
                 <i className="icon-log-out text-14 me-3"></i>
@@ -288,9 +362,17 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* Overlay for mobile (click to close sidebar) */}
+        {isSidebarOpen && (
+          <div
+            className="d-md-none position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
+            style={{ zIndex: 1040 }}
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+        )}
         {/* Main Content */}
         <div
-          className="col-md-9 col-lg-10"
+          className="content col-12 col-md-9 col-lg-10"
           style={{ backgroundColor: "#f8f9fa" }}
         >
           <div className="p-4">{renderContent()}</div>
@@ -304,6 +386,35 @@ function Dashboard() {
         onPayment={handlePayment}
         onCancel={handleCancelOrder}
       />
+
+      <style jsx>{`
+        .sidebar {
+          transition: transform 0.3s ease-in-out;
+        }
+
+        /* ✅ Mobile: hidden by default */
+        @media (max-width: 767px) {
+          .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            z-index: 1050;
+            transform: translateX(-100%);
+          }
+          .sidebar.translate-x-0 {
+            transform: translateX(0);
+          }
+        }
+
+        /* ✅ Desktop: always visible */
+        @media (min-width: 768px) {
+          .sidebar {
+            position: relative !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

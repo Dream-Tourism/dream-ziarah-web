@@ -3,7 +3,7 @@
 export default function DashboardSummary({ orderData, loading }) {
   if (loading) {
     return (
-      <div style={{ marginTop: "120px" }}>
+      <div>
         <div className="d-flex align-items-center mb-4">
           <i
             className="icon-globe text-primary me-3"
@@ -40,7 +40,7 @@ export default function DashboardSummary({ orderData, loading }) {
   }
 
   return (
-    <div style={{ marginTop: "120px" }}>
+    <div className="desktop-mt">
       <div className="d-flex align-items-center mb-4">
         <i
           className="icon-globe text-primary me-3"
@@ -271,6 +271,17 @@ export default function DashboardSummary({ orderData, loading }) {
           </div>
         </div>
       </div>
+      <style jsx>{`
+        .desktop-mt {
+          margin-top: 0; /* default for mobile */
+        }
+
+        @media (min-width: 768px) {
+          .desktop-mt {
+            margin-top: 120px;
+          }
+        }
+      `}</style>
     </div>
   );
 }

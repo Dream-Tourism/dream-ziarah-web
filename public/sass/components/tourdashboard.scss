@@ -20,3 +20,29 @@
     background-color: transparent;
   }
 }
+
+/* Mobile Order Cards */
+.mobile-order-card {
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.mobile-order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-order-card .card-header {
+  background: linear-gradient(135deg, #3554d1 0%, #2a4bc7 100%);
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 1rem;
+}
+
+.mobile-order-card .card-body {
+  padding: 1rem;
+}
