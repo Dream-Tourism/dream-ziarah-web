@@ -9,6 +9,8 @@ import { useParams } from "next/navigation";
 import Script from "next/script";
 import GuestCalculate from "./GuestCalculate";
 import AgentCalendar from "./Bookings/AgentCalendar";
+import { useGetSingleTourQuery } from "@/features/content/newContentApi";
+import { useSingleTour } from "@/hooks/useSingleTour";
 
 const bokunUrls = {
   "makkah-city-ziarah-luxury-private-vehicle-with-guide": {
@@ -45,7 +47,8 @@ const bokunUrls = {
   },
 };
 
-const SidebarRight = () => {
+const SidebarRight = ({ tourid, newdata }) => {
+  console.log("newdata side", tourid);
   const params = useParams();
   const { data: contentItem, isFulfilled } =
     useGetContentsByMenuContentTitleQuery(capitalize(params?.name));
@@ -57,7 +60,7 @@ const SidebarRight = () => {
     isSuccess: isSuccess2,
     isLoading: isLoading2,
     error,
-  } = useGetTourEntryByIdQuery(35);
+  } = useSingleTour(tourid);
 
   const is_bokun_url = false;
 

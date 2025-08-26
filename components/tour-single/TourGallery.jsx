@@ -12,8 +12,15 @@ import { useState, useEffect } from "react";
 import OverviewSkeleton from "../skeleton/OverviewSkeleton";
 import TourGalleryGridSkeleton from "./TourGalleryGridSkeleton";
 import Slider from "react-slick";
+import SidebarRight2 from "./SidebarRight2";
 
-export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
+export default function TourGallery({
+  tour,
+  hajj,
+  umrah,
+  onDataAvailable,
+  newdata,
+}) {
   const [dataAvailable, setDataAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -358,7 +365,8 @@ export default function TourGallery({ tour, hajj, umrah, onDataAvailable }) {
               ) : umrah ? (
                 <UmrahSidebarRight />
               ) : (
-                <SidebarRight />
+                // <SidebarRight tourid={tour.id} newdata={newdata} />
+                <SidebarRight2 newdata={newdata} />
               )}
             </div>
 

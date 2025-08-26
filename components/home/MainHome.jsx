@@ -362,21 +362,10 @@ const MainHome = () => {
                 {/* End .col */}
               </div>
 
-              {/* End .row */}
-
-              <div
-                className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30"
-                // style={{ marginLeft: "15px" }}
-              >
-                {/* {!dataAvailable ? (
-              <TourSkeleton />
-            ) : ( */}
-                <Tours />
-                {/* )} */}
+              <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                <Tours filterLocation="Makkah" />
               </div>
-              {/* End .row */}
             </div>
-            {/* End .container */}
           </section>
           {/* End Makka Tours Sections */}
         </>
@@ -397,8 +386,6 @@ const MainHome = () => {
                     </p>
                   </div>
                 </div>
-                {/* End .col */}
-
                 <div className="col-4 col-lg-auto">
                   <Link
                     href="/tours/?location=Medina"
@@ -407,17 +394,12 @@ const MainHome = () => {
                     More <div className="icon-arrow-top-right ml-15" />
                   </Link>
                 </div>
-                {/* End .col */}
               </div>
-
-              {/* End .row */}
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <ToursMadina />
+                <Tours filterLocation="Madina" />
               </div>
-              {/* End .row */}
             </div>
-            {/* End .container */}
           </section>
           {/* End Madina Tours Sections */}
 
@@ -434,8 +416,6 @@ const MainHome = () => {
                     </p>
                   </div>
                 </div>
-                {/* End .col */}
-
                 <div className="col-4 col-lg-auto">
                   <Link
                     href="/tours/?location=Jedda"
@@ -444,17 +424,12 @@ const MainHome = () => {
                     More <div className="icon-arrow-top-right ml-15" />
                   </Link>
                 </div>
-                {/* End .col */}
               </div>
-
-              {/* End .row */}
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <ToursJedda />
+                <Tours filterLocation="Jeddah" />
               </div>
-              {/* End .row */}
             </div>
-            {/* End .container */}
           </section>
           {/* End Jedda Tours Sections */}
 
@@ -471,8 +446,6 @@ const MainHome = () => {
                     </p>
                   </div>
                 </div>
-                {/* End .col */}
-
                 <div className="col-4 col-lg-auto">
                   <Link
                     href="/tours/?location=Taif"
@@ -481,17 +454,12 @@ const MainHome = () => {
                     More <div className="icon-arrow-top-right ml-15" />
                   </Link>
                 </div>
-                {/* End .col */}
               </div>
-
-              {/* End .row */}
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <ToursTaif />
+                <Tours filterLocation="Taif" />
               </div>
-              {/* End .row */}
             </div>
-            {/* End .container */}
           </section>
           {/* End Taif Tours Sections */}
           <section className="layout-pt-md layout-pb-md">

@@ -3,16 +3,41 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import Slider from "react-slick";
-import isTextMatched from "../../utils/isTextMatched";
-import useToursMakka from "@/hooks/useToursMakka";
 import useWindowSize from "@/hooks/useWindowSize";
 import TourSkeleton from "../skeleton/TourSkeleton";
+import { useAllTour } from "@/hooks/useAllTour";
 
-const Tours = ({ filterTour }) => {
-  const tourItems = useToursMakka(filterTour);
+const Tours = ({ filterLocation }) => {
+  const { data, error, isLoading } = useAllTour();
+  console.log("All Tour Data:", data, error, isLoading);
+
   const { currentCurrency } = useSelector((state) => state.currency);
   const width = useWindowSize();
   const isMobile = width < 768;
+
+  // Filter tours based on location_type and published status
+  const filteredTours =
+    data?.filter((tour) => {
+      const isPublished = tour.published === true;
+      if (filterLocation) {
+        const locationMatch = tour.location_type
+          ?.toLowerCase()
+          .includes(filterLocation.toLowerCase());
+        return isPublished && locationMatch;
+      }
+      return isPublished;
+    }) || [];
+
+  // Calculate per person price
+  const calculatePerPersonPrice = (tour) => {
+    const dayTourPriceList = tour.day_tour_price_list;
+    if (dayTourPriceList && dayTourPriceList.length > 0) {
+      const groupPrice = parseFloat(dayTourPriceList[0].group_price || 0);
+      const groupSize = parseInt(tour.group_size || 1);
+      return (groupPrice / groupSize).toFixed(2);
+    }
+    return "0.00";
+  };
 
   const settings = {
     dots: true,
@@ -42,7 +67,6 @@ const Tours = ({ filterTour }) => {
           slidesToScroll: 2,
         },
       },
-
       {
         breakpoint: 300,
         settings: {
@@ -87,131 +111,114 @@ const Tours = ({ filterTour }) => {
     );
   }
 
-  return tourItems?.length === 0 ? (
-    <TourSkeleton />
-  ) : (
+  if (isLoading) {
+    return <TourSkeleton />;
+  }
+
+  if (error || filteredTours.length === 0) {
+    return <TourSkeleton />;
+  }
+
+  return (
     <Slider
       {...settings}
       arrows={true}
       nextArrow={<Arrow type="next" />}
       prevArrow={<Arrow type="prev" />}
     >
-      {tourItems?.map((item) => (
-        <div
-          key={item?.id}
-          // data-aos="fade"
-          // data-aos-delay={item?.delayAnimation}
-        >
-          <Link
-            href={`/tour/${item?.title?.toLowerCase()?.split(" ")?.join("-")}`}
-            style={{ cursor: "pointer" }}
-            className="tourCard -type-1 rounded-4 hover-inside-slider"
-          >
-            <div className="tourCard__image position-relative">
-              <div className="inside-slider">
-                <Slider
-                  {...itemSettings}
-                  arrows={true}
-                  nextArrow={<Arrow type="next" />}
-                  prevArrow={<Arrow type="prev" />}
-                >
-                  {item?.slideImg?.map((slide, i) => (
-                    <div className="cardImage ratio ratio-1:1" key={i}>
+      {filteredTours?.map((item) => {
+        const perPersonPrice = calculatePerPersonPrice(item);
+
+        return (
+          <div key={item?.id}>
+            <Link
+              href={`/tour/${item?.slug}`}
+              style={{ cursor: "pointer" }}
+              className="tourCard -type-1 rounded-4 hover-inside-slider"
+            >
+              <div className="tourCard__image position-relative">
+                <div className="inside-slider">
+                  {/* If no tour_images, show cloudflare_thumbnail_image_url */}
+                  {item?.cloudflare_thumbnail_image_url && (
+                    <div className="cardImage ratio ratio-1:1">
                       <div className="cardImage__content ">
                         <Image
-                          width={300}
-                          height={300}
+                          width={200}
+                          height={200}
                           priority
                           className="col-12 js-lazy"
-                          src={slide}
-                          alt={item?.title}
+                          src={item?.cloudflare_thumbnail_image_url}
+                          alt={item?.name}
                         />
                       </div>
                     </div>
-                  ))}
-                </Slider>
+                  )}
 
-                <div className="cardImage__leftBadge sm:d-none">
-                  {/* <div
-                    className={`py-5  rounded-right-4 text-12 lh-16 fw-600 uppercase ${
-                      isTextMatched(item?.tag, "likely to sell out*")
-                        ? "bg-dark-1 text-white"
-                        : ""
-                    } ${
-                      isTextMatched(item?.tag, "best seller")
-                        ? "bg-blue-1 text-white"
-                        : ""
-                    }  ${
-                      isTextMatched(item?.tag, "top rated")
-                        ? "bg-yellow-1 text-dark-1"
-                        : ""
-                    }`}
-                  >
-                    Item
-                  </div> */}
-                  <div className="buttons">
-                    <button
-                      style={{
-                        backgroundColor: "#353537",
-                        backgroundImage:
-                          "linear-gradient(to right, #353537 , #0d0c0d)",
-                      }}
-                    >
-                      {`${currentCurrency?.symbol} ${item.price}`}{" "}
-                      <span> PER PERSON</span>
-                    </button>
-                    <button>No</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="tourCard__content mt-10">
-              <div className="d-flex justify-content-between lh-14 mb-5">
-                <div className="text-14 md:text-12 text-light-1">
-                  {isMobile
-                    ? `${item?.duration}+ hrs`
-                    : `${item?.duration}+ hours`}
-                </div>
-                <div className="ml-10 mr-10" />
-                <div className="col-auto">
-                  <div className="text-14 md:text-12 text-dark-1 fw-bold">
-                    From {currentCurrency?.symbol}
-                    <span className="text-16 md:text-13 fw-600 text-blue-1 fw-bold">
-                      {" "}
-                      {item.price}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <h4 className="tourCard__title text-dark-5 text-18 md:text-13 lh-16 fw-600">
-                <span>{item?.title}</span>
-              </h4>
-              <p className="text-light-1 lh-14 text-14 md:text-12 mt-5">
-                {item?.location}
-              </p>
-
-              <div className="row justify-between items-center pt-15">
-                <div className="col-auto">
-                  <div className="d-flex items-center">
-                    <div className="d-flex items-center x-gap-5">
-                      {[...Array(5)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="icon-star text-yellow-1 text-10"
-                        />
-                      ))}
-                    </div>
-                    <div className="text-14 md:text-12 text-light-1 ml-10">
-                      {item?.numberOfReviews} reviews
+                  <div className="cardImage__leftBadge sm:d-none">
+                    <div className="buttons">
+                      <button
+                        style={{
+                          backgroundColor: "#353537",
+                          backgroundImage:
+                            "linear-gradient(to right, #353537 , #0d0c0d)",
+                        }}
+                      >
+                        {`${currentCurrency?.symbol} ${perPersonPrice}`}{" "}
+                        <span> PER PERSON</span>
+                      </button>
+                      <button>No</button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Link>
-        </div>
-      ))}
+
+              <div className="tourCard__content mt-10">
+                <div className="d-flex justify-content-between lh-14 mb-5">
+                  <div className="text-14 md:text-12 text-light-1">
+                    {isMobile
+                      ? `${item?.duration || "Full Day"}`
+                      : `${item?.duration || "Full Day Tour"}`}
+                  </div>
+                  <div className="ml-10 mr-10" />
+                  <div className="col-auto">
+                    <div className="text-14 md:text-12 text-dark-1 fw-bold">
+                      From {currentCurrency?.symbol}
+                      <span className="text-16 md:text-13 fw-600 text-blue-1 fw-bold">
+                        {" "}
+                        {perPersonPrice}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <h4 className="tourCard__title text-dark-5 text-18 md:text-13 lh-16 fw-600">
+                  <span>{item?.name}</span>
+                </h4>
+                <p className="text-light-1 lh-14 text-14 md:text-12 mt-5">
+                  {item?.location_type}
+                </p>
+
+                <div className="row justify-between items-center pt-15">
+                  <div className="col-auto">
+                    <div className="d-flex items-center">
+                      <div className="d-flex items-center x-gap-5">
+                        {[...Array(5)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="icon-star text-yellow-1 text-10"
+                          />
+                        ))}
+                      </div>
+                      <div className="text-14 md:text-12 text-light-1 ml-10">
+                        {item?.group_size} max group size
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        );
+      })}
     </Slider>
   );
 };

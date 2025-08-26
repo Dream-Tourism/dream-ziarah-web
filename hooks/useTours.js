@@ -38,7 +38,7 @@ export const singleTourInfo = {
   },
   "Madinah City Ziarah Luxury Private Vehicle With Guide (10 Person Group)": {
     location: "Madinah, Saudi Arabia",
-    numberOfReviews: "75",
+    numberOfReviews: "999",
     languages: "Bengali, English, Hindi, Urdu, Malay, Indonesian.",
     groupSize: "6-10",
     departure:
@@ -262,7 +262,7 @@ export const singleTourInfo = {
   },
   "Makkah City Ziarah Luxury Private Vehicle With Guide (3 Person Luxury)": {
     location: "Mecca, Saudi Arabia",
-    numberOfReviews: "45",
+    numberOfReviews: "999",
     languages: "Bengali, English, Hindi, Urdu, Malay, Indonesian.",
     groupSize: "1-3",
     departure:

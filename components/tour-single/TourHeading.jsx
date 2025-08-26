@@ -1,4 +1,6 @@
-import { GET_CONTENT_BY_TITLE } from "@/constant/constants";
+"use client";
+import { useSingleTour } from "@/hooks/useSingleTour";
+import { useTourBySlug } from "@/hooks/useTourBySlug";
 import { capitalize } from "@/utils";
 
 export const singleTourInfo = {
@@ -260,7 +262,7 @@ export const singleTourInfo = {
   },
   "Makkah City Ziarah Luxury Private Vehicle With Guide (3 Person Luxury)": {
     location: "Mecca, Saudi Arabia",
-    numberOfReviews: "45",
+    numberOfReviews: "999",
     languages: "Bengali, English, Hindi, Urdu, Malay, Indonesian.",
     groupSize: "1-3",
     departure:
@@ -381,18 +383,14 @@ export const singleTourInfo = {
 
 const TourHeading = async ({ params }) => {
   // const name = params?.name;
-
-  const res = await fetch(
-    `${GET_CONTENT_BY_TITLE}/${capitalize(params?.name)}`
-  );
-  let data;
-  if (res.ok) {
-    data = await res.json();
-  }
+  // Use the new single tour hook
+  const { tourIds, notFound } = useTourBySlug(params.name);
+  // Use the new single tour hook
+  const { data: tourData, error, isLoading } = useSingleTour(tourIds);
 
   return (
     <div className="col-xl-8">
-      <h1 className="text-25 fw-600">{data?.name}</h1>
+      <h1 className="text-25 fw-600">{tourData?.name}</h1>
       <div className="row x-gap-10 y-gap-10 items-center pt-10">
         <div className="col-auto">
           <div className="d-flex items-center">
@@ -409,7 +407,7 @@ const TourHeading = async ({ params }) => {
             </div>
 
             <div className="text-14 text-light-1 ml-10">
-              {singleTourInfo[data?.name]?.numberOfReviews} reviews
+              {tourData?.reviews} reviews
             </div>
           </div>
         </div>
@@ -419,9 +417,7 @@ const TourHeading = async ({ params }) => {
             <div className="col-auto">
               <div className="d-flex x-gap-5 items-center">
                 <i className="icon-placeholder text-16 text-light-1"></i>
-                <div className="text-15 text-light-1">
-                  {singleTourInfo[data?.name]?.location}
-                </div>
+                <div className="text-15 text-light-1">{tourData?.location}</div>
               </div>
             </div>
 
