@@ -51,7 +51,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
   const { tourIds, notFound } = useTourBySlug(params.name);
   // Use the new single tour hook
   const { data: tourData, error, isLoading } = useSingleTour(tourIds);
-  console.log("tourIds", tourIds);
+  console.log("tourIds", tourData?.itineraries_list);
 
   useEffect(() => {
     if (tourData) {
@@ -232,7 +232,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
             </div>
           </section>
 
-          {/* {tourData?.itineraries_list?.length > 0 && (
+          {tourData?.itineraries_list?.length > 0 && (
             <section className="border-top-light  mt-40 pt-40">
               <div className="container">
                 <h3 className="text-22 fw-600 mb-20">Itinerary</h3>
@@ -242,7 +242,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
                 />
               </div>
             </section>
-          )} */}
+          )}
         </>
       )}
 

@@ -1,16 +1,13 @@
 import AccordionContent from "./ItineraryContent";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { useSelector } from "react-redux";
 const LeafletMap = dynamic(() => import("./LeafletMap"), { ssr: false });
 
-const index = ({}) => {
-  const { itenarayItems } = useSelector((state) => state.tour);
-
-  const [selectedLocation, setSelectedLocation] = useState(itenarayItems[0]);
+const index = ({ itenarayItems }) => {
+  const [selectedLocation, setSelectedLocation] = useState(itenarayItems?.[0]);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [zoom, setZoom] = useState(12);
-  // console.log("rakib", itenarayItems);
+
   const handleLocationSelect = (location, zoomTrue) => {
     if (zoomTrue) {
       setZoom(12); // Change the zoom level as per your requirement
@@ -19,15 +16,17 @@ const index = ({}) => {
     }
     setSelectedLocation(location);
   };
+
   useEffect(() => {
-    if (itenarayItems.length !== 0) {
+    if (itenarayItems?.length > 0) {
+      // Debug: Log the first item to see the actual structure
+      console.log("First itinerary item:", itenarayItems[0]);
       setSelectedLocation(itenarayItems[0]);
     }
   }, [itenarayItems]);
 
   const handleMarkerClick = (location) => {
     setSelectedMarker(location);
-
     // Add any other logic you need when a marker is clicked
   };
 
@@ -48,7 +47,7 @@ const index = ({}) => {
       {/* End col-lg-4 */}
 
       <div className="col-lg-8">
-        {itenarayItems?.length !== 0 && selectedLocation && (
+        {itenarayItems?.length > 0 && selectedLocation && (
           <LeafletMap
             itenarayItems={itenarayItems}
             selectedLocation={selectedLocation}

@@ -56,50 +56,77 @@ export default function LeafletMap({
   markerClick,
   itenarayItems,
 }) {
+  // Debug: Log the selected location to see its structure
+  console.log('Selected location in map:', selectedLocation);
+  
   // State to manage the selected marker ID
-  const [selectedMarkerId, setSelectedMarkerId] = useState(selectedLocation.id);
+  const [selectedMarkerId, setSelectedMarkerId] = useState(selectedLocation?.id);
   const [newMapZoom, setNewMapZoom] = useState(zoom);
-  const [newLatLng, setNewLatLng] = useState([
-    selectedLocation?.lat,
-    selectedLocation?.lng,
-  ]);
+  
+  // Handle missing lng property
+  const selectedLat = selectedLocation?.lat;
+  const selectedLng = selectedLocation?.lng || selectedLocation?.longitude || 0;
+  
+  const [newLatLng, setNewLatLng] = useState([selectedLat, selectedLng]);
 
   // Handler for marker click
   const handleMarkerClick = (location) => {
     setSelectedMarkerId(location.id);
     markerClick(location.id);
     setNewMapZoom(16);
-    setNewLatLng([location?.lat, location?.lng]);
+    
+    const lat = location?.lat;
+    const lng = location?.lng || location?.longitude || 0;
+    setNewLatLng([lat, lng]);
     // Add any other logic you need when a marker is clicked
   };
 
   useEffect(() => {
-    if (selectedLocation.id) {
+    if (selectedLocation?.id) {
       setSelectedMarkerId(selectedLocation.id);
       setNewMapZoom(zoom);
-      setNewLatLng([selectedLocation?.lat, selectedLocation?.lng]);
+      
+      const lat = selectedLocation?.lat;
+      const lng = selectedLocation?.lng || selectedLocation?.longitude || 0;
+      setNewLatLng([lat, lng]);
     }
-  }, [selectedLocation]);
+  }, [selectedLocation, zoom]);
+
+  // Don't render map if coordinates are invalid
+  if (!selectedLat || (selectedLng === undefined && !selectedLocation?.longitude)) {
+    return (
+      <div className="map-container">
+        <div className="p-4 text-center">
+          <p>Map cannot be displayed: Invalid coordinates</p>
+          <p>Latitude: {selectedLat}, Longitude: {selectedLng}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="map-container">
-      {selectedLocation?.lat ? (
-        <MapContainer
-          center={[selectedLocation?.lat, selectedLocation?.lng]}
-          zoom={20}
-          scrollWheelZoom={true}
-          className="leaflet-map"
-        >
-          <TileLayer
-            // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {itenarayItems.map((location, idx) => {
-            const isSelected = selectedMarkerId === location.id;
+      <MapContainer
+        center={[selectedLat, selectedLng]}
+        zoom={20}
+        scrollWheelZoom={true}
+        className="leaflet-map"
+      >
+        <TileLayer
+          // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {itenarayItems?.map((location, idx) => {
+          const isSelected = selectedMarkerId === location.id;
+          const lat = location?.lat;
+          const lng = location?.lng || location?.longitude || 0;
+          
+          // Only render marker if coordinates are valid
+          if (lat && lng !== undefined) {
             return (
               <Marker
                 key={location?.id}
-                position={[location?.lat, location?.lng]}
+                position={[lat, lng]}
                 icon={createIcon(idx + 1, isSelected)}
                 eventHandlers={{
                   click: () => handleMarkerClick(location),
@@ -108,12 +135,11 @@ export default function LeafletMap({
                 {isSelected && <Popup>{location?.title}</Popup>}
               </Marker>
             );
-          })}
-          <ChangeMapView coords={newLatLng} zoom={newMapZoom} />
-        </MapContainer>
-      ) : (
-        ""
-      )}
+          }
+          return null;
+        })}
+        <ChangeMapView coords={newLatLng} zoom={newMapZoom} />
+      </MapContainer>
     </div>
   );
 }
