@@ -160,43 +160,20 @@ const TourProperties = ({ searchLocation }) => {
             >
               <div className="tourCard__image position-relative">
                 <div className="inside-slider">
-                  <Slider
-                    {...itemSettings}
-                    arrows={true}
-                    nextArrow={<Arrow type="next" />}
-                    prevArrow={<Arrow type="prev" />}
-                  >
-                    {/* Use tour_images if available, otherwise use cloudflare_thumbnail_image_url */}
-                    {item?.tour_images && item.tour_images.length > 0
-                      ? item.tour_images.map((slide, i) => (
-                          <div className="cardImage ratio ratio-1:1" key={i}>
-                            <div className="cardImage__content ">
-                              <Image
-                                width={300}
-                                height={300}
-                                priority
-                                className="col-12 js-lazy"
-                                src={slide}
-                                alt={item?.name}
-                              />
-                            </div>
-                          </div>
-                        ))
-                      : item?.cloudflare_thumbnail_image_url && (
-                          <div className="cardImage ratio ratio-1:1">
-                            <div className="cardImage__content ">
-                              <Image
-                                width={300}
-                                height={300}
-                                priority
-                                className="col-12 js-lazy"
-                                src={item?.cloudflare_thumbnail_image_url}
-                                alt={item?.name}
-                              />
-                            </div>
-                          </div>
-                        )}
-                  </Slider>
+                  {item?.cloudflare_thumbnail_image_url && (
+                    <div className="cardImage ratio ratio-1:1">
+                      <div className="cardImage__content ">
+                        <Image
+                          width={300}
+                          height={300}
+                          priority
+                          className="col-12 js-lazy"
+                          src={item?.cloudflare_thumbnail_image_url}
+                          alt={item?.name}
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className="cardImage__leftBadge cardImage-2__leftBadge">
                     <div className="buttons-2">

@@ -1,7 +1,6 @@
-import { singleTourInfo } from "@/hooks/useTours";
-import { useSelector } from "react-redux";
-const TourSnapShot = ({ hajj, umrah }) => {
-  const { tourItem } = useSelector((state) => state.tour);
+const TourSnapShot = ({ tour }) => {
+  // Use tour prop if available, otherwise fallback to tourItem from redux
+  const currentTour = tour;
 
   return (
     <div className="row y-gap-30 justify-between pt-20">
@@ -9,16 +8,7 @@ const TourSnapShot = ({ hajj, umrah }) => {
         <div className="d-flex">
           <i className="icon-clock text-22 text-blue-1 mr-10"></i>
           <div className="text-15 lh-15">
-            {hajj || umrah ? (
-              <span>Performance Duration: {tourItem?.duration}</span>
-            ) : (
-              <span>
-                Duration:
-                {` ${tourItem?.duration} hours`}
-              </span>
-            )}
-            {/* Duration:
-            {tourItem?.duration}h */}
+            <span>Duration: {currentTour?.duration || "N/A"}</span>
           </div>
         </div>
       </div>
@@ -28,17 +18,7 @@ const TourSnapShot = ({ hajj, umrah }) => {
         <div className="d-flex">
           <i className="icon-customer text-22 text-blue-1 mr-10"></i>
           <div className="text-15 lh-15">
-            {hajj ? (
-              <span>
-                {` Group size: ${singleTourInfo["Hajj 2024: Embrace the Divine"]?.groupSize}`}
-              </span>
-            ) : (
-              <span>
-                {`Group size: ${singleTourInfo[tourItem?.name]?.groupSize}`}
-              </span>
-            )}
-            {/* Group size:
-            {singleTourInfo[tourItem?.name]?.groupSize} */}
+            <span>Group size: {currentTour?.group_size || "N/A"}</span>
           </div>
         </div>
       </div>
@@ -47,17 +27,7 @@ const TourSnapShot = ({ hajj, umrah }) => {
       <div className="col-md-3 col-6">
         <div className="d-flex">
           <i className="icon-route text-22 text-blue-1 mr-10"></i>
-          <div className="text-15 lh-15">
-            {hajj ? (
-              <>
-                24-day or
-                <br />
-                14-day options
-              </>
-            ) : (
-              <> Near public transportation</>
-            )}
-          </div>
+          <div className="text-15 lh-15">Near public transportation</div>
         </div>
       </div>
       {/* End .col */}
@@ -65,14 +35,7 @@ const TourSnapShot = ({ hajj, umrah }) => {
       <div className="col-md-3 col-6">
         <div className="d-flex">
           <i className="icon-access-denied text-22 text-blue-1 mr-10"></i>
-          <div className="text-15 lh-15">
-            Free cancellation
-            <br />
-            {hajj ? "until March 30th" : ""}
-            {/* <a href="#" className="text-blue-1 underline">
-              Learn more
-            </a> */}
-          </div>
+          <div className="text-15 lh-15">Free cancellation</div>
         </div>
       </div>
       {/* End .col */}

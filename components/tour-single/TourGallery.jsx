@@ -1,11 +1,8 @@
 "use client";
 
 import Overview from "@/components/tour-single/Overview";
-import SidebarRight from "@/components/tour-single/SidebarRight";
 import TourSnapShot from "@/components/tour-single/TourSnapShot";
 import Image from "next/image";
-import HajjSidebarRight from "../hajj/HajjSidebarRight";
-import UmrahSidebarRight from "../umrah/UmrahSidebarRight";
 import useWindowSize from "@/hooks/useWindowSize";
 import "../../styles/weather.scss";
 import { useState, useEffect } from "react";
@@ -14,19 +11,26 @@ import TourGalleryGridSkeleton from "./TourGalleryGridSkeleton";
 import Slider from "react-slick";
 import SidebarRight2 from "./SidebarRight2";
 
-export default function TourGallery({
-  tour,
-  hajj,
-  umrah,
-  onDataAvailable,
-  newdata,
-}) {
+export default function TourGallery({ tour, onDataAvailable }) {
+  console.log("tourgallery", tour);
   const [dataAvailable, setDataAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const width = useWindowSize();
   const isMobile = width < 768;
+
+  // Get images from tour_images or fallback to cloudflare_thumbnail_image_url
+  const getImageArray = () => {
+    if (tour?.tour_images && tour.tour_images.length > 0) {
+      return tour.tour_images;
+    } else if (tour?.cloudflare_thumbnail_image_url) {
+      return [tour.cloudflare_thumbnail_image_url];
+    }
+    return [];
+  };
+
+  const tourImages = getImageArray();
 
   // Ensure we always have at least 4 images for desktop grid and 3 for mobile
   const ensureMinimumImages = (images) => {
@@ -51,7 +55,7 @@ export default function TourGallery({
   };
 
   // Get the normalized array of images
-  const normalizedImages = ensureMinimumImages(tour?.slideImg);
+  const normalizedImages = ensureMinimumImages(tourImages);
 
   // Function to chunk array into groups of 3 for mobile
   const createMobileImageGroups = (images) => {
@@ -147,14 +151,13 @@ export default function TourGallery({
 
   // Navigate lightbox
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % (tour?.slideImg?.length || 1));
+    setCurrentImageIndex((prev) => (prev + 1) % (tourImages?.length || 1));
   };
 
   const prevImage = () => {
     setCurrentImageIndex(
       (prev) =>
-        (prev - 1 + (tour?.slideImg?.length || 1)) %
-        (tour?.slideImg?.length || 1)
+        (prev - 1 + (tourImages?.length || 1)) % (tourImages?.length || 1)
     );
   };
 
@@ -168,7 +171,7 @@ export default function TourGallery({
   }, [tour]);
 
   // Check if there's only one image
-  const hasSingleImage = tour?.slideImg?.length === 1;
+  const hasSingleImage = tourImages?.length === 1;
 
   return (
     <>
@@ -197,7 +200,7 @@ export default function TourGallery({
                         >
                           <Image
                             src={normalizedImages[0] || "/placeholder.svg"}
-                            alt={`${tour?.title || "Tour"} - Image 1`}
+                            alt={`${tour?.name || "Tour"} - Image 1`}
                             fill
                             sizes="(max-width: 768px) 100vw, 33vw"
                             className="object-cover rounded-4"
@@ -212,7 +215,7 @@ export default function TourGallery({
                         >
                           <Image
                             src={normalizedImages[1] || "/placeholder.svg"}
-                            alt={`${tour?.title || "Tour"} - Image 2`}
+                            alt={`${tour?.name || "Tour"} - Image 2`}
                             fill
                             sizes="(max-width: 768px) 100vw, 50vw"
                             className="object-cover rounded-4"
@@ -227,7 +230,7 @@ export default function TourGallery({
                         >
                           <Image
                             src={normalizedImages[2] || "/placeholder.svg"}
-                            alt={`${tour?.title || "Tour"} - Image 3`}
+                            alt={`${tour?.name || "Tour"} - Image 3`}
                             fill
                             sizes="(max-width: 768px) 100vw, 25vw"
                             className="object-cover rounded-4"
@@ -241,15 +244,15 @@ export default function TourGallery({
                         >
                           <Image
                             src={normalizedImages[3] || "/placeholder.svg"}
-                            alt={`${tour?.title || "Tour"} - Image 4`}
+                            alt={`${tour?.name || "Tour"} - Image 4`}
                             fill
                             sizes="(max-width: 768px) 100vw, 25vw"
                             className="object-cover rounded-4"
                             onLoad={handleImageLoad}
                           />
-                          {tour?.slideImg?.length > 4 && (
+                          {tourImages?.length > 4 && (
                             <div className="more-photos-overlay rounded-4">
-                              <span>+{tour.slideImg.length - 4}</span>
+                              <span>+{tourImages.length - 4}</span>
                             </div>
                           )}
                         </div>
@@ -268,7 +271,7 @@ export default function TourGallery({
                         >
                           <Image
                             src={normalizedImages[0] || "/placeholder.svg"}
-                            alt={`${tour?.title || "Tour"} - Image 1`}
+                            alt={`${tour?.name || "Tour"} - Image 1`}
                             width={800}
                             height={500}
                             style={{ width: "100%", height: "auto" }}
@@ -293,7 +296,7 @@ export default function TourGallery({
                                 >
                                   <Image
                                     src={group[0] || "/placeholder.svg"}
-                                    alt={`${tour?.title || "Tour"} - Image ${
+                                    alt={`${tour?.name || "Tour"} - Image ${
                                       groupIndex * 3 + 1
                                     }`}
                                     width={600}
@@ -313,7 +316,7 @@ export default function TourGallery({
                                   >
                                     <Image
                                       src={group[1] || "/placeholder.svg"}
-                                      alt={`${tour?.title || "Tour"} - Image ${
+                                      alt={`${tour?.name || "Tour"} - Image ${
                                         groupIndex * 3 + 2
                                       }`}
                                       width={300}
@@ -332,7 +335,7 @@ export default function TourGallery({
                                   >
                                     <Image
                                       src={group[2] || "/placeholder.svg"}
-                                      alt={`${tour?.title || "Tour"} - Image ${
+                                      alt={`${tour?.name || "Tour"} - Image ${
                                         groupIndex * 3 + 3
                                       }`}
                                       width={300}
@@ -360,25 +363,18 @@ export default function TourGallery({
           <div className="row y-gap-30 mt-40">
             {/* Sidebar on Right */}
             <div className="col-xl-4 order-xl-2">
-              {hajj ? (
-                <HajjSidebarRight />
-              ) : umrah ? (
-                <UmrahSidebarRight />
-              ) : (
-                // <SidebarRight tourid={tour.id} newdata={newdata} />
-                <SidebarRight2 newdata={newdata} />
-              )}
+              <SidebarRight2 tour={tour} />
             </div>
 
             {/* Main Content on Left */}
             <div className="col-xl-8 order-xl-1">
               <h3 className="text-22 fw-600">Tour snapshot</h3>
-              <TourSnapShot hajj={hajj} umrah={umrah} />
+              <TourSnapShot tour={tour} />
               {/* End toursnapshot */}
 
               <div className="border-top-light mt-40 mb-40"></div>
 
-              {dataAvailable ? <Overview hajj={hajj} /> : <OverviewSkeleton />}
+              {dataAvailable ? <Overview tour={tour} /> : <OverviewSkeleton />}
               {/* End Overview */}
             </div>
           </div>
@@ -404,10 +400,8 @@ export default function TourGallery({
             </button>
             <div className="lightbox-image-container">
               <Image
-                src={tour?.slideImg?.[currentImageIndex] || "/placeholder.svg"}
-                alt={`${tour?.title || "Tour"} - Image ${
-                  currentImageIndex + 1
-                }`}
+                src={tourImages?.[currentImageIndex] || "/placeholder.svg"}
+                alt={`${tour?.name || "Tour"} - Image ${currentImageIndex + 1}`}
                 fill
                 className="object-contain"
                 sizes="100vw"

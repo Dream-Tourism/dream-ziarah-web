@@ -8,6 +8,7 @@ import { addItemsCount } from "@/features/search/searchSlice";
 import useWindowSize from "@/hooks/useWindowSize";
 import { useAllTour } from "@/hooks/useAllTour";
 import TourMobileSkeleton from "../skeleton/TourMobileSkeleton";
+import convertCurrency from "@/utils/currency";
 
 const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
   const dispatch = useDispatch();
@@ -34,16 +35,14 @@ const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
 
   const filteredTours =
     data?.filter((tour) => {
-      const isPublished = tour.published === true;
       const locationTypeFilter = getLocationTypeFilter(searchLocation);
 
       if (locationTypeFilter) {
-        const locationMatch = tour.location_type
+        return tour.location_type
           ?.toLowerCase()
           .includes(locationTypeFilter.toLowerCase());
-        return isPublished && locationMatch;
       }
-      return isPublished;
+      return true;
     }) || [];
 
   // Calculate per person price

@@ -215,11 +215,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
         </div>
       </section>
 
-      <TourGallery
-        tour={tour}
-        onDataAvailable={handleDataAvailability}
-        newdata={tourData}
-      />
+      <TourGallery tour={tourData} />
 
       {dataAvailable && (
         <>
@@ -231,7 +227,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
                     <h3 className="text-22 fw-600">Important information</h3>
                   </div>
                 </div>
-                <ImportantInfo departure={tour} />
+                <ImportantInfo tour={tourData} />
               </div>
             </div>
           </section>

@@ -19,14 +19,12 @@ const Tours = ({ filterLocation }) => {
   // Filter tours based on location_type and published status
   const filteredTours =
     data?.filter((tour) => {
-      const isPublished = tour.published === true;
       if (filterLocation) {
-        const locationMatch = tour.location_type
+        return tour.location_type
           ?.toLowerCase()
           .includes(filterLocation.toLowerCase());
-        return isPublished && locationMatch;
       }
-      return isPublished;
+      return true;
     }) || [];
 
   // Calculate per person price
