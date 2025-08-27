@@ -1,15 +1,14 @@
 "use client";
 
-import useTours from "@/hooks/useTours";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import isTextMatched from "../../../utils/isTextMatched";
 import { useEffect } from "react";
 import { addItemsCount } from "@/features/search/searchSlice";
 import Slider from "react-slick";
 import useWindowSize from "@/hooks/useWindowSize";
+import { useAllTour } from "@/hooks/useAllTour";
 
 const TourProperties = ({ searchLocation }) => {
   const dispatch = useDispatch();
@@ -17,49 +16,84 @@ const TourProperties = ({ searchLocation }) => {
   const width = useWindowSize();
   const isMobile = width < 768;
   const search = searchParams.get("location");
-  const tourItems = useTours(
-    search
-      ? search == "Makkah"
-        ? "Makka Tours"
-        : search == "Medina"
-        ? "Madina Tours"
-        : search == "Taif"
-        ? "Taif Tours"
-        : search == "Jedda"
-        ? "Jeddah Tours"
-        : ""
-      : searchLocation
-      ? searchLocation == "Makkah"
-        ? "Makka Tours"
-        : searchLocation == "Madina"
-        ? "Madina Tours"
-        : searchLocation == "Taif"
-        ? "Taif Tours"
-        : searchLocation == "Jeddah"
-        ? "Jeddah Tours"
-        : "Makkah"
-      : ""
-  );
-
+  const { data, error, isLoading } = useAllTour();
   const { currentCurrency } = useSelector((state) => state.currency);
 
+  // Get the current search location (from URL params or prop)
+  const currentSearchLocation = search || searchLocation;
+
+  // Map search locations to location_type format
+  const getLocationTypeFilter = (location) => {
+    switch (location) {
+      case "Makkah":
+        return "Ziyarat In Makkah";
+      case "Medina":
+      case "Madina":
+        return "Ziyarat In Madina";
+      case "Taif":
+        return "Ziyarat In Taif";
+      case "Jedda":
+      case "Jeddah":
+        return "Ziyarat In Jeddah";
+      default:
+        return "";
+    }
+  };
+
+  // Filter tours based on location_type and published status
+  const filteredTours =
+    data?.filter((tour) => {
+      const isPublished = tour.published === true;
+      const locationTypeFilter = getLocationTypeFilter(currentSearchLocation);
+
+      if (locationTypeFilter) {
+        const locationMatch = tour.location_type
+          ?.toLowerCase()
+          .includes(locationTypeFilter.toLowerCase());
+        return isPublished && locationMatch;
+      }
+      return isPublished;
+    }) || [];
+
+  // Calculate per person price
+  const calculatePerPersonPrice = (tour) => {
+    const dayTourPriceList = tour.day_tour_price_list;
+
+    if (dayTourPriceList && dayTourPriceList.length > 0) {
+      if (tour.price_by_vehicle) {
+        // divide group price by group size
+        const groupPrice = parseFloat(dayTourPriceList[0].group_price || 0);
+        const groupSize = parseInt(tour.group_size || 1);
+        return (groupPrice / groupSize).toFixed(2);
+      }
+
+      if (tour.price_by_passenger) {
+        // just return the price_per_person
+        return parseFloat(dayTourPriceList[0].price_per_person || 0).toFixed(2);
+      }
+    }
+
+    return "0.00";
+  };
+
+  // Normalize location name for display
+  const getDisplayLocationName = (location) => {
+    switch (location) {
+      case "Medina":
+        return "Madina";
+      case "Jedda":
+        return "Jeddah";
+      default:
+        return location;
+    }
+  };
+
   useEffect(() => {
+    const displayLocation = getDisplayLocationName(currentSearchLocation);
     dispatch(
-      addItemsCount(
-        `${tourItems.length} tours in ${
-          search == "Makkah"
-            ? "Makkah"
-            : search == "Medina"
-            ? "Madina"
-            : search == "Taif"
-            ? "Taif"
-            : search == "Jedda"
-            ? "Jeddah"
-            : ""
-        }`
-      )
+      addItemsCount(`${filteredTours.length} tours in ${displayLocation || ""}`)
     );
-  }, [tourItems]);
+  }, [filteredTours, currentSearchLocation, dispatch]);
 
   var itemSettings = {
     dots: true,
@@ -69,7 +103,7 @@ const TourProperties = ({ searchLocation }) => {
     slidesToScroll: 1,
   };
 
-  // custom navigation
+  // Custom navigation arrow component
   function Arrow(props) {
     let className =
       props.type === "next"
@@ -93,169 +127,171 @@ const TourProperties = ({ searchLocation }) => {
     );
   }
 
+  if (isLoading) {
+    return (
+      <div className="text-center py-4">
+        <div>Loading tours...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-4">
+        <div>Error loading tours. Please try again.</div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="row row-cols-1 row-cols-md-3 g-3 "
       style={{ marginTop: searchLocation ? "" : "-20px" }}
     >
-      {tourItems?.map((item) => (
-        <div
-          key={item?.id}
-          // data-aos="fade"
-          // data-aos-delay={item?.delayAnimation}
-        >
-          <Link
-            href={`/tour/${item?.title?.toLowerCase()?.split(" ")?.join("-")}`}
-            style={{ cursor: "pointer" }}
-            className="tourCard -type-1 rounded-4 hover-inside-slider"
-          >
-            <div className="tourCard__image position-relative">
-              <div className="inside-slider">
-                <Slider
-                  {...itemSettings}
-                  arrows={true}
-                  nextArrow={<Arrow type="next" />}
-                  prevArrow={<Arrow type="prev" />}
-                >
-                  {item?.slideImg?.map((slide, i) => (
-                    <div className="cardImage ratio ratio-1:1" key={i}>
-                      <div className="cardImage__content ">
-                        <Image
-                          width={300}
-                          height={300}
-                          priority
-                          className="col-12 js-lazy"
-                          src={slide}
-                          alt={item?.title}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </Slider>
+      {filteredTours?.map((item) => {
+        const perPersonPrice = calculatePerPersonPrice(item);
 
-                {/* <div className="cardImage__wishlist">
-                    <button className="button -blue-1 bg-white size-30 rounded-full shadow-2">
-                      <i className="icon-heart text-12" />
-                    </button>
-                  </div> */}
-
-                <div className="cardImage__leftBadge cardImage-2__leftBadge">
-                  {/* <div
-                    className={`py-5  rounded-right-4 text-12 lh-16 fw-600 uppercase ${
-                      isTextMatched(item?.tag, "likely to sell out*")
-                        ? "bg-dark-1 text-white"
-                        : ""
-                    } ${
-                      isTextMatched(item?.tag, "best seller")
-                        ? "bg-blue-1 text-white"
-                        : ""
-                    }  ${
-                      isTextMatched(item?.tag, "top rated")
-                        ? "bg-yellow-1 text-dark-1"
-                        : ""
-                    }`}
+        return (
+          <div key={item?.id}>
+            <Link
+              href={`/tour/${item?.slug}`}
+              style={{ cursor: "pointer" }}
+              className="tourCard -type-1 rounded-4 hover-inside-slider"
+            >
+              <div className="tourCard__image position-relative">
+                <div className="inside-slider">
+                  <Slider
+                    {...itemSettings}
+                    arrows={true}
+                    nextArrow={<Arrow type="next" />}
+                    prevArrow={<Arrow type="prev" />}
                   >
-                    Item
-                  </div> */}
-                  <div className="buttons-2">
-                    <button
-                      style={{
-                        backgroundColor:
-                          search == "Makkah"
-                            ? "#353537"
-                            : search == "Medina"
-                            ? "#21b510"
-                            : search == "Taif"
-                            ? "#824007"
-                            : search == "Jedda"
-                            ? "#078de6"
-                            : "",
-                        backgroundImage:
-                          search == "Makkah"
-                            ? "linear-gradient(to right, #353537 , #0d0c0d)"
-                            : search == "Medina"
-                            ? "linear-gradient(to right, #21b510 , #158805)"
-                            : search == "Taif"
-                            ? "linear-gradient(to right, #824007 , #601817)"
-                            : search == "Jedda"
-                            ? "linear-gradient(to right, #078de6 , #29317a)"
-                            : "",
-                      }}
-                    >
-                      {`${currentCurrency?.symbol} ${item.price}`}{" "}
-                      <span> PER PERSON</span>
-                    </button>
-                    <button>No</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* End .tourCard__image */}
+                    {/* Use tour_images if available, otherwise use cloudflare_thumbnail_image_url */}
+                    {item?.tour_images && item.tour_images.length > 0
+                      ? item.tour_images.map((slide, i) => (
+                          <div className="cardImage ratio ratio-1:1" key={i}>
+                            <div className="cardImage__content ">
+                              <Image
+                                width={300}
+                                height={300}
+                                priority
+                                className="col-12 js-lazy"
+                                src={slide}
+                                alt={item?.name}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      : item?.cloudflare_thumbnail_image_url && (
+                          <div className="cardImage ratio ratio-1:1">
+                            <div className="cardImage__content ">
+                              <Image
+                                width={300}
+                                height={300}
+                                priority
+                                className="col-12 js-lazy"
+                                src={item?.cloudflare_thumbnail_image_url}
+                                alt={item?.name}
+                              />
+                            </div>
+                          </div>
+                        )}
+                  </Slider>
 
-            <div className="tourCard__content mt-10">
-              <div className="d-flex justify-content-between lh-14 mb-5">
-                <div className="text-14 text-light-1">
-                  {isMobile
-                    ? `${item?.duration}+ hrs`
-                    : `${item?.duration}+ hours`}
-                </div>
-                {/* <div className="size-3 bg-light-1 rounded-full ml-10 mr-10" /> */}
-                <div className="ml-10 mr-10" />
-                {/* <div className="text-14 text-light-1">{item?.tourType}</div> */}
-                <div className="col-auto">
-                  <div className="text-14 text-dark-1 fw-bold">
-                    From {currentCurrency?.symbol}
-                    <span className="text-16 fw-600 text-blue-1 fw-bold">
-                      {" "}
-                      {item.price}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <h4 className="tourCard__title text-dark-5 text-18 lh-16 fw-600">
-                <span>{item?.title}</span>
-              </h4>
-              <p className="text-light-1 lh-14 text-14 mt-5">
-                {item?.location}
-              </p>
-
-              <div className="row justify-between items-center pt-15">
-                <div className="col-auto">
-                  <div className="d-flex items-center">
-                    <div className="d-flex items-center x-gap-5">
-                      <div className="icon-star text-yellow-1 text-10" />
-                      <div className="icon-star text-yellow-1 text-10" />
-                      <div className="icon-star text-yellow-1 text-10" />
-                      <div className="icon-star text-yellow-1 text-10" />
-                      <div className="icon-star text-yellow-1 text-10" />
-                    </div>
-                    {/* End ratings */}
-
-                    <div className="text-14 text-light-1 ml-10">
-                      {item?.numberOfReviews} reviews
+                  <div className="cardImage__leftBadge cardImage-2__leftBadge">
+                    <div className="buttons-2">
+                      <button
+                        style={{
+                          backgroundColor:
+                            currentSearchLocation == "Makkah"
+                              ? "#353537"
+                              : currentSearchLocation == "Medina" ||
+                                currentSearchLocation == "Madina"
+                              ? "#21b510"
+                              : currentSearchLocation == "Taif"
+                              ? "#824007"
+                              : currentSearchLocation == "Jedda" ||
+                                currentSearchLocation == "Jeddah"
+                              ? "#078de6"
+                              : "#353537",
+                          backgroundImage:
+                            currentSearchLocation == "Makkah"
+                              ? "linear-gradient(to right, #353537 , #0d0c0d)"
+                              : currentSearchLocation == "Medina" ||
+                                currentSearchLocation == "Madina"
+                              ? "linear-gradient(to right, #21b510 , #158805)"
+                              : currentSearchLocation == "Taif"
+                              ? "linear-gradient(to right, #824007 , #601817)"
+                              : currentSearchLocation == "Jedda" ||
+                                currentSearchLocation == "Jeddah"
+                              ? "linear-gradient(to right, #078de6 , #29317a)"
+                              : "linear-gradient(to right, #353537 , #0d0c0d)",
+                        }}
+                      >
+                        {`${currentCurrency?.symbol} ${perPersonPrice}`}{" "}
+                        <span> PER PERSON</span>
+                      </button>
+                      <button>No</button>
                     </div>
                   </div>
                 </div>
-                {/* <div className="col-auto">
-                    <div className="text-14 text-light-1">
-                      From {currentCurrency?.symbol} 
-                      <span className="text-16 fw-600 text-dark-1">
+              </div>
+              {/* End .tourCard__image */}
+
+              <div className="tourCard__content mt-10">
+                <div className="d-flex justify-content-between lh-14 mb-5">
+                  <div className="text-14 text-light-1">
+                    {isMobile
+                      ? `${item?.duration || "Full Day"}`
+                      : `${item?.duration || "Full Day Tour"}`}
+                  </div>
+                  <div className="ml-10 mr-10" />
+                  <div className="col-auto">
+                    <div className="text-14 text-dark-1 fw-bold">
+                      From {currentCurrency?.symbol}
+                      <span className="text-16 fw-600 text-blue-1 fw-bold">
                         {" "}
-                        
-                        {item.price}
+                        {perPersonPrice}
                       </span>
                     </div>
-                  </div> */}
+                  </div>
+                </div>
+                <h4 className="tourCard__title text-dark-5 text-18 lh-16 fw-600">
+                  <span>{item?.name}</span>
+                </h4>
+                <p className="text-light-1 lh-14 text-14 mt-5">
+                  {item?.location_type}
+                </p>
+
+                <div className="row justify-between items-center pt-15">
+                  <div className="col-auto">
+                    <div className="d-flex items-center">
+                      <div className="d-flex items-center x-gap-5">
+                        {[...Array(5)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="icon-star text-yellow-1 text-10"
+                          />
+                        ))}
+                      </div>
+                      {/* End ratings */}
+
+                      <div className="text-14 text-light-1 ml-10">
+                        {item?.group_size} max group size
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            {isMobile && (
-              <button className="button -md h-5 border border-secondary bg-blue-1 text-white w-100">
-                Book Now
-              </button>
-            )}
-          </Link>
-        </div>
-      ))}
+              {isMobile && (
+                <button className="button -md h-5 border border-secondary bg-blue-1 text-white w-100">
+                  Book Now
+                </button>
+              )}
+            </Link>
+          </div>
+        );
+      })}
     </div>
   );
 };

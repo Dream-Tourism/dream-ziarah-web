@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { addItemsCount } from "@/features/search/searchSlice";
-import Slider from "react-slick";
 import useWindowSize from "@/hooks/useWindowSize";
 import { useAllTour } from "@/hooks/useAllTour";
 import TourMobileSkeleton from "../skeleton/TourMobileSkeleton";
@@ -50,11 +49,21 @@ const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
   // Calculate per person price
   const calculatePerPersonPrice = (tour) => {
     const dayTourPriceList = tour.day_tour_price_list;
+
     if (dayTourPriceList && dayTourPriceList.length > 0) {
-      const groupPrice = parseFloat(dayTourPriceList[0].group_price || 0);
-      const groupSize = parseInt(tour.group_size || 1);
-      return (groupPrice / groupSize).toFixed(2);
+      if (tour.price_by_vehicle) {
+        // divide group price by group size
+        const groupPrice = parseFloat(dayTourPriceList[0].group_price || 0);
+        const groupSize = parseInt(tour.group_size || 1);
+        return (groupPrice / groupSize).toFixed(2);
+      }
+
+      if (tour.price_by_passenger) {
+        // just return the price_per_person
+        return parseFloat(dayTourPriceList[0].price_per_person || 0).toFixed(2);
+      }
     }
+
     return "0.00";
   };
 
@@ -129,7 +138,11 @@ const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
                         "linear-gradient(to right, #353537 , #0d0c0d)",
                     }}
                   >
-                    {`${currentCurrency?.symbol} ${perPersonPrice}`}{" "}
+                    {`${currentCurrency?.symbol} ${convertCurrency(
+                      parseFloat(perPersonPrice),
+                      "USD",
+                      currentCurrency?.currency
+                    )}`}{" "}
                     <span> PER PERSON</span>
                   </button>
                   <button>No</button>
@@ -151,7 +164,11 @@ const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
                   From {currentCurrency?.symbol}
                   <span className="text-16 md:text-13 fw-600 text-blue-1 fw-bold">
                     {" "}
-                    {perPersonPrice}
+                    {convertCurrency(
+                      parseFloat(perPersonPrice),
+                      "USD",
+                      currentCurrency?.currency
+                    )}
                   </span>
                 </div>
               </div>
@@ -160,7 +177,7 @@ const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
               <span>{item?.name}</span>
             </h4>
             <p className="text-light-1 lh-14 text-14 md:text-12 mt-5">
-              {item?.location_type}
+              {item?.location}
             </p>
 
             <div className="row justify-between items-center pt-15">
@@ -175,7 +192,7 @@ const ToursForMobile = ({ searchLocation, onMobileTourDataAvailable }) => {
                     ))}
                   </div>
                   <div className="text-14 md:text-12 text-light-1 ml-10">
-                    {item?.group_size} max group size
+                    {item?.reviews} reviews
                   </div>
                 </div>
               </div>
