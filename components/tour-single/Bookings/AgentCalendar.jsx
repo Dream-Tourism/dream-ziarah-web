@@ -7,6 +7,8 @@ import Participants from "./Participants";
 import BookingPreview from "./BookingPreview";
 import CustomDropdown from "./CustomDropdown";
 import { checkAvailability } from "@/constant/constants";
+import { useSelector } from "react-redux";
+import convertCurrency from "@/utils/currency";
 
 const AgentCalendar = ({ tourData = null }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -25,6 +27,9 @@ const AgentCalendar = ({ tourData = null }) => {
     useState("Check Availability");
   const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState({}); // Added error state
+
+  //currency
+  const { currentCurrency } = useSelector((state) => state.currency);
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
@@ -358,19 +363,23 @@ const AgentCalendar = ({ tourData = null }) => {
       >
         <small className="text-muted">From</small>
         <h4 className="mb-0 fw-bold">
-          $
-          {currentPriceOption && tourData
-            ? tourData.price_by_vehicle
-              ? (
-                  Number.parseFloat(currentPriceOption.group_price) /
-                  Number.parseInt(tourData.group_size)
-                ).toFixed(2)
-              : tourData.price_by_passenger
-              ? Number.parseFloat(currentPriceOption.price_per_person).toFixed(
-                  2
-                )
-              : "0.00"
-            : "0.00"}
+          {currentCurrency?.symbol}
+          {currentPriceOption && tourData ? (
+            <>
+              {`${convertCurrency(
+                tourData.price_by_vehicle
+                  ? Number.parseFloat(currentPriceOption.group_price) /
+                      Number.parseInt(tourData.group_size)
+                  : tourData.price_by_passenger
+                  ? Number.parseFloat(currentPriceOption.price_per_person)
+                  : 0,
+                "USD",
+                currentCurrency?.currency
+              )}`}
+            </>
+          ) : (
+            "0.00"
+          )}
         </h4>
         {currentPriceOption && tourData && (
           <small className="text-muted">
@@ -470,11 +479,21 @@ const AgentCalendar = ({ tourData = null }) => {
               <span>
                 {tourData.price_by_vehicle
                   ? `Group Price (${participantCount} participants)`
-                  : `${participantCount} × $${Number.parseFloat(
-                      currentPriceOption.price_per_person
-                    ).toFixed(2)}`}
+                  : `${participantCount} ×  ${
+                      currentCurrency?.symbol
+                    }${convertCurrency(
+                      Number.parseFloat(currentPriceOption.price_per_person),
+                      "USD",
+                      currentCurrency?.currency
+                    )}`}
               </span>
-              <span className="fw-bold">${totalPrice.toFixed(2)}</span>
+              <span className="fw-bold">{`${
+                currentCurrency?.symbol
+              }${convertCurrency(
+                parseFloat(totalPrice),
+                "USD",
+                currentCurrency?.currency
+              )}`}</span>
             </div>
             <small className="text-black-50">{currentPriceOption.guide}</small>
           </div>

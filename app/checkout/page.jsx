@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useGetLogoUrlQuery } from "@/features/site-setting/siteSettingApi";
 import { useSelector } from "react-redux";
+import convertCurrency from "@/utils/currency";
 
 const CheckoutPage = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -15,6 +16,8 @@ const CheckoutPage = () => {
     email: "",
     acceptOffers: false,
   });
+  //currency
+  const { currentCurrency } = useSelector((state) => state.currency);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({});
@@ -724,7 +727,12 @@ const CheckoutPage = () => {
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <span></span>
                     <h5 className="mb-0">
-                      US${bookingData.totalPrice.toFixed(2)}
+                      {/* ${bookingData.totalPrice.toFixed(2)} */}
+                      {`${currentCurrency?.symbol}${convertCurrency(
+                        parseFloat(bookingData.totalPrice),
+                        "USD",
+                        currentCurrency?.currency
+                      )}`}
                     </h5>
                   </div>
 
@@ -742,7 +750,11 @@ const CheckoutPage = () => {
                     <div className="d-flex justify-content-between align-items-center">
                       <h5 className="mb-0">Total</h5>
                       <h4 className="mb-0">
-                        US${bookingData.totalPrice.toFixed(2)}
+                        {`${currentCurrency?.symbol}${convertCurrency(
+                          parseFloat(bookingData.totalPrice),
+                          "USD",
+                          currentCurrency?.currency
+                        )}`}
                       </h4>
                     </div>
                     <small className="text-success">

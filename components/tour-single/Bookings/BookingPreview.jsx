@@ -1,7 +1,9 @@
 "use client";
 
+import convertCurrency from "@/utils/currency";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const BookingPreview = ({
   tourId,
@@ -28,6 +30,10 @@ const BookingPreview = ({
     return date.toLocaleDateString("en-US", options);
   };
 
+  //currency
+  const { currentCurrency } = useSelector((state) => state.currency);
+
+  
   const setCookie = (name, value, days = 1) => {
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -161,7 +167,11 @@ const BookingPreview = ({
               className="fw-bold"
               style={{ color: "#333", fontSize: "16px" }}
             >
-              ${totalPrice.toFixed(2)}
+              {`${currentCurrency?.symbol}${convertCurrency(
+                parseFloat(totalPrice),
+                "USD",
+                currentCurrency?.currency
+              )}`}
             </span>
           </div>
         </div>
@@ -182,7 +192,11 @@ const BookingPreview = ({
               Total Price
             </p>
             <h4 className="mb-0 fw-bold" style={{ color: "#333" }}>
-              ${totalPrice.toFixed(2)}
+              {`${currentCurrency?.symbol}${convertCurrency(
+                parseFloat(totalPrice),
+                "USD",
+                currentCurrency?.currency
+              )}`}
             </h4>
             <small className="text-muted" style={{ fontSize: "12px" }}>
               All taxes and fees included
