@@ -41,7 +41,10 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
       const locationType = tourData.location_type?.toLowerCase() || "";
 
       setMakka(
-        locationType.includes("makkah") || locationType.includes("mecca")
+        locationType.includes("makkah") ||
+          locationType.includes("mecca") ||
+          locationType.includes("umrah") ||
+          locationType.includes("hajj")
       );
       setMadina(
         locationType.includes("madina") || locationType.includes("medina")

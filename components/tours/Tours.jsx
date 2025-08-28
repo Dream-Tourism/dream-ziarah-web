@@ -18,14 +18,21 @@ const Tours = ({ filterLocation, allTours: data }) => {
 
   // Filter tours based on location_type and published status
   const filteredTours =
-    data?.filter((tour) => {
-      if (filterLocation) {
-        return tour.location_type
-          ?.toLowerCase()
-          .includes(filterLocation.toLowerCase());
-      }
-      return true;
-    }) || [];
+    data
+      ?.filter((tour) => {
+        if (filterLocation) {
+          return tour.location_type
+            ?.toLowerCase()
+            .includes(filterLocation.toLowerCase());
+        }
+        return true;
+      })
+      // Sort by order field (0 first, then 1, 2, 3, etc.)
+      .sort((a, b) => {
+        const orderA = a.order !== undefined ? a.order : Infinity;
+        const orderB = b.order !== undefined ? b.order : Infinity;
+        return orderA - orderB;
+      }) || [];
 
   // Calculate per person price
   const calculatePerPersonPrice = (tour) => {
