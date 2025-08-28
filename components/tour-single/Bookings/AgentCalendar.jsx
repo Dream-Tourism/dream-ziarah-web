@@ -100,9 +100,9 @@ const AgentCalendar = ({ tourData = null }) => {
       );
 
       if (matchingOption) {
-        setAvailableTimes(matchingOption.available_times);
+        setAvailableTimes(matchingOption.available_times || []);
         setAvailableDates(
-          matchingOption.available_dates.map((date) => new Date(date))
+          matchingOption.available_dates?.map((date) => new Date(date)) || []
         );
       } else {
         setAvailableTimes([]);
@@ -416,61 +416,93 @@ const AgentCalendar = ({ tourData = null }) => {
           style={{ overflow: "visible" }}
           ref={dateButtonRef}
         >
-          <div
-            className="form-control d-flex align-items-center bg-white rounded"
-            style={{
-              cursor: "pointer",
-              padding: "12px 16px",
-              height: "48px",
-              width: "100%",
-              minWidth: isMobile ? "auto" : "280px",
-              border: errors.date ? "2px solid #ff4d4f" : "none",
-              boxShadow: errors.date
-                ? "0 0 6px rgba(255, 77, 79, 0.8)"
-                : "none",
-            }}
-            onClick={() => setShowCalendar(!showCalendar)}
-          >
-            <i className={`icon-twitter text-14 me-2`} />
-            <span
-              className="flex-grow-1"
-              style={{ fontSize: isMobile ? "14px" : "16px" }}
-            >
-              {selectedDate ? formatDate(selectedDate) : "Select Date"}
-            </span>
-            <i
-              className={`icon-chevron-${
-                showCalendar ? "up" : "down"
-              } text-muted ms-2`}
-            ></i>
-          </div>
-          {errors.date && (
+          {availableDates.length === 0 ? (
+            // Show message when no dates are available
             <div
-              style={{ color: "#ff4d4f", fontSize: "13px", marginTop: "4px" }}
+              className="form-control d-flex align-items-center bg-light rounded"
+              style={{
+                padding: "12px 16px",
+                height: "48px",
+                width: "100%",
+                minWidth: isMobile ? "auto" : "280px",
+                border: "1px solid #e0e0e0",
+                color: "#6c757d",
+                cursor: "not-allowed",
+              }}
             >
-              Please select a date
+              <i className="icon-twitter text-14 me-2" />
+              <span
+                className="flex-grow-1"
+                style={{ fontSize: isMobile ? "14px" : "16px" }}
+              >
+                No dates available for this tour
+              </span>
             </div>
-          )}
+          ) : (
+            <>
+              <div
+                className="form-control d-flex align-items-center bg-white rounded"
+                style={{
+                  cursor: "pointer",
+                  padding: "12px 16px",
+                  height: "48px",
+                  width: "100%",
+                  minWidth: isMobile ? "auto" : "280px",
+                  border: errors.date ? "2px solid #ff4d4f" : "none",
+                  boxShadow: errors.date
+                    ? "0 0 6px rgba(255, 77, 79, 0.8)"
+                    : "none",
+                }}
+                onClick={() => setShowCalendar(!showCalendar)}
+              >
+                <i className={`icon-twitter text-14 me-2`} />
+                <span
+                  className="flex-grow-1"
+                  style={{ fontSize: isMobile ? "14px" : "16px" }}
+                >
+                  {selectedDate ? formatDate(selectedDate) : "Select Date"}
+                </span>
+                <i
+                  className={`icon-chevron-${
+                    showCalendar ? "up" : "down"
+                  } text-muted ms-2`}
+                ></i>
+              </div>
+              {errors.date && (
+                <div
+                  style={{
+                    color: "#ff4d4f",
+                    fontSize: "13px",
+                    marginTop: "4px",
+                  }}
+                >
+                  Please select a date
+                </div>
+              )}
 
-          <Calendar
-            selectedDate={selectedDate}
-            onDateSelect={handleDateSelect}
-            onClose={() => setShowCalendar(false)}
-            isVisible={showCalendar}
-            availableDates={availableDates}
-            isDateAvailable={isDateAvailable}
-          />
+              <Calendar
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+                onClose={() => setShowCalendar(false)}
+                isVisible={showCalendar}
+                availableDates={availableDates}
+                isDateAvailable={isDateAvailable}
+              />
+            </>
+          )}
         </div>
 
-        {/* Time Selection */}
-        <CustomDropdown
-          label="Select Time"
-          icon="icon-twitter"
-          value={dropDownTime}
-          options={availableTimes}
-          onChange={handleTimeChange}
-          hasError={errors.time}
-        />
+        {/* Time Selection - Only show if there are available times */}
+        {availableTimes.length > 0 && (
+          <CustomDropdown
+            label="Select Time"
+            icon="icon-twitter"
+            value={dropDownTime}
+            options={availableTimes}
+            onChange={handleTimeChange}
+            hasError={errors.time}
+          />
+        )}
 
         {/* Price Display */}
         {currentPriceOption && participantCount && tourData && (
@@ -509,7 +541,12 @@ const AgentCalendar = ({ tourData = null }) => {
             height: "48px",
           }}
           onClick={handleCheckAvailability}
-          disabled={isCheckingAvailability || !currentPriceOption}
+          disabled={
+            isCheckingAvailability ||
+            !currentPriceOption ||
+            availableDates.length === 0 ||
+            availableTimes.length === 0
+          }
         >
           {availabilityMessage}
         </button>
