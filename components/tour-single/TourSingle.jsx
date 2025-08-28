@@ -19,7 +19,7 @@ import Itinerary from "./itinerary/index";
 import { useTourBySlug } from "@/hooks/useTourBySlug";
 import { useSingleTour } from "@/hooks/useSingleTour";
 
-const TourSingleV1Dynamic = ({ params, children }) => {
+const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
   const dispatch = useDispatch();
   const [makka, setMakka] = useState(false);
   const [jedda, setJedda] = useState(false);
@@ -30,10 +30,10 @@ const TourSingleV1Dynamic = ({ params, children }) => {
   const [isCopyLoading, setIsCopyLoading] = useState(false);
 
   // Use the new single tour hook
-  const { tourIds, notFound } = useTourBySlug(params.name);
+  // const { tourIds, notFound } = useTourBySlug(params.name);
   // Use the new single tour hook
-  const { data: tourData, error, isLoading } = useSingleTour(tourIds);
-  console.log("tourIds", tourData?.itineraries_list);
+  // const { data: tourData, error, isLoading } = useSingleTour(tourIds);
+  console.log("tourIds", tourData);
 
   useEffect(() => {
     if (tourData) {
@@ -139,11 +139,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
     );
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (error || !tourData) {
+  if (!tourData) {
     return (
       <div className="container">
         <div className="row justify-center">
@@ -219,8 +215,8 @@ const TourSingleV1Dynamic = ({ params, children }) => {
               <div className="container">
                 <h3 className="text-22 fw-600 mb-20">Itinerary</h3>
                 <Itinerary
-                  name={tourData.name}
-                  itenarayItems={tourData.itineraries_list}
+                  name={tourData?.name}
+                  itenarayItems={tourData?.itineraries_list}
                 />
               </div>
             </section>
@@ -254,7 +250,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-              <Tours filterLocation="Makkah" />
+              <Tours filterLocation="Makkah" allTours={allTours} />
             </div>
           </div>
         </section>
@@ -286,7 +282,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-              <ToursMadina filterLocation="Madina" />
+              <Tours filterLocation="Madina" allTours={allTours} />
             </div>
           </div>
         </section>
@@ -318,7 +314,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-              <ToursJedda filterLocation="Jeddah" />
+              <Tours filterLocation="Jeddah" allTours={allTours} />
             </div>
           </div>
         </section>
@@ -348,7 +344,7 @@ const TourSingleV1Dynamic = ({ params, children }) => {
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-              <ToursTaif filterLocation="Taif" />
+              <Tours filterLocation="Taif" allTours={allTours} />
             </div>
           </div>
         </section>

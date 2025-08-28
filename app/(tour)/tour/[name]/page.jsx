@@ -1,8 +1,17 @@
 import Wrapper from "@/components/layout/Wrapper";
 import TourHeading from "@/components/tour-single/TourHeading";
 import TourSingle from "@/components/tour-single/TourSingle";
+import { useAllTour } from "@/hooks/useAllTour";
+import { useSingleTour } from "@/hooks/useSingleTour";
+import { useTourBySlug } from "@/hooks/useTourBySlug";
 import getAllContentByMenuId from "@/services/contentService";
 import getAllMenuItem from "@/services/menuService";
+import {
+  getAllToursServer,
+  getSingleTourServer,
+  getTourBySlugServer,
+} from "@/services/tourService";
+import { notFound } from "next/navigation";
 
 const tourMetadatas = {
   //makka
@@ -222,12 +231,71 @@ export async function generateMetadata({ params, searchParams }, parent) {
   };
 }
 
-export default function Tour({ params }) {
+// Server-side data fetching function
+async function getTourData(slug) {
+  try {
+    console.log("Fetching tour data for slug:", slug);
+
+    // Fetch all data in parallel for better performance
+    const [tourBySlugData, allTours] = await Promise.all([
+      getTourBySlugServer(slug),
+      getAllToursServer(),
+    ]);
+
+    if (!tourBySlugData || !tourBySlugData.tourIds) {
+      console.log("Tour not found for slug:", slug);
+      return null;
+    }
+
+    // Get detailed tour data
+    const tourData = await getSingleTourServer(tourBySlugData.tourIds);
+
+    if (!tourData) {
+      console.log("Tour data not found for ID:", tourBySlugData.tourIds);
+      return null;
+    }
+
+    return {
+      tourData,
+      allTours,
+      tourIds: tourBySlugData.tourIds,
+    };
+  } catch (error) {
+    console.error("Error fetching tour data:", error);
+    return null;
+  }
+}
+
+export default async function Tour({ params }) {
+  console.log("Tour page params:", params);
+
+  // Fetch all tour data at the server level
+  const data = await getTourData(params.name);
+
+  // Handle not found case
+  if (!data || !data.tourData) {
+    console.log("Tour not found, redirecting to 404");
+    notFound();
+  }
+
+  const { tourData, allTours, tourIds } = data;
+
+  console.log("Successfully fetched tour data:", {
+    tourId: tourIds,
+    tourName: tourData?.name,
+    allToursCount: allTours?.length,
+  });
+
   return (
     <>
       <Wrapper>
-        <TourSingle params={params}>
-          <TourHeading params={params} />
+        <TourSingle
+          params={params}
+          tourData={tourData}
+          allTours={allTours}
+          tourIds={tourIds}
+        >
+          <TourHeading params={params} tourData={tourData} />
         </TourSingle>
       </Wrapper>
     </>

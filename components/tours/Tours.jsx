@@ -8,9 +8,9 @@ import TourSkeleton from "../skeleton/TourSkeleton";
 import { useAllTour } from "@/hooks/useAllTour";
 import convertCurrency from "@/utils/currency";
 
-const Tours = ({ filterLocation }) => {
-  const { data, error, isLoading } = useAllTour();
-  console.log("All Tour Data:", data, error, isLoading);
+const Tours = ({ filterLocation, allTours: data }) => {
+  // const { data, error, isLoading } = useAllTour();
+  console.log("All Tour Data:", data);
 
   const { currentCurrency } = useSelector((state) => state.currency);
   const width = useWindowSize();
@@ -120,11 +120,11 @@ const Tours = ({ filterLocation }) => {
     );
   }
 
-  if (isLoading) {
-    return <TourSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <TourSkeleton />;
+  // }
 
-  if (error || filteredTours.length === 0) {
+  if (filteredTours.length === 0) {
     return <TourSkeleton />;
   }
 

@@ -381,13 +381,7 @@ export const singleTourInfo = {
   },
 };
 
-const TourHeading = async ({ params }) => {
-  // const name = params?.name;
-  // Use the new single tour hook
-  const { tourIds, notFound } = useTourBySlug(params.name);
-  // Use the new single tour hook
-  const { data: tourData, error, isLoading } = useSingleTour(tourIds);
-
+const TourHeading = async ({ tourData }) => {
   return (
     <div className="col-xl-8">
       <h1 className="text-25 fw-600">{tourData?.name}</h1>

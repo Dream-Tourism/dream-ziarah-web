@@ -1,5 +1,6 @@
 "use client";
 import { useGetSliderImagesQuery } from "@/features/image/imageApi";
+import { useAllTour } from "@/hooks/useAllTour";
 import useWindowSize from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -19,7 +20,8 @@ const ToursForMobile = dynamic(() =>
   import("@/components/tours/ToursForMobile")
 );
 
-const MainHome = () => {
+const MainHome = ({ allTours }) => {
+  console.log("All Tour Data in MainHome:", allTours);
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
 
   const [dataAvailable, setDataAvailable] = useState(false);
@@ -130,7 +132,7 @@ const MainHome = () => {
                     {/* End .row */}
 
                     <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <Tours />
+                      <Tours filterLocation="Makkah" allTours={allTours} />
                     </div>
                     {/* End .row */}
                   </div>
@@ -174,7 +176,7 @@ const MainHome = () => {
                     {/* End .row */}
 
                     <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <ToursMadina />
+                      <Tours filterLocation="Madina" allTours={allTours} />
                     </div>
                     {/* End .row */}
                   </div>
@@ -219,7 +221,7 @@ const MainHome = () => {
                     {/* End .row */}
 
                     <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <ToursJedda />
+                      <Tours filterLocation="Jeddah" allTours={allTours} />
                     </div>
                     {/* End .row */}
                   </div>
@@ -264,7 +266,7 @@ const MainHome = () => {
                     {/* End .row */}
 
                     <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <ToursTaif />
+                      <Tours filterLocation="Taif" allTours={allTours} />
                     </div>
                     {/* End .row */}
                   </div>
@@ -363,7 +365,7 @@ const MainHome = () => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Makkah" />
+                <Tours filterLocation="Makkah" allTours={allTours} />
               </div>
             </div>
           </section>
@@ -397,7 +399,7 @@ const MainHome = () => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Madina" />
+                <Tours filterLocation="Madina" allTours={allTours} />
               </div>
             </div>
           </section>
@@ -427,7 +429,7 @@ const MainHome = () => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Jeddah" />
+                <Tours filterLocation="Jeddah" allTours={allTours} />
               </div>
             </div>
           </section>
@@ -457,7 +459,7 @@ const MainHome = () => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Taif" />
+                <Tours filterLocation="Taif" allTours={allTours} />
               </div>
             </div>
           </section>

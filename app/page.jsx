@@ -1,3 +1,4 @@
+import { getAllToursServer } from "@/services/tourService";
 import dynamic from "next/dynamic";
 
 const MainHome = dynamic(() => import("@/components/home/MainHome"));
@@ -10,12 +11,22 @@ export const metadata = {
     "Dream Ziarah specializes in providing spiritual journeys with exclusive Ziyarat tours in Makkah & Madina, alongside comprehensive Umrah and Hajj packages. Explore sacred sites with us and embark on a journey of faith and discovery.",
 };
 
-export default function Home() {
+async function getTourData() {
+  try {
+    const allTours = await getAllToursServer();
+    return allTours;
+  } catch (error) {
+    console.error("Error fetching all tours:", error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const allTours = await getTourData();
+
   return (
-    <>
-      <Wrapper>
-        <MainHome />
-      </Wrapper>
-    </>
+    <Wrapper>
+      <MainHome allTours={allTours} />
+    </Wrapper>
   );
 }
