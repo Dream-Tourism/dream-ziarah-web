@@ -5,20 +5,33 @@ import TourSnapShot from "@/components/tour-single/TourSnapShot";
 import Image from "next/image";
 import useWindowSize from "@/hooks/useWindowSize";
 import "../../styles/weather.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import OverviewSkeleton from "../skeleton/OverviewSkeleton";
 import TourGalleryGridSkeleton from "./TourGalleryGridSkeleton";
 import Slider from "react-slick";
 import SidebarRight2 from "./SidebarRight2";
+import Itinerary from "./itinerary/index";
+import ImportantInfo from "@/components/tour-single/ImportantInfo";
 
 export default function TourGallery({ tour, onDataAvailable }) {
-  console.log("tourgallery", tour);
+  // console.log("tourgallery", tour);
   const [dataAvailable, setDataAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showScrollMenus, setShowScrollMenus] = useState(false);
+  const [activeTab, setActiveTab] = useState("tour-snapshot");
+
   const width = useWindowSize();
   const isMobile = width < 768;
+
+  // Refs for scrolling to sections
+  const tourSnapshotRef = useRef(null);
+  const overviewRef = useRef(null);
+  const sidebarRef = useRef(null);
+  const importantInfoRef = useRef(null);
+  const itineraryRef = useRef(null);
+  const scrollMenuRef = useRef(null);
 
   // Get images from tour_images or fallback to cloudflare_thumbnail_image_url
   const getImageArray = () => {
@@ -122,6 +135,39 @@ export default function TourGallery({ tour, onDataAvailable }) {
     );
   }
 
+  // Handle scroll to show/hide menus
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      // Show menus after scrolling 300px
+      if (scrollY > 300) {
+        setShowScrollMenus(true);
+      } else {
+        setShowScrollMenus(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll to section function
+  const scrollToSection = (ref, tabName) => {
+    if (ref && ref.current) {
+      const offsetTop = ref.current.offsetTop - (isMobile ? 20 : 140); // Account for fixed menu height
+      window.scrollTo({
+        top: offsetTop,
+        behavior: "smooth",
+      });
+      setActiveTab(tabName);
+    }
+  };
+
+  // Scroll to sidebar (Check Availability)
+  const scrollToAvailability = () => {
+    scrollToSection(sidebarRef, "calendar");
+  };
+
   // Handle image click and data loading
   const handleImageClick = (index) => {
     setCurrentImageIndex(index);
@@ -175,6 +221,215 @@ export default function TourGallery({ tour, onDataAvailable }) {
 
   return (
     <>
+      {/* Desktop Scroll Menus */}
+      {!isMobile && showScrollMenus && (
+        <div
+          ref={scrollMenuRef}
+          className="fixed-scroll-menus"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            backgroundColor: "white",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          {/* First Menu - Tour Name & Check Availability */}
+          <div
+            className="tour-header-menu"
+            style={{
+              padding: "15px 0",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #f0f0f0",
+              maxWidth: "1200px",
+              margin: "0 auto",
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "600" }}>
+              {tour?.name || "Tour Details"}
+            </h2>
+            <button
+              onClick={scrollToAvailability}
+              style={{
+                backgroundColor: "#3b82f6",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#2563eb")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "#3b82f6")}
+            >
+              Check Availability
+            </button>
+          </div>
+
+          {/* Second Menu - Tab Navigation */}
+          <div
+            className="tab-navigation-menu"
+            style={{
+              padding: "0 20px",
+              display: "flex",
+              gap: "30px",
+              overflowX: "auto",
+              maxWidth: "1200px",
+              margin: "0 auto",
+            }}
+          >
+            <button
+              onClick={() => scrollToSection(tourSnapshotRef, "tour-snapshot")}
+              style={{
+                padding: "15px 0",
+                border: "none",
+                background: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: activeTab === "tour-snapshot" ? "#3b82f6" : "#666",
+                borderBottom:
+                  activeTab === "tour-snapshot"
+                    ? "2px solid #3b82f6"
+                    : "2px solid transparent",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Tour Snapshot
+            </button>
+            <button
+              onClick={() => scrollToSection(overviewRef, "overview")}
+              style={{
+                padding: "15px 0",
+                border: "none",
+                background: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: activeTab === "overview" ? "#3b82f6" : "#666",
+                borderBottom:
+                  activeTab === "overview"
+                    ? "2px solid #3b82f6"
+                    : "2px solid transparent",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => scrollToSection(sidebarRef, "calendar")}
+              style={{
+                padding: "15px 0",
+                border: "none",
+                background: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: activeTab === "calendar" ? "#3b82f6" : "#666",
+                borderBottom:
+                  activeTab === "calendar"
+                    ? "2px solid #3b82f6"
+                    : "2px solid transparent",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Calendar
+            </button>
+            <button
+              onClick={() =>
+                scrollToSection(importantInfoRef, "important-info")
+              }
+              style={{
+                padding: "15px 0",
+                border: "none",
+                background: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: activeTab === "important-info" ? "#3b82f6" : "#666",
+                borderBottom:
+                  activeTab === "important-info"
+                    ? "2px solid #3b82f6"
+                    : "2px solid transparent",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Important Info
+            </button>
+            {tour?.itineraries_list?.length > 0 && (
+              <button
+                onClick={() => scrollToSection(itineraryRef, "itinerary")}
+                style={{
+                  padding: "15px 0",
+                  border: "none",
+                  background: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: activeTab === "itinerary" ? "#3b82f6" : "#666",
+                  borderBottom:
+                    activeTab === "itinerary"
+                      ? "2px solid #3b82f6"
+                      : "2px solid transparent",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Itinerary
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Bottom Menu */}
+      {isMobile && (
+        <div
+          className="mobile-bottom-menu"
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            backgroundColor: "white",
+            padding: "15px 20px",
+            boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+            borderTop: "1px solid #f0f0f0",
+          }}
+        >
+          <button
+            onClick={scrollToAvailability}
+            style={{
+              width: "100%",
+              backgroundColor: "#3b82f6",
+              color: "white",
+              padding: "15px",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            Check Availability
+          </button>
+        </div>
+      )}
+
       <section className="pt-40 js-pin-container">
         <div className="container">
           {/* Full Width Gallery Section */}
@@ -362,25 +617,68 @@ export default function TourGallery({ tour, onDataAvailable }) {
           {/* Content Section Below Gallery */}
           <div className="row y-gap-30 mt-xl-40 mt-0">
             {/* Sidebar on Right */}
-            <div className="col-xl-4 order-xl-2">
+            <div className="col-xl-4 order-xl-2" ref={sidebarRef}>
               <SidebarRight2 tour={tour} />
             </div>
 
             {/* Main Content on Left */}
             <div className="col-xl-8 order-xl-1">
-              <h3 className="text-22 fw-600">Tour snapshot</h3>
-              <TourSnapShot tour={tour} />
+              <div ref={tourSnapshotRef}>
+                <h3 className="text-22 fw-600">Tour snapshot</h3>
+                <TourSnapShot tour={tour} />
+              </div>
               {/* End toursnapshot */}
 
               <div className="border-top-light mt-40 mb-40"></div>
 
-              {dataAvailable ? <Overview tour={tour} /> : <OverviewSkeleton />}
+              <div ref={overviewRef}>
+                {dataAvailable ? (
+                  <Overview tour={tour} />
+                ) : (
+                  <OverviewSkeleton />
+                )}
+              </div>
               {/* End Overview */}
             </div>
           </div>
         </div>
         {/* End container */}
       </section>
+
+      {dataAvailable && (
+        <>
+          <section className="pt-40" ref={importantInfoRef}>
+            <div className="container">
+              <div className="pt-40 border-top-light">
+                <div className="row x-gap-40 y-gap-40">
+                  <div className="col-auto">
+                    <h3 className="text-22 fw-600">Important information</h3>
+                  </div>
+                </div>
+                <ImportantInfo tour={tour} />
+              </div>
+            </div>
+          </section>
+
+          {tour?.itineraries_list?.length > 0 && (
+            <section
+              className="border-top-light  mt-40 pt-40"
+              ref={itineraryRef}
+            >
+              <div className="container">
+                <h3 className="text-22 fw-600 mb-20">Itinerary</h3>
+                <Itinerary
+                  name={tour?.name}
+                  itenarayItems={tour?.itineraries_list}
+                />
+              </div>
+            </section>
+          )}
+        </>
+      )}
+
+      {/* Add bottom padding for mobile to account for fixed bottom menu */}
+      {isMobile && <div style={{ height: "80px" }} />}
 
       {/* Fullscreen Lightbox */}
       {lightboxOpen && (

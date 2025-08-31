@@ -1,7 +1,7 @@
 "use client";
 
 import "photoswipe/dist/photoswipe.css";
-import ImportantInfo from "@/components/tour-single/ImportantInfo";
+
 import TourGallery from "@/components/tour-single/TourGallery";
 import Tours from "@/components/tours/Tours";
 import ToursMadina from "@/components/tours/ToursMadina";
@@ -197,7 +197,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
       </section>
 
       <TourGallery tour={tourData} />
-
+      {/* 
       {dataAvailable && (
         <>
           <section className="pt-40">
@@ -225,7 +225,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
             </section>
           )}
         </>
-      )}
+      )} */}
 
       {makka && tourData?.name && dataAvailable && (
         <section className="layout-pt-lg layout-pb-lg mt-50 border-top-light">
