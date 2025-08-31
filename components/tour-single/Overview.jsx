@@ -2,9 +2,8 @@ import { Interweave } from "interweave";
 import { useState } from "react";
 
 const Overview = ({ tour }) => {
-
   const [showFullDescription, setShowFullDescription] = useState(false);
-  
+
   // Use tour prop if available, otherwise fallback to tourItem from redux
   const currentTour = tour;
 
@@ -15,7 +14,7 @@ const Overview = ({ tour }) => {
 
   // Calculate the length for displaying half of the description
   const halfLength = Math.ceil((currentTour?.description?.length || 0) / 2);
-  
+
   return (
     <>
       <div className="row x-gap-40 y-gap-40">
@@ -24,6 +23,7 @@ const Overview = ({ tour }) => {
           {currentTour?.description && (
             <>
               <Interweave
+                className="description-content"
                 allowAttributes
                 allowElements
                 disableLineBreaks={true}
@@ -47,9 +47,7 @@ const Overview = ({ tour }) => {
         {currentTour?.languages && (
           <div className="col-md-6">
             <h5 className="text-16 fw-600">Available languages</h5>
-            <div className="text-15 mt-10">
-              {currentTour.languages}
-            </div>
+            <div className="text-15 mt-10">{currentTour.languages}</div>
           </div>
         )}
 
@@ -59,7 +57,7 @@ const Overview = ({ tour }) => {
             {currentTour?.cancellation ? (
               <div
                 dangerouslySetInnerHTML={{
-                  __html: currentTour.cancellation
+                  __html: currentTour.cancellation,
                 }}
               />
             ) : (

@@ -1,4 +1,29 @@
-import { getAllTourBookingByTravellerID } from "@/constant/constants";
+import {
+  GET_BOOKINGS_BY_ID,
+  getAllTourBookingByTravellerID,
+} from "@/constant/constants";
+
+export const fetchBookingByID = async (bookingId) => {
+  try {
+    const response = await fetch(`${GET_BOOKINGS_BY_ID}${bookingId}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Authorization': `Bearer ${token}`, // Uncomment if auth needed
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching booking by ID:", error);
+    throw error;
+  }
+};
 
 export const fetchTourBookings = async (travellerId) => {
   try {

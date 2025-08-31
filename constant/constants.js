@@ -573,6 +573,9 @@ export const getAllTourBookingByTravellerID = `${BASE_URL2}/tour_booking/api/v1/
 export const checkAvailability = `${BASE_URL2}/payments/api/v1/payments/availability/check/`;
 
 export const GET_ALL_TOUR = `${BASE_URL2}/tour_content/api/v1/tour/all/`;
+
+export const GET_BOOKINGS_BY_ID = `${BASE_URL2}/tour_booking/api/v1/tour_booking/`;
+
 //menu content
 
 export const CREATE_CONTENT = `${BASE_URL}/cms_menu_content/api/v1/cms_menu_content/create/`;

@@ -21,6 +21,16 @@
   }
 }
 
+//Single TOur Description
+.description-content {
+  color: #000 !important; /* force black */
+}
+.description-content p,
+.description-content strong,
+.description-content span {
+  color: #000 !important; /* ensure children are black too */
+}
+
 /* Mobile Order Cards */
 .mobile-order-card {
   border: 1px solid #e9ecef;

@@ -360,7 +360,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
           </div>
 
           {/* Content Section Below Gallery */}
-          <div className="row y-gap-30 mt-40">
+          <div className="row y-gap-30 mt-xl-40 mt-0">
             {/* Sidebar on Right */}
             <div className="col-xl-4 order-xl-2">
               <SidebarRight2 tour={tour} />
