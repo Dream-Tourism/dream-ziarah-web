@@ -483,16 +483,6 @@ export default function OrderDetails({
                 </small>
               </div>
               <div>
-                {selectedOrder.status === "pending" && (
-                  <button
-                    type="button"
-                    className="btn btn-danger me-2"
-                    onClick={() => onCancel(selectedOrder.id)}
-                  >
-                    <i className="icon-x text-14 me-2"></i>
-                    Cancel Booking
-                  </button>
-                )}
                 <button
                   type="button"
                   className="btn btn-secondary"

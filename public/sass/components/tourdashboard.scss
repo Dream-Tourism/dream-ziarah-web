@@ -56,3 +56,86 @@
 .mobile-order-card .card-body {
   padding: 1rem;
 }
+/* Custom modal width */
+@media (min-width: 768px) {
+  .custom-modal-width {
+    max-width: 800px; /* wider than modal-lg */
+  }
+}
+
+@media (min-width: 1200px) {
+  .custom-modal-width {
+    max-width: 1000px; /* for very large screens */
+  }
+}
+
+@media (max-width: 767px) {
+  .custom-modal-width {
+    margin: 10px; /* prevent modal from touching edges */
+    max-width: 95%; /* keep it mobile friendly */
+  }
+}
+
+.tour-booking-name {
+  max-width: 60px; /* adjust width for mobile */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* On larger screens, allow more width */
+@media (min-width: 768px) {
+  .tour-booking-name {
+    max-width: 300px;
+  }
+}
+
+/* Custom modal width */
+@media (min-width: 768px) {
+  .custom-modal-width {
+    max-width: 800px; /* wider than modal-lg */
+  }
+}
+
+@media (min-width: 1200px) {
+  .custom-modal-width {
+    max-width: 1000px; /* for very large screens */
+  }
+}
+
+@media (max-width: 767px) {
+  .custom-modal-width {
+    margin: 10px; /* prevent modal from touching edges */
+    max-width: 95%; /* keep it mobile friendly */
+  }
+}
+
+.tour-booking-name {
+  max-width: 60px; /* adjust width for mobile */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* On larger screens, allow more width */
+@media (min-width: 768px) {
+  .tour-booking-name {
+    max-width: 300px;
+  }
+}
+
+/* Make sure dropdown aligns nicely */
+.dropdown-wrapper {
+  text-align: right;
+}
+
+/* On mobile, stack under details */
+@media (max-width: 767px) {
+  .dropdown-wrapper {
+    width: 100%; /* take full width */
+    text-align: left; /* align under details */
+  }
+  .dropdown-wrapper select {
+    width: 100% !important;
+  }
+}
