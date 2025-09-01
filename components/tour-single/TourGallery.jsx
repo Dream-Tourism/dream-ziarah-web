@@ -21,6 +21,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showScrollMenus, setShowScrollMenus] = useState(false);
   const [activeTab, setActiveTab] = useState("tour-snapshot");
+  const [showMobileBottomButton, setShowMobileBottomButton] = useState(true);
 
   const width = useWindowSize();
   const isMobile = width < 768;
@@ -139,22 +140,45 @@ export default function TourGallery({ tour, onDataAvailable }) {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
+
       // Show menus after scrolling 300px
       if (scrollY > 300) {
         setShowScrollMenus(true);
       } else {
         setShowScrollMenus(false);
       }
+
+      // Handle mobile bottom button visibility based on sidebar position
+      if (isMobile && sidebarRef.current) {
+        const sidebarRect = sidebarRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        // Hide button when sidebar is in viewport, show when passed
+        if (sidebarRect.top <= windowHeight && sidebarRect.bottom >= 0) {
+          // Sidebar is in viewport - hide button
+          setShowMobileBottomButton(false);
+        } else {
+          // Sidebar is not in viewport - show button
+          setShowMobileBottomButton(true);
+        }
+      } else if (isMobile) {
+        // If sidebar ref is not available yet, show button by default
+        setShowMobileBottomButton(true);
+      }
     };
+
+    // Run once on mount to set initial state
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isMobile]);
 
   // Scroll to section function
   const scrollToSection = (ref, tabName) => {
     if (ref && ref.current) {
-      const offsetTop = ref.current.offsetTop - (isMobile ? 20 : 140); // Account for fixed menu height
+      const offsetTop =
+        ref.current.offsetTop - (isMobile ? (showScrollMenus ? 50 : 20) : 140); // Account for fixed menu height
       window.scrollTo({
         top: offsetTop,
         behavior: "smooth",
@@ -211,7 +235,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
     // Set loading to false after a short delay to show skeleton
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // Show skeleton for 2 seconds
+    }, 500); // Show skeleton for 2 seconds
 
     return () => clearTimeout(timer);
   }, [tour]);
@@ -245,7 +269,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
               justifyContent: "space-between",
               alignItems: "center",
               borderBottom: "1px solid #f0f0f0",
-              maxWidth: "1200px",
+              maxWidth: "1345px",
               margin: "0 auto",
               paddingLeft: "20px",
               paddingRight: "20px",
@@ -282,7 +306,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
               display: "flex",
               gap: "30px",
               overflowX: "auto",
-              maxWidth: "1200px",
+              maxWidth: "1345px",
               margin: "0 auto",
             }}
           >
@@ -394,8 +418,42 @@ export default function TourGallery({ tour, onDataAvailable }) {
         </div>
       )}
 
-      {/* Mobile Bottom Menu */}
-      {isMobile && (
+      {/* Mobile Top Menu (appears after scrolling) */}
+      {isMobile && showScrollMenus && (
+        <div
+          className="mobile-top-menu"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            backgroundColor: "white",
+            padding: "12px 20px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+            borderBottom: "1px solid #f0f0f0",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "14px",
+              fontWeight: "600",
+              textAlign: "center",
+              lineHeight: "1.3",
+              color: "#333",
+            }}
+          >
+            {tour?.name || "Tour Details"}
+          </h2>
+        </div>
+      )}
+
+      {/* Mobile Bottom Menu (conditionally visible) */}
+      {isMobile && showMobileBottomButton && (
         <div
           className="mobile-bottom-menu"
           style={{
@@ -678,7 +736,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
       )}
 
       {/* Add bottom padding for mobile to account for fixed bottom menu */}
-      {isMobile && <div style={{ height: "80px" }} />}
+      {isMobile && showMobileBottomButton && <div style={{ height: "80px" }} />}
 
       {/* Fullscreen Lightbox */}
       {lightboxOpen && (
