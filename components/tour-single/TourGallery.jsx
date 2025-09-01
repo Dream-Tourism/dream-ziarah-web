@@ -33,6 +33,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
   const importantInfoRef = useRef(null);
   const itineraryRef = useRef(null);
   const scrollMenuRef = useRef(null);
+  const sidebarMobileRef = useRef(null);
 
   // Get images from tour_images or fallback to cloudflare_thumbnail_image_url
   const getImageArray = () => {
@@ -149,8 +150,8 @@ export default function TourGallery({ tour, onDataAvailable }) {
       }
 
       // Handle mobile bottom button visibility based on sidebar position
-      if (isMobile && sidebarRef.current) {
-        const sidebarRect = sidebarRef.current.getBoundingClientRect();
+      if (isMobile && sidebarMobileRef.current) {
+        const sidebarRect = sidebarMobileRef.current.getBoundingClientRect();
         const windowHeight = window.innerHeight;
 
         // Hide button when sidebar is in viewport, show when passed
@@ -247,163 +248,45 @@ export default function TourGallery({ tour, onDataAvailable }) {
     <>
       {/* Desktop Scroll Menus */}
       {!isMobile && showScrollMenus && (
-        <div
-          ref={scrollMenuRef}
-          className="fixed-scroll-menus"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1000,
-            backgroundColor: "white",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-          }}
-        >
+        <div ref={scrollMenuRef} className="fixed-scroll-menus">
           {/* First Menu - Tour Name & Check Availability */}
-          <div
-            className="tour-header-menu"
-            style={{
-              padding: "15px 0",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderBottom: "1px solid #f0f0f0",
-              maxWidth: "1345px",
-              margin: "0 auto",
-              paddingLeft: "20px",
-              paddingRight: "20px",
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "600" }}>
+          <div className="tour-header-menu">
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "white",
+              }}
+            >
               {tour?.name || "Tour Details"}
             </h2>
             <button
               onClick={scrollToAvailability}
-              style={{
-                backgroundColor: "#3b82f6",
-                color: "white",
-                padding: "10px 20px",
-                border: "none",
-                borderRadius: "6px",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#2563eb")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "#3b82f6")}
+              className="menuCheckAvailabilityButton"
+              // onMouseOver={(e) => (e.target.style.backgroundColor = "#2563eb")}
+              // onMouseOut={(e) => (e.target.style.backgroundColor = "#3b82f6")}
             >
               Check Availability
             </button>
           </div>
 
           {/* Second Menu - Tab Navigation */}
-          <div
-            className="tab-navigation-menu"
-            style={{
-              padding: "0 20px",
-              display: "flex",
-              gap: "30px",
-              overflowX: "auto",
-              maxWidth: "1345px",
-              margin: "0 auto",
-            }}
-          >
-            <button
-              onClick={() => scrollToSection(tourSnapshotRef, "tour-snapshot")}
-              style={{
-                padding: "15px 0",
-                border: "none",
-                background: "none",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: activeTab === "tour-snapshot" ? "#3b82f6" : "#666",
-                borderBottom:
-                  activeTab === "tour-snapshot"
-                    ? "2px solid #3b82f6"
-                    : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Tour Snapshot
-            </button>
-            <button
-              onClick={() => scrollToSection(overviewRef, "overview")}
-              style={{
-                padding: "15px 0",
-                border: "none",
-                background: "none",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: activeTab === "overview" ? "#3b82f6" : "#666",
-                borderBottom:
-                  activeTab === "overview"
-                    ? "2px solid #3b82f6"
-                    : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => scrollToSection(sidebarRef, "calendar")}
-              style={{
-                padding: "15px 0",
-                border: "none",
-                background: "none",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: activeTab === "calendar" ? "#3b82f6" : "#666",
-                borderBottom:
-                  activeTab === "calendar"
-                    ? "2px solid #3b82f6"
-                    : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Calendar
-            </button>
-            <button
-              onClick={() =>
-                scrollToSection(importantInfoRef, "important-info")
-              }
-              style={{
-                padding: "15px 0",
-                border: "none",
-                background: "none",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: activeTab === "important-info" ? "#3b82f6" : "#666",
-                borderBottom:
-                  activeTab === "important-info"
-                    ? "2px solid #3b82f6"
-                    : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Important Info
-            </button>
-            {tour?.itineraries_list?.length > 0 && (
+          <div className="tab-navigation-menu">
+            <div className="tab-navigation-inner">
               <button
-                onClick={() => scrollToSection(itineraryRef, "itinerary")}
+                onClick={() =>
+                  scrollToSection(tourSnapshotRef, "tour-snapshot")
+                }
                 style={{
                   padding: "15px 0",
                   border: "none",
                   background: "none",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: activeTab === "itinerary" ? "#3b82f6" : "#666",
+                  color: activeTab === "tour-snapshot" ? "#3b82f6" : "#666",
                   borderBottom:
-                    activeTab === "itinerary"
+                    activeTab === "tour-snapshot"
                       ? "2px solid #3b82f6"
                       : "2px solid transparent",
                   cursor: "pointer",
@@ -411,32 +294,100 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   whiteSpace: "nowrap",
                 }}
               >
-                Itinerary
+                Tour Snapshot
               </button>
-            )}
+              <button
+                onClick={() => scrollToSection(overviewRef, "overview")}
+                style={{
+                  padding: "15px 0",
+                  border: "none",
+                  background: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: activeTab === "overview" ? "#3b82f6" : "#666",
+                  borderBottom:
+                    activeTab === "overview"
+                      ? "2px solid #3b82f6"
+                      : "2px solid transparent",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Overview
+              </button>
+              <button
+                onClick={() => scrollToSection(sidebarRef, "calendar")}
+                style={{
+                  padding: "15px 0",
+                  border: "none",
+                  background: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: activeTab === "calendar" ? "#3b82f6" : "#666",
+                  borderBottom:
+                    activeTab === "calendar"
+                      ? "2px solid #3b82f6"
+                      : "2px solid transparent",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Calendar
+              </button>
+              <button
+                onClick={() =>
+                  scrollToSection(importantInfoRef, "important-info")
+                }
+                style={{
+                  padding: "15px 0",
+                  border: "none",
+                  background: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: activeTab === "important-info" ? "#3b82f6" : "#666",
+                  borderBottom:
+                    activeTab === "important-info"
+                      ? "2px solid #3b82f6"
+                      : "2px solid transparent",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Important Info
+              </button>
+              {tour?.itineraries_list?.length > 0 && (
+                <button
+                  onClick={() => scrollToSection(itineraryRef, "itinerary")}
+                  style={{
+                    padding: "15px 0",
+                    border: "none",
+                    background: "none",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: activeTab === "itinerary" ? "#3b82f6" : "#666",
+                    borderBottom:
+                      activeTab === "itinerary"
+                        ? "2px solid #3b82f6"
+                        : "2px solid transparent",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Itinerary
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {/* Mobile Top Menu (appears after scrolling) */}
       {isMobile && showScrollMenus && (
-        <div
-          className="mobile-top-menu"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1000,
-            backgroundColor: "white",
-            padding: "12px 20px",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-            borderBottom: "1px solid #f0f0f0",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <div className="mobile-top-menu">
           <h2
             style={{
               margin: 0,
@@ -444,7 +395,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
               fontWeight: "600",
               textAlign: "center",
               lineHeight: "1.3",
-              color: "#333",
+              color: "white",
             }}
           >
             {tour?.name || "Tour Details"}
@@ -470,14 +421,15 @@ export default function TourGallery({ tour, onDataAvailable }) {
         >
           <button
             onClick={scrollToAvailability}
+            className="bg-yellow-4"
             style={{
+              lineHeight: "1",
               width: "100%",
-              backgroundColor: "#3b82f6",
-              color: "white",
+              color: "black",
               padding: "15px",
               border: "none",
               borderRadius: "8px",
-              fontSize: "16px",
+              fontSize: "14px",
               fontWeight: "600",
               cursor: "pointer",
               transition: "all 0.2s",
@@ -676,7 +628,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
           <div className="row y-gap-30 mt-xl-40 mt-0">
             {/* Sidebar on Right */}
             <div className="col-xl-4 order-xl-2" ref={sidebarRef}>
-              <SidebarRight2 tour={tour} />
+              <SidebarRight2 refFunction={sidebarMobileRef} tour={tour} />
             </div>
 
             {/* Main Content on Left */}

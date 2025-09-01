@@ -44,7 +44,7 @@ const bokunUrls = {
   },
 };
 
-const SidebarRight2 = ({ tour }) => {
+const SidebarRight2 = ({ tour, refFunction }) => {
   const params = useParams();
   const { data: contentItem, isFulfilled } =
     useGetContentsByMenuContentTitleQuery(capitalize(params?.name));
@@ -78,7 +78,7 @@ const SidebarRight2 = ({ tour }) => {
 
   // Directly use newdata for the calendar
   return tour ? (
-    <AgentCalendar tourData={tour} />
+    <AgentCalendar tourData={tour} refFunction={refFunction} />
   ) : (
     <p>Loading calendar...</p>
   );

@@ -10,7 +10,7 @@ import convertCurrency from "@/utils/currency";
 
 const Tours = ({ filterLocation, allTours: data }) => {
   // const { data, error, isLoading } = useAllTour();
-  console.log("All Tour Data:", data);
+  // console.log("All Tour Data:", data);
 
   const { currentCurrency } = useSelector((state) => state.currency);
   const width = useWindowSize();
@@ -33,19 +33,26 @@ const Tours = ({ filterLocation, allTours: data }) => {
         return orderA - orderB;
       }) || [];
 
-  // Calculate per person price
+  // Calculate per person price (always defaults to "With Guide")
   const calculatePerPersonPrice = (tour) => {
     const dayTourPriceList = tour.day_tour_price_list;
 
     if (dayTourPriceList && dayTourPriceList.length > 0) {
+      // Always pick the "With Guide" option
+      const priceOption = dayTourPriceList.find(
+        (item) => item.guide === "With Guide"
+      );
+
+      if (!priceOption) return "0.00";
+
       if (tour.price_by_vehicle) {
-        const groupPrice = parseFloat(dayTourPriceList[0].group_price || 0);
+        const groupPrice = parseFloat(priceOption.group_price || 0);
         const groupSize = parseInt(tour.group_size || 1);
         return (groupPrice / groupSize).toFixed(2);
       }
 
       if (tour.price_by_passenger) {
-        return parseFloat(dayTourPriceList[0].price_per_person || 0).toFixed(2);
+        return parseFloat(priceOption.price_per_person || 0).toFixed(2);
       }
     }
 
@@ -116,7 +123,7 @@ const Tours = ({ filterLocation, allTours: data }) => {
     return <TourSkeleton />;
   }
 
-  // ✅ Bootstrap Grid fallback when < 4 tours
+  //  Bootstrap Grid fallback when < 4 tours
   if (filteredTours.length < 4) {
     return filteredTours.map((item) => {
       const perPersonPrice = calculatePerPersonPrice(item);

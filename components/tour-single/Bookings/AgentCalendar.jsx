@@ -10,7 +10,7 @@ import { checkAvailability } from "@/constant/constants";
 import { useSelector } from "react-redux";
 import convertCurrency from "@/utils/currency";
 
-const AgentCalendar = ({ tourData = null }) => {
+const AgentCalendar = ({ tourData = null, refFunction }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [dropDownTime, setDropDownTime] = useState("00:00");
@@ -27,13 +27,14 @@ const AgentCalendar = ({ tourData = null }) => {
     useState("Check Availability");
   const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState({}); // Added error state
+  const [errorMessage, setErrorMessage] = useState(""); // Added global error message
 
   //currency
   const { currentCurrency } = useSelector((state) => state.currency);
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  console.log("tours", tourData);
+  console.log("refFunction", refFunction);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -170,12 +171,14 @@ const AgentCalendar = ({ tourData = null }) => {
     setSelectedTourType(tourType);
     // Clear tour type error when tour type is selected
     setErrors((prev) => ({ ...prev, tourType: false }));
+    setErrorMessage("");
   };
 
   const handleParticipantChange = (newCount) => {
     setParticipantCount(newCount);
     // Clear participant error when participant count is changed
     setErrors((prev) => ({ ...prev, participants: false }));
+    setErrorMessage("");
   };
 
   const handleDateSelect = (date) => {
@@ -184,6 +187,7 @@ const AgentCalendar = ({ tourData = null }) => {
       setShowCalendar(false);
       // Clear date error when date is selected
       setErrors((prev) => ({ ...prev, date: false }));
+      setErrorMessage("");
       // Reset booking availability when date changes
       setBookingAvailable(false);
       setBookingData(null);
@@ -195,6 +199,7 @@ const AgentCalendar = ({ tourData = null }) => {
     setDropDownTime(time);
     // Clear time error when time is selected
     setErrors((prev) => ({ ...prev, time: false }));
+    setErrorMessage("");
     // Reset booking availability when time changes
     setBookingAvailable(false);
     setBookingData(null);
@@ -257,33 +262,28 @@ const AgentCalendar = ({ tourData = null }) => {
   const handleCheckAvailability = async () => {
     // Clear previous errors
     setErrors({});
+    setErrorMessage("");
     const newErrors = {};
+    let errorMsg = "";
 
     if (!selectedTourType) {
       newErrors.tourType = true;
-      setAvailabilityMessage("Please select a tour type");
-      setErrors(newErrors);
-      return;
-    }
-
-    if (!participantCount) {
+      errorMsg = "Please select a tour type";
+    } else if (!participantCount) {
       newErrors.participants = true;
-      setAvailabilityMessage("Please select number of participants");
-      setErrors(newErrors);
-      return;
-    }
-
-    if (!selectedDate) {
-      newErrors.date = true; // mark error for styling
-      setErrors(newErrors);
-      setAvailabilityMessage("Please select a date"); // show message
-      return;
-    }
-
-    if (!selectedTime) {
+      errorMsg = "Please select number of participants";
+    } else if (!selectedDate) {
+      newErrors.date = true;
+      errorMsg = "Please select a date";
+    } else if (!selectedTime) {
       newErrors.time = true;
-      setAvailabilityMessage("Please select a time");
+      errorMsg = "Please select a time";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setErrorMessage(errorMsg);
+      setAvailabilityMessage("Check Availability");
       return;
     }
 
@@ -315,7 +315,8 @@ const AgentCalendar = ({ tourData = null }) => {
           " "
         );
         setBookingAvailable(false);
-        setAvailabilityMessage(errorMessages);
+        setAvailabilityMessage("Check Availability");
+        setErrorMessage(errorMessages);
         return;
       }
 
@@ -334,11 +335,15 @@ const AgentCalendar = ({ tourData = null }) => {
         }, 100);
       } else {
         setBookingAvailable(false);
-        setAvailabilityMessage("Not available");
+        setAvailabilityMessage("Check Availability");
+        setErrorMessage("Not available");
       }
     } catch (error) {
       console.error("Error:", error);
-      setAvailabilityMessage("Error, try again");
+      setAvailabilityMessage("Check Availability");
+      setErrorMessage(
+        "Error occurred while checking availability. Please try again."
+      );
     } finally {
       setIsCheckingAvailability(false);
     }
@@ -393,7 +398,7 @@ const AgentCalendar = ({ tourData = null }) => {
       </div>
 
       {/* Booking Form */}
-      <div className="p-3 bg-blue-5">
+      <div className="p-3 bg-blue-6">
         <h5 className="text-white mb-3 fw-bold">Select date & participants</h5>
 
         {/* Tour Type Selection */}
@@ -468,17 +473,6 @@ const AgentCalendar = ({ tourData = null }) => {
                   } text-muted ms-2`}
                 ></i>
               </div>
-              {errors.date && (
-                <div
-                  style={{
-                    color: "#ff4d4f",
-                    fontSize: "13px",
-                    marginTop: "4px",
-                  }}
-                >
-                  Please select a date
-                </div>
-              )}
 
               <Calendar
                 selectedDate={selectedDate}
@@ -533,9 +527,9 @@ const AgentCalendar = ({ tourData = null }) => {
 
         {/* Check Availability Button */}
         <button
-          className="btn w-100 fw-bold text-dark border-0 rounded"
+        ref={refFunction}
+          className="button-booking w-100 fw-bold text-dark border-0 rounded bg-yellow-4"
           style={{
-            backgroundColor: "#ffa500",
             padding: "12px 16px",
             fontSize: isMobile ? "14px" : "16px",
             height: "48px",
@@ -551,6 +545,22 @@ const AgentCalendar = ({ tourData = null }) => {
           {availabilityMessage}
         </button>
       </div>
+
+      {/* Error Message Section - Shows under main border */}
+      {errorMessage && (
+        <div
+          className="p-2 mb-3 rounded"
+          style={{
+            backgroundColor: "#ffebee",
+            border: "1px solid #ffcdd2",
+            color: "#c62828",
+            fontSize: "14px",
+          }}
+        >
+          <i className="fas fa-exclamation-triangle me-2"></i>
+          {errorMessage}
+        </div>
+      )}
 
       {/* Booking Preview Section */}
       {bookingAvailable && bookingData && (
