@@ -11,12 +11,36 @@ const Calendar = ({
   isDateAvailable,
 }) => {
   const [currentMonth, setCurrentMonth] = useState(() => {
-    if (availableDates.length > 0) {
-      const sortedDates = [...availableDates].sort((a, b) => a - b);
-      const firstDate = sortedDates[0];
-      return new Date(firstDate.getFullYear(), firstDate.getMonth());
+    const today = new Date();
+    const currentMonthStart = new Date(today.getFullYear(), today.getMonth());
+
+    // If no available dates provided, start from current month
+    if (!availableDates || availableDates.length === 0) {
+      return currentMonthStart;
     }
-    return new Date(); // fallback to current month if none available
+
+    // Filter available dates to only include current month and future months
+    const futureAvailableDates = availableDates.filter((date) => {
+      const availableDate = new Date(date);
+      const availableMonthStart = new Date(
+        availableDate.getFullYear(),
+        availableDate.getMonth()
+      );
+      return availableMonthStart >= currentMonthStart;
+    });
+
+    // If there are available dates in current month or future, start from the earliest
+    if (futureAvailableDates.length > 0) {
+      const sortedDates = [...futureAvailableDates].sort((a, b) => a - b);
+      const firstAvailableDate = sortedDates[0];
+      return new Date(
+        firstAvailableDate.getFullYear(),
+        firstAvailableDate.getMonth()
+      );
+    }
+
+    // Fallback to current month if no future available dates
+    return currentMonthStart;
   });
 
   const [isMobile, setIsMobile] = useState(false);
@@ -34,12 +58,36 @@ const Calendar = ({
   }, []);
 
   useEffect(() => {
-    if (availableDates.length > 0) {
-      const sortedDates = [...availableDates].sort((a, b) => a - b);
-      const firstDate = sortedDates[0];
-      setCurrentMonth(new Date(firstDate.getFullYear(), firstDate.getMonth()));
+    // Update current month when availableDates change, but only if needed
+    const today = new Date();
+    const currentMonthStart = new Date(today.getFullYear(), today.getMonth());
+
+    if (availableDates && availableDates.length > 0) {
+      // Filter available dates to only include current month and future months
+      const futureAvailableDates = availableDates.filter((date) => {
+        const availableDate = new Date(date);
+        const availableMonthStart = new Date(
+          availableDate.getFullYear(),
+          availableDate.getMonth()
+        );
+        return availableMonthStart >= currentMonthStart;
+      });
+
+      if (futureAvailableDates.length > 0) {
+        const sortedDates = [...futureAvailableDates].sort((a, b) => a - b);
+        const firstAvailableDate = sortedDates[0];
+        const optimalMonth = new Date(
+          firstAvailableDate.getFullYear(),
+          firstAvailableDate.getMonth()
+        );
+
+        // Only update if current month doesn't have the optimal starting month
+        if (currentMonth.getTime() !== optimalMonth.getTime()) {
+          setCurrentMonth(optimalMonth);
+        }
+      }
     }
-  }, [availableDates]);
+  }, [availableDates]); // Re-run when availableDates change
 
   useEffect(() => {
     if (calendarRef.current && !isMobile) {
@@ -84,7 +132,6 @@ const Calendar = ({
   ];
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  // console.log("Current Month:", isDateAvailable);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -110,9 +157,20 @@ const Calendar = ({
   };
 
   const handlePrevMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() - 1
     );
+    // Don't allow going to months before current month
+    const currentDate = new Date();
+    const currentMonthYear = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth()
+    );
+
+    if (newMonth >= currentMonthYear) {
+      setCurrentMonth(newMonth);
+    }
   };
 
   const handleNextMonth = () => {
@@ -128,11 +186,25 @@ const Calendar = ({
         currentMonth.getMonth(),
         day
       );
-      if (isDateAvailable && isDateAvailable(newDate)) {
+
+      // Check if date is not in the past and is available
+      if (
+        isDateNotInPast(newDate) &&
+        (!isDateAvailable || isDateAvailable(newDate))
+      ) {
         onDateSelect(newDate);
         onClose();
       }
     }
+  };
+
+  // Helper function to check if date is not in the past
+  const isDateNotInPast = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    const checkDate = new Date(date);
+    checkDate.setHours(0, 0, 0, 0); // Reset time to start of day
+    return checkDate >= today;
   };
 
   const days = getDaysInMonth(currentMonth);
@@ -142,6 +214,11 @@ const Calendar = ({
     selectedDate.getFullYear() === currentMonth.getFullYear()
       ? selectedDate.getDate()
       : null;
+
+  // Check if we can go to previous month
+  const currentDate = new Date();
+  const canGoPrev =
+    currentMonth > new Date(currentDate.getFullYear(), currentDate.getMonth());
 
   if (!isVisible) return null;
 
@@ -181,7 +258,13 @@ const Calendar = ({
             className="btn btn-link p-1"
             onClick={handlePrevMonth}
             type="button"
-            style={{ minWidth: "40px", height: "40px" }}
+            disabled={!canGoPrev}
+            style={{
+              minWidth: "40px",
+              height: "40px",
+              opacity: canGoPrev ? 1 : 0.5,
+              cursor: canGoPrev ? "pointer" : "not-allowed",
+            }}
           >
             <i className="icon icon-chevron-left"></i>
           </button>
@@ -227,14 +310,18 @@ const Calendar = ({
             if (!day) {
               return <div key={index} style={{ minHeight: "35px" }} />;
             }
+
             const currentDate = new Date(
               currentMonth.getFullYear(),
               currentMonth.getMonth(),
               day
             );
-            const isAvailable = isDateAvailable
+
+            const isNotInPast = isDateNotInPast(currentDate);
+            const isCustomAvailable = isDateAvailable
               ? isDateAvailable(currentDate)
               : true;
+            const isAvailable = isNotInPast && isCustomAvailable;
             const isSelected = day === selectedDay;
 
             return (
@@ -252,10 +339,11 @@ const Calendar = ({
                 disabled={!isAvailable}
                 style={{
                   minHeight: "35px",
-                  opacity: isAvailable ? 1 : 0.5,
+                  opacity: isAvailable ? 1 : 0.3,
                   fontSize: "14px",
                   fontWeight: isAvailable ? "bold" : "normal",
                   padding: 0,
+                  cursor: isAvailable ? "pointer" : "not-allowed",
                 }}
               >
                 {day}

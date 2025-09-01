@@ -151,53 +151,6 @@ const Header = () => {
 
                   {/* Mobile Menu */}
                   <div className="d-none xl:d-flex x-gap-20 items-center pl-30 text-dark-1">
-                    {/* Mobile Login Section */}
-                    <div className="mobile-login-section mr-15">
-                      {isAuthenticated ? (
-                        <div className="dropdown">
-                          <a
-                            href="#"
-                            className="d-flex items-center gap-1 text-dark-1 dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style={{ textDecoration: "none" }}
-                          >
-                            <i className="icon-user text-16"></i>
-                            <span className="fw-500">{user?.first_name}</span>
-                          </a>
-                          <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-                            <li>
-                              <button
-                                onClick={() => router.push("/dashboard")}
-                                className="dropdown-item d-flex align-items-center gap-2"
-                              >
-                                <i className="icon-route text-14"></i>
-                                <span>Dashboard</span>
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                onClick={handleLogout}
-                                className="dropdown-item d-flex align-items-center gap-2"
-                              >
-                                <i className="icon-route text-14"></i>
-                                <span>Logout</span>
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
-                      ) : (
-                        <Link
-                          href="/login"
-                          className="d-flex items-center gap-1 text-dark-1"
-                          style={{ textDecoration: "none" }}
-                        >
-                          <i className="icon-login text-16"></i>
-                          <span className="fw-500">Login</span>
-                        </Link>
-                      )}
-                    </div>
-
                     <div>
                       <MobileCurrencyMenu />
                     </div>
