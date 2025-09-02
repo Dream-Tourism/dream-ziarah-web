@@ -92,6 +92,14 @@ export const transformBookingData = (apiResponse) => {
     userId: booking.user,
     payment: booking.payment,
     tour_id: booking.tour_id,
+    previous_selected_date: booking.previous_selected_date,
+    date_change_request: booking.date_change_request,
+    requested_selected_date: booking.requested_selected_date,
+    date_request_approved: booking.date_request_approved,
+    date_change_request_status: booking.date_change_request_status,
+    cancellation_request: booking.cancellation_request,
+    cancellation_reason: booking.cancellation_reason,
+    cancellation_status: booking.cancellation_status,
   }));
 
   return {

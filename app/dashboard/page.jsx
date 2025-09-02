@@ -11,6 +11,7 @@ import { logoutUserThunk, verifySessionThunk } from "@/features/auth/authSlice";
 import { ProtectedRoute } from "@/components/protected-route";
 import Returns from "@/components/dashboard/Returns";
 import { useTourBookings } from "@/hooks/useTourBookings";
+import { BASE_URL2 } from "@/constant/constants";
 
 // Memoized navigation items to prevent unnecessary re-renders
 const NAVIGATION_ITEMS = [
@@ -221,46 +222,6 @@ function Dashboard() {
     [bookingData.orders, updateBookingStatus, refreshBookings]
   );
 
-  // New cancellation request handler
-  const handleCancellationRequest = useCallback(
-    async (cancellationData) => {
-      try {
-        console.log("Processing cancellation request:", cancellationData);
-
-        // Here you would typically make an API call to your cancellation endpoint
-        // For now, we'll simulate the API call
-        const response = await fetch("/api/tour-bookings/cancel", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(cancellationData),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to submit cancellation request");
-        }
-
-        const result = await response.json();
-
-        // Update the booking status to cancelled
-        updateBookingStatus(cancellationData.tour_id, "cancelled");
-
-        // Refresh bookings to get updated data
-        refreshBookings();
-
-        alert(
-          "Cancellation request submitted successfully! You will receive a confirmation email shortly."
-        );
-        // console.log("Cancellation request processed:", result);
-      } catch (error) {
-        console.error("Cancellation request failed:", error);
-        throw error; // Re-throw to handle in the modal
-      }
-    },
-    [updateBookingStatus, refreshBookings]
-  );
-
   // Memoized content renderer
   const renderContent = useMemo(() => {
     const props = {
@@ -274,13 +235,7 @@ function Dashboard() {
       case "dashboard":
         return <DashboardSummary {...props} />;
       case "tour-orders":
-        return (
-          <TourOrders
-            {...props}
-            onOrderSelect={setSelectedOrder}
-            onCancelRequest={handleCancellationRequest}
-          />
-        );
+        return <TourOrders {...props} onOrderSelect={setSelectedOrder} />;
       case "returns":
         return <Returns />;
       case "support":
@@ -290,14 +245,7 @@ function Dashboard() {
       default:
         return <DashboardSummary {...props} />;
     }
-  }, [
-    activeSection,
-    bookingData,
-    bookingsLoading,
-    refreshBookings,
-    user,
-    handleCancellationRequest,
-  ]);
+  }, [activeSection, bookingData, bookingsLoading, refreshBookings, user]);
 
   // Early returns for loading and error states
   if (!isAuthenticated) {

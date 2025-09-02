@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import CancellationModal from "./Cancellation"; // Import the separate component
 import ChangeDate from "./ChangeDate"; // Import the ChangeDate modal
-import { useSingleTour } from "@/hooks/useSingleTour";
 
 export default function TourOrders({
   orderData,
@@ -19,14 +18,17 @@ export default function TourOrders({
     dateTo: "",
     searchTerm: "",
   });
-  const tourId = orderData?.orders?.[0]?.tour_id;
-  const { data: tour, error, isLoading } = useSingleTour(tourId);
-  console.log("tour data", tour);
+
+  console.log("orderData", orderData);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
   const [selectedOrderForDateChange, setSelectedOrderForDateChange] =
     useState(null);
+  useEffect(() => {
+    if (!selectedOrderForCancel && !selectedOrderForDateChange) {
+      onRefresh();
+    }
+  }, [selectedOrderForCancel, selectedOrderForDateChange, onRefresh]);
 
-  // Add this check at the beginning of the component
   if (!orderData || !orderData.orders) {
     return (
       <div style={{ marginTop: "20px" }}>
@@ -129,6 +131,90 @@ export default function TourOrders({
     return order.status === "paid" || order.status === "pending";
   };
 
+  // Helper functions to check request status
+  const hasActiveCancellationRequest = (order) => {
+    return order.cancellation_request === true;
+  };
+
+  const hasActiveDateChangeRequest = (order) => {
+    return order.date_change_request === true;
+  };
+
+  const getDateChangeRequestStatus = (order) => {
+    // If there's an active request, show the status
+    if (order.date_change_request === true) {
+      return {
+        showStatus: true,
+        status: order.date_change_request_status || "reviewing",
+        badgeColor: "info",
+        text: "Date Change Request",
+      };
+    }
+
+    // If request is false but has approved/rejected status
+    if (
+      order.date_change_request === false &&
+      order.date_change_request_status
+    ) {
+      const status = order.date_change_request_status.toLowerCase();
+      return {
+        showStatus: true,
+        status: order.date_change_request_status,
+        badgeColor:
+          status === "approved"
+            ? "success"
+            : status === "cancelled"
+            ? "danger"
+            : "secondary",
+        text:
+          status === "approved"
+            ? "Date Change Approved"
+            : status === "cancelled"
+            ? "Date Change Rejected"
+            : "Date Change Request",
+      };
+    }
+
+    // Default: no status to show (initial state or null status)
+    return { showStatus: false };
+  };
+
+  const getCancellationRequestStatus = (order) => {
+    // If there's an active request, show the status
+    if (order.cancellation_request === true) {
+      return {
+        showStatus: true,
+        status: order.cancellation_status || "reviewing",
+        badgeColor: "warning",
+        text: "Cancellation Request",
+      };
+    }
+
+    // If request is false but has approved/rejected status
+    if (order.cancellation_request === false && order.cancellation_status) {
+      const status = order.cancellation_status.toLowerCase();
+      return {
+        showStatus: true,
+        status: order.cancellation_status,
+        badgeColor:
+          status === "approved"
+            ? "success"
+            : status === "rejected"
+            ? "danger"
+            : "secondary",
+        text:
+          status === "approved"
+            ? "Cancellation Approved"
+            : status === "rejected"
+            ? "Cancellation Rejected"
+            : "Cancellation Request",
+      };
+    }
+
+    // Default: no status to show (initial state or null status)
+    return { showStatus: false };
+  };
+
   const handleCancelClick = (order, e) => {
     e.stopPropagation();
     setSelectedOrderForCancel(order);
@@ -161,6 +247,108 @@ export default function TourOrders({
     }
   };
 
+  // Component to render cancel button or status
+  const CancelButtonOrStatus = ({ order, isDesktop = false }) => {
+    const statusInfo = getCancellationRequestStatus(order);
+
+    if (statusInfo.showStatus) {
+      return (
+        <div
+          className={`text-center ${
+            isDesktop ? "" : "d-flex align-items-center justify-content-center"
+          }`}
+        >
+          <div className="d-flex flex-column align-items-center">
+            <span
+              className={`badge bg-${statusInfo.badgeColor} text-dark px-2 py-1 mb-1`}
+              style={{ fontSize: "10px" }}
+            >
+              <i className="icon-clock me-1"></i>
+              {statusInfo.status}
+            </span>
+            <small className="text-muted" style={{ fontSize: "9px" }}>
+              {statusInfo.text}
+            </small>
+          </div>
+        </div>
+      );
+    }
+
+    if (canCancelOrder(order)) {
+      return (
+        <button
+          className="btn btn-outline-danger btn-sm"
+          onClick={(e) => handleCancelClick(order, e)}
+          title="Cancel booking"
+          style={{
+            fontSize: isDesktop ? "11px" : "12px",
+            padding: isDesktop ? "4px 8px" : "6px 12px",
+          }}
+        >
+          <i className="icon-x me-1"></i>
+          Cancel
+        </button>
+      );
+    }
+
+    return <span className="text-muted">-</span>;
+  };
+
+  // Component to render change date button or status
+  const ChangeDateButtonOrStatus = ({ order, isDesktop = false }) => {
+    const statusInfo = getDateChangeRequestStatus(order);
+
+    if (statusInfo.showStatus) {
+      return (
+        <div
+          className={`text-center ${
+            isDesktop ? "" : "d-flex align-items-center justify-content-center"
+          }`}
+        >
+          <div className="d-flex flex-column align-items-center">
+            <span
+              className={`badge bg-${statusInfo.badgeColor} text-dark px-2 py-1 mb-1`}
+              style={{ fontSize: "10px" }}
+            >
+              <i
+                className={`${
+                  statusInfo.badgeColor === "success"
+                    ? "icon-check"
+                    : statusInfo.badgeColor === "danger"
+                    ? "icon-x"
+                    : "icon-clock"
+                } me-1`}
+              ></i>
+              {statusInfo.status}
+            </span>
+            <small className="text-muted" style={{ fontSize: "9px" }}>
+              {statusInfo.text}
+            </small>
+          </div>
+        </div>
+      );
+    }
+
+    if (canChangeDate(order)) {
+      return (
+        <button
+          className="btn btn-outline-primary btn-sm"
+          onClick={(e) => handleDateChangeClick(order, e)}
+          title="Change booking date"
+          style={{
+            fontSize: isDesktop ? "11px" : "12px",
+            padding: isDesktop ? "4px 8px" : "6px 12px",
+          }}
+        >
+          <i className="icon-calendar me-1"></i>
+          Change {isDesktop ? "" : "Date"}
+        </button>
+      );
+    }
+
+    return <span className="text-muted">-</span>;
+  };
+
   // Mobile Order Card Component
   const MobileOrderCard = ({ order }) => (
     <div
@@ -182,25 +370,8 @@ export default function TourOrders({
             <i className={getStatusIcon(order.status)}></i>
             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
           </span>
-          {canChangeDate(order) && (
-            <button
-              className="btn btn-outline-primary btn-sm"
-              onClick={(e) => handleDateChangeClick(order, e)}
-              title="Change booking date"
-            >
-              <i className="icon-calendar me-1"></i>
-              Change Date
-            </button>
-          )}
-          {canCancelOrder(order) && (
-            <button
-              className="btn btn-outline-danger btn-sm"
-              onClick={(e) => handleCancelClick(order, e)}
-              title="Cancel booking"
-            >
-              Cancel
-            </button>
-          )}
+          <ChangeDateButtonOrStatus order={order} isDesktop={false} />
+          <CancelButtonOrStatus order={order} isDesktop={false} />
         </div>
       </div>
       <div className="card-body">
@@ -720,42 +891,16 @@ export default function TourOrders({
                               <small className="text-muted">USD</small>
                             </td>
                             <td className="py-3 text-center">
-                              {canChangeDate(order) ? (
-                                <button
-                                  className="btn btn-outline-primary btn-sm"
-                                  onClick={(e) =>
-                                    handleDateChangeClick(order, e)
-                                  }
-                                  title="Change booking date"
-                                  style={{
-                                    fontSize: "11px",
-                                    padding: "4px 8px",
-                                  }}
-                                >
-                                  <i className="icon-calendar me-1"></i>
-                                  Change
-                                </button>
-                              ) : (
-                                <span className="text-muted">-</span>
-                              )}
+                              <ChangeDateButtonOrStatus
+                                order={order}
+                                isDesktop={true}
+                              />
                             </td>
                             <td className="py-3 text-center">
-                              {canCancelOrder(order) ? (
-                                <button
-                                  className="btn btn-outline-danger btn-sm"
-                                  onClick={(e) => handleCancelClick(order, e)}
-                                  title="Cancel booking"
-                                  style={{
-                                    fontSize: "11px",
-                                    padding: "4px 8px",
-                                  }}
-                                >
-                                  <i className="icon-x me-1"></i>
-                                  Cancel
-                                </button>
-                              ) : (
-                                <span className="text-muted">-</span>
-                              )}
+                              <CancelButtonOrStatus
+                                order={order}
+                                isDesktop={true}
+                              />
                             </td>
                           </tr>
                         ))}
@@ -769,25 +914,26 @@ export default function TourOrders({
         )}
       </div>
 
-      {/* Cancellation Modal */}
-      {selectedOrderForCancel && (
-        <CancellationModal
-          order={selectedOrderForCancel}
-          onClose={() => setSelectedOrderForCancel(null)}
-          onCancel={handleCancelSubmit}
-        />
-      )}
+      {/* Cancellation Modal - Only show if no active cancellation request */}
+      {selectedOrderForCancel &&
+        !hasActiveCancellationRequest(selectedOrderForCancel) && (
+          <CancellationModal
+            order={selectedOrderForCancel}
+            onClose={() => setSelectedOrderForCancel(null)}
+            onCancel={handleCancelSubmit}
+          />
+        )}
 
-      {/* Change Date Modal */}
-      {selectedOrderForDateChange && (
-        <ChangeDate
-          isOpen={!!selectedOrderForDateChange}
-          onClose={() => setSelectedOrderForDateChange(null)}
-          order={selectedOrderForDateChange}
-          tourData={tour}
-          onDateChange={handleDateChangeSubmit}
-        />
-      )}
+      {/* Change Date Modal - Only show if no active date change request */}
+      {selectedOrderForDateChange &&
+        !hasActiveDateChangeRequest(selectedOrderForDateChange) && (
+          <ChangeDate
+            isOpen={!!selectedOrderForDateChange}
+            onClose={() => setSelectedOrderForDateChange(null)}
+            order={selectedOrderForDateChange}
+            onDateChange={handleDateChangeSubmit}
+          />
+        )}
     </>
   );
 }

@@ -1,6 +1,7 @@
+import { BASE_URL2 } from "@/constant/constants";
 import { useState } from "react";
 
-export default function CancellationModal({ order, onClose, onCancel }) {
+export default function CancellationModal({ order, onClose }) {
   const [formData, setFormData] = useState({
     reason: "",
     additionalDetails: "",
@@ -36,25 +37,34 @@ export default function CancellationModal({ order, onClose, onCancel }) {
       let cancellationData;
 
       if (formData.reason === "others") {
-        // If "others" is selected, use additionalDetails as reason
         cancellationData = {
-          tour_id: order.id,
-          booking_id: order.id,
-          reason: formData.additionalDetails.trim(),
+          cancellation_reason: formData.additionalDetails.trim(),
           cancellation_request: true,
         };
       } else {
-        // For predefined reasons, include additional_details if provided
         cancellationData = {
-          tour_id: order.id,
-          booking_id: order.id,
-          reason: formData.reason.trim(),
-          additional_details: formData.additionalDetails.trim(),
+          cancellation_reason: formData.reason, // send predefined reason directly
           cancellation_request: true,
         };
       }
 
-      await onCancel(cancellationData);
+      const response = await fetch(
+        `${BASE_URL2}/tour_booking/api/v1/tour_booking/cancel_request/${order.originalId}/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(cancellationData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit cancellation request");
+      }
+
+      // If API success, close modal
+      onClose();
     } catch (err) {
       setError(err.message || "Failed to submit cancellation request");
     } finally {

@@ -2,17 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Calendar from "../tour-single/Bookings/Calendar";
+import { Update_ATour_BookingDate } from "@/constant/constants";
+import { useSingleTour } from "@/hooks/useSingleTour";
 
 // API endpoint
-const BASE_URL2 = "YOUR_BASE_URL_HERE"; // Replace with your actual base URL
-export const Update_ATour_BookingDate = `${BASE_URL2}/tour_booking/api/v1/tour_booking/date/update/`;
 
-const ChangeDate = ({ isOpen, onClose, order, tourData, onDateChange }) => {
+const ChangeDate = ({ isOpen, onClose, order, onDateChange }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableDates, setAvailableDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [errors, setErrors] = useState({});
+  //   console.log("order in change date modal", order);
+  const tourId = order?.tour_id;
+  const { data: tourData, error } = useSingleTour(tourId);
 
   // Initialize available dates based on tour data
   useEffect(() => {
@@ -35,7 +38,12 @@ const ChangeDate = ({ isOpen, onClose, order, tourData, onDateChange }) => {
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen && order) {
-      setSelectedDate(null);
+      // Initialize selectedDate with the current booking date if it exists
+      if (order.selectedDate) {
+        setSelectedDate(new Date(order.selectedDate));
+      } else {
+        setSelectedDate(null);
+      }
       setErrors({});
       setShowCalendar(false);
     }
