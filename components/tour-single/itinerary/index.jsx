@@ -20,7 +20,7 @@ const index = ({ itenarayItems }) => {
   useEffect(() => {
     if (itenarayItems?.length > 0) {
       // Debug: Log the first item to see the actual structure
-      console.log("First itinerary item:", itenarayItems[0]);
+      // console.log("First itinerary item:", itenarayItems[0]);
       setSelectedLocation(itenarayItems[0]);
     }
   }, [itenarayItems]);

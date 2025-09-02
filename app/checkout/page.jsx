@@ -290,7 +290,7 @@ const CheckoutPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Booking processed successfully:", result);
+        // console.log("Booking processed successfully:", result);
 
         // Check if there's a checkout_url in the response
         if (result.checkout_url) {

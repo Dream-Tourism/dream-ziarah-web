@@ -57,16 +57,18 @@ export default function LeafletMap({
   itenarayItems,
 }) {
   // Debug: Log the selected location to see its structure
-  console.log('Selected location in map:', selectedLocation);
-  
+  // console.log('Selected location in map:', selectedLocation);
+
   // State to manage the selected marker ID
-  const [selectedMarkerId, setSelectedMarkerId] = useState(selectedLocation?.id);
+  const [selectedMarkerId, setSelectedMarkerId] = useState(
+    selectedLocation?.id
+  );
   const [newMapZoom, setNewMapZoom] = useState(zoom);
-  
+
   // Handle missing lng property
   const selectedLat = selectedLocation?.lat;
   const selectedLng = selectedLocation?.lng || selectedLocation?.longitude || 0;
-  
+
   const [newLatLng, setNewLatLng] = useState([selectedLat, selectedLng]);
 
   // Handler for marker click
@@ -74,7 +76,7 @@ export default function LeafletMap({
     setSelectedMarkerId(location.id);
     markerClick(location.id);
     setNewMapZoom(16);
-    
+
     const lat = location?.lat;
     const lng = location?.lng || location?.longitude || 0;
     setNewLatLng([lat, lng]);
@@ -85,7 +87,7 @@ export default function LeafletMap({
     if (selectedLocation?.id) {
       setSelectedMarkerId(selectedLocation.id);
       setNewMapZoom(zoom);
-      
+
       const lat = selectedLocation?.lat;
       const lng = selectedLocation?.lng || selectedLocation?.longitude || 0;
       setNewLatLng([lat, lng]);
@@ -93,12 +95,17 @@ export default function LeafletMap({
   }, [selectedLocation, zoom]);
 
   // Don't render map if coordinates are invalid
-  if (!selectedLat || (selectedLng === undefined && !selectedLocation?.longitude)) {
+  if (
+    !selectedLat ||
+    (selectedLng === undefined && !selectedLocation?.longitude)
+  ) {
     return (
       <div className="map-container">
         <div className="p-4 text-center">
           <p>Map cannot be displayed: Invalid coordinates</p>
-          <p>Latitude: {selectedLat}, Longitude: {selectedLng}</p>
+          <p>
+            Latitude: {selectedLat}, Longitude: {selectedLng}
+          </p>
         </div>
       </div>
     );
@@ -120,7 +127,7 @@ export default function LeafletMap({
           const isSelected = selectedMarkerId === location.id;
           const lat = location?.lat;
           const lng = location?.lng || location?.longitude || 0;
-          
+
           // Only render marker if coordinates are valid
           if (lat && lng !== undefined) {
             return (

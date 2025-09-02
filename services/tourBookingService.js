@@ -91,6 +91,7 @@ export const transformBookingData = (apiResponse) => {
     travellerId: booking.traveller,
     userId: booking.user,
     payment: booking.payment,
+    tour_id: booking.tour_id,
   }));
 
   return {

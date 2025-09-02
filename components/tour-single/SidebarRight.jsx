@@ -48,7 +48,7 @@ const bokunUrls = {
 };
 
 const SidebarRight = ({ tourid, newdata }) => {
-  console.log("newdata side", tourid);
+  // console.log("newdata side", tourid);
   const params = useParams();
   const { data: contentItem, isFulfilled } =
     useGetContentsByMenuContentTitleQuery(capitalize(params?.name));

@@ -12,7 +12,7 @@ export const metadata = {
 // Server-side data fetching function
 async function getTourData() {
   try {
-    console.log("Fetching all tours...");
+    // console.log("Fetching all tours...");
 
     // Fetch all tours
     const allTours = await getAllToursServer();

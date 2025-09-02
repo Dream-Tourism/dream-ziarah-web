@@ -133,6 +133,8 @@ function Dashboard() {
     refreshBookings,
   } = useTourBookings(user?.traveller_id);
 
+  console.log("bookingData", bookingData);
+
   // Memoized auth check
   useEffect(() => {
     if (!isAuthenticated && !authLoading) {
@@ -178,7 +180,7 @@ function Dashboard() {
   const handlePayment = useCallback(
     async (orderId) => {
       try {
-        console.log("Processing payment for order:", orderId);
+        // console.log("Processing payment for order:", orderId);
 
         const order = bookingData.orders.find((o) => o.id === orderId);
 
@@ -205,11 +207,11 @@ function Dashboard() {
             }
           }, 1000);
 
-          console.log("Payment window opened successfully!");
+          // console.log("Payment window opened successfully!");
         } else {
           updateBookingStatus(orderId, "paid");
           setSelectedOrder(null);
-          console.log("Payment processed successfully!");
+          // console.log("Payment processed successfully!");
         }
       } catch (error) {
         console.error("Payment processing failed:", error);
@@ -250,7 +252,7 @@ function Dashboard() {
         alert(
           "Cancellation request submitted successfully! You will receive a confirmation email shortly."
         );
-        console.log("Cancellation request processed:", result);
+        // console.log("Cancellation request processed:", result);
       } catch (error) {
         console.error("Cancellation request failed:", error);
         throw error; // Re-throw to handle in the modal

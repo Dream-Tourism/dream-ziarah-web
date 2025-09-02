@@ -34,7 +34,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  console.log("refFunction", refFunction);
+  // console.log("refFunction", refFunction);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -527,7 +527,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
 
         {/* Check Availability Button */}
         <button
-        ref={refFunction}
+          ref={refFunction}
           className="button-booking w-100 fw-bold text-dark border-0 rounded bg-yellow-4"
           style={{
             padding: "12px 16px",

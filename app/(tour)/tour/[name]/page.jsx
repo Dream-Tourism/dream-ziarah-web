@@ -234,7 +234,7 @@ export async function generateMetadata({ params, searchParams }, parent) {
 // Server-side data fetching function
 async function getTourData(slug) {
   try {
-    console.log("Fetching tour data for slug:", slug);
+    // console.log("Fetching tour data for slug:", slug);
 
     // Fetch all data in parallel for better performance
     const [tourBySlugData, allTours] = await Promise.all([

@@ -11,7 +11,7 @@ const ItineraryContent = ({
 
   const modifiedItenarayItem = itenarayItems?.map((item, indx) => {
     // Debug: Log each item to see the actual structure
-    console.log(`Itinerary item ${indx}:`, item);
+    // console.log(`Itinerary item ${indx}:`, item);
 
     return {
       id: item.id,

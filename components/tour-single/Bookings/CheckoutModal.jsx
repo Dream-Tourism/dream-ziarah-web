@@ -80,7 +80,7 @@ const CheckoutModal = ({
         bookingData,
       };
 
-      console.log("Complete booking details:", bookingDetails);
+      // console.log("Complete booking details:", bookingDetails);
       alert("Payment successful! Booking confirmed.");
       onClose();
     } catch (error) {
