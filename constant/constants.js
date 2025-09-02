@@ -576,6 +576,8 @@ export const GET_ALL_TOUR = `${BASE_URL2}/tour_content/api/v1/tour/all/`;
 
 export const GET_BOOKINGS_BY_ID = `${BASE_URL2}/tour_booking/api/v1/tour_booking/`;
 
+export const Update_ATour_BookingDate = `${BASE_URL2}/tour_booking/api/v1/tour_booking/date/update/`;
+
 //menu content
 
 export const CREATE_CONTENT = `${BASE_URL}/cms_menu_content/api/v1/cms_menu_content/create/`;

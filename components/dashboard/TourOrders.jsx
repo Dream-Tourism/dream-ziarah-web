@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import CancellationModal from "./Cancellation"; // Import the separate component
+import ChangeDate from "./ChangeDate"; // Import the ChangeDate modal
+import { useSingleTour } from "@/hooks/useSingleTour";
 
 export default function TourOrders({
   orderData,
@@ -9,6 +11,7 @@ export default function TourOrders({
   loading,
   onRefresh,
   onCancelRequest,
+  onDateChange, // Add this prop to handle date changes
 }) {
   const [filters, setFilters] = useState({
     status: "all",
@@ -16,8 +19,12 @@ export default function TourOrders({
     dateTo: "",
     searchTerm: "",
   });
-
+  const tourId = orderData?.orders?.[0]?.tour_id;
+  const { data: tour, error, isLoading } = useSingleTour(tourId);
+  console.log("tour data", tour);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
+  const [selectedOrderForDateChange, setSelectedOrderForDateChange] =
+    useState(null);
 
   // Add this check at the beginning of the component
   if (!orderData || !orderData.orders) {
@@ -118,9 +125,18 @@ export default function TourOrders({
     return order.status === "paid" || order.status === "pending";
   };
 
+  const canChangeDate = (order) => {
+    return order.status === "paid" || order.status === "pending";
+  };
+
   const handleCancelClick = (order, e) => {
     e.stopPropagation();
     setSelectedOrderForCancel(order);
+  };
+
+  const handleDateChangeClick = (order, e) => {
+    e.stopPropagation();
+    setSelectedOrderForDateChange(order);
   };
 
   const handleCancelSubmit = async (cancellationData) => {
@@ -129,6 +145,18 @@ export default function TourOrders({
       setSelectedOrderForCancel(null);
     } catch (error) {
       console.error("Cancel request failed:", error);
+      // Error handling is done in the parent component and modal
+    }
+  };
+
+  const handleDateChangeSubmit = async (dateChangeData) => {
+    try {
+      await onDateChange(dateChangeData);
+      setSelectedOrderForDateChange(null);
+      // Optionally refresh the data
+      onRefresh();
+    } catch (error) {
+      console.error("Date change request failed:", error);
       // Error handling is done in the parent component and modal
     }
   };
@@ -154,6 +182,16 @@ export default function TourOrders({
             <i className={getStatusIcon(order.status)}></i>
             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
           </span>
+          {canChangeDate(order) && (
+            <button
+              className="btn btn-outline-primary btn-sm"
+              onClick={(e) => handleDateChangeClick(order, e)}
+              title="Change booking date"
+            >
+              <i className="icon-calendar me-1"></i>
+              Change Date
+            </button>
+          )}
           {canCancelOrder(order) && (
             <button
               className="btn btn-outline-danger btn-sm"
@@ -171,7 +209,11 @@ export default function TourOrders({
             <div className="d-flex align-items-start">
               <i className="icon-map-pin text-primary me-2 mt-1"></i>
               <div className="flex-grow-1">
-                <h6 className="mb-1 fw-semibold">{order.tourName}</h6>
+                <h6 className="mb-1 fw-semibold" title={order.tourName}>
+                  {order.tourName.length > 50
+                    ? `${order.tourName.substring(0, 50)}...`
+                    : order.tourName}
+                </h6>
                 <small className="text-muted">
                   {order.selectedTime} • {order.guide || "Standard Package"}
                 </small>
@@ -491,42 +533,42 @@ export default function TourOrders({
                         <tr>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "20%" }}
+                            style={{ width: "15%" }}
                           >
                             <i className="icon-hash me-2"></i>
                             Booking ID
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "12%" }}
+                            style={{ width: "10%" }}
                           >
                             <i className="icon-info me-2"></i>
                             Status
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "25%" }}
+                            style={{ width: "20%" }}
                           >
                             <i className="icon-map-pin me-2"></i>
                             Tour Destination
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "10%" }}
+                            style={{ width: "8%" }}
                           >
                             <i className="icon-users me-2"></i>
                             Travelers
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "15%" }}
+                            style={{ width: "12%" }}
                           >
                             <i className="icon-calendar me-2"></i>
                             Tour Date
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "12%" }}
+                            style={{ width: "10%" }}
                           >
                             <i className="icon-dollar-sign me-2"></i>
                             Total Cost
@@ -535,8 +577,15 @@ export default function TourOrders({
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "10%" }}
                           >
-                            <i className="icon-settings me-2"></i>
-                            Booking Cancellation
+                            <i className="icon-edit-2 me-2"></i>
+                            Change Date
+                          </th>
+                          <th
+                            className="text-primary fw-semibold border-0 py-3"
+                            style={{ width: "10%" }}
+                          >
+                            <i className="icon-x me-2"></i>
+                            Cancel
                           </th>
                         </tr>
                       </thead>
@@ -561,14 +610,13 @@ export default function TourOrders({
                           >
                             <td className="py-3">
                               <div className="d-flex align-items-center">
-                                <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
                                   <i className="icon-ticket text-primary"></i>
                                 </div>
                                 <div>
-                                  <strong className="text-primary">
+                                  <strong className="text-primary d-block">
                                     {order.id}
                                   </strong>
-                                  <br />
                                   <small className="text-muted">
                                     {order.customerName}
                                   </small>
@@ -580,11 +628,11 @@ export default function TourOrders({
                                 <span
                                   className={`badge bg-${getStatusColor(
                                     order.status
-                                  )} d-flex align-items-center justify-content-center mb-2 text-dark`}
+                                  )} d-flex align-items-center justify-content-center mb-1 text-dark`}
                                   style={{
-                                    width: "100px",
-                                    padding: "8px",
-                                    fontSize: "11px",
+                                    width: "90px",
+                                    padding: "6px",
+                                    fontSize: "10px",
                                   }}
                                 >
                                   <i
@@ -594,7 +642,10 @@ export default function TourOrders({
                                     order.status.slice(1)}
                                 </span>
                                 {order.status === "pending" && (
-                                  <small className="text-primary fw-semibold">
+                                  <small
+                                    className="text-primary fw-semibold"
+                                    style={{ fontSize: "9px" }}
+                                  >
                                     <i className="icon-hand me-1"></i>
                                     Click to pay
                                   </small>
@@ -604,21 +655,27 @@ export default function TourOrders({
                             <td className="py-3">
                               <div className="d-flex align-items-center">
                                 <i className="icon-globe text-primary me-2"></i>
-                                <div>
-                                  <strong>{order.tourName}</strong>
-                                  <br />
-                                  <small className="text-muted">
+                                <div style={{ maxWidth: "180px" }}>
+                                  <strong
+                                    title={order.tourName}
+                                    className="d-block text-truncate"
+                                  >
+                                    {order.tourName}
+                                  </strong>
+                                  <small className="text-muted d-block text-truncate">
                                     {order.selectedTime} • $
-                                    {order.pricePerPerson}
-                                    /person
+                                    {order.pricePerPerson}/person
                                   </small>
                                 </div>
                               </div>
                             </td>
                             <td className="py-3 text-center">
                               <div className="d-flex align-items-center justify-content-center">
-                                <div className="bg-info bg-opacity-10 rounded-circle p-2 me-2">
-                                  <i className="icon-users text-info"></i>
+                                <div className="bg-info bg-opacity-10 rounded-circle p-1 me-1">
+                                  <i
+                                    className="icon-users text-info"
+                                    style={{ fontSize: "12px" }}
+                                  ></i>
                                 </div>
                                 <span className="fw-semibold">
                                   {order.participants}
@@ -629,12 +686,17 @@ export default function TourOrders({
                               <div className="d-flex align-items-center">
                                 <i className="icon-calendar-check text-success me-2"></i>
                                 <div>
-                                  <strong>
+                                  <strong
+                                    className="d-block"
+                                    style={{ fontSize: "13px" }}
+                                  >
                                     {new Date(
                                       order.selectedDate
-                                    ).toLocaleDateString()}
+                                    ).toLocaleDateString("en-US", {
+                                      month: "short",
+                                      day: "numeric",
+                                    })}
                                   </strong>
-                                  <br />
                                   <small className="text-muted">
                                     {new Date(
                                       order.selectedDate
@@ -646,11 +708,36 @@ export default function TourOrders({
                               </div>
                             </td>
                             <td className="py-3">
-                              <div className="text-success fw-bold fs-5">
-                                <i className="icon-dollar-sign me-1"></i>
-                                {order.totalPrice.toLocaleString()}
+                              <div className="text-success fw-bold">
+                                <i
+                                  className="icon-dollar-sign me-1"
+                                  style={{ fontSize: "12px" }}
+                                ></i>
+                                <span style={{ fontSize: "14px" }}>
+                                  {order.totalPrice.toLocaleString()}
+                                </span>
                               </div>
                               <small className="text-muted">USD</small>
+                            </td>
+                            <td className="py-3 text-center">
+                              {canChangeDate(order) ? (
+                                <button
+                                  className="btn btn-outline-primary btn-sm"
+                                  onClick={(e) =>
+                                    handleDateChangeClick(order, e)
+                                  }
+                                  title="Change booking date"
+                                  style={{
+                                    fontSize: "11px",
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <i className="icon-calendar me-1"></i>
+                                  Change
+                                </button>
+                              ) : (
+                                <span className="text-muted">-</span>
+                              )}
                             </td>
                             <td className="py-3 text-center">
                               {canCancelOrder(order) ? (
@@ -658,6 +745,10 @@ export default function TourOrders({
                                   className="btn btn-outline-danger btn-sm"
                                   onClick={(e) => handleCancelClick(order, e)}
                                   title="Cancel booking"
+                                  style={{
+                                    fontSize: "11px",
+                                    padding: "4px 8px",
+                                  }}
                                 >
                                   <i className="icon-x me-1"></i>
                                   Cancel
@@ -684,6 +775,17 @@ export default function TourOrders({
           order={selectedOrderForCancel}
           onClose={() => setSelectedOrderForCancel(null)}
           onCancel={handleCancelSubmit}
+        />
+      )}
+
+      {/* Change Date Modal */}
+      {selectedOrderForDateChange && (
+        <ChangeDate
+          isOpen={!!selectedOrderForDateChange}
+          onClose={() => setSelectedOrderForDateChange(null)}
+          order={selectedOrderForDateChange}
+          tourData={tour}
+          onDateChange={handleDateChangeSubmit}
         />
       )}
     </>
