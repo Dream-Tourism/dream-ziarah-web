@@ -60,12 +60,35 @@ const ChangeDate = ({ isOpen, onClose, order, onDateChange }) => {
   };
 
   const isDateAvailable = (date) => {
-    return availableDates.some(
+    // First check if the date is in the available dates list
+    const isInAvailableDates = availableDates.some(
       (availableDate) =>
         availableDate.getDate() === date.getDate() &&
         availableDate.getMonth() === date.getMonth() &&
         availableDate.getFullYear() === date.getFullYear()
     );
+
+    // If not in available dates, return false
+    if (!isInAvailableDates) {
+      return false;
+    }
+
+    // Check if this date is the current booking date (should be disabled)
+    if (order?.selectedDate) {
+      const currentBookingDate = new Date(order.selectedDate);
+      const isSameDateAsCurrentBooking =
+        currentBookingDate.getDate() === date.getDate() &&
+        currentBookingDate.getMonth() === date.getMonth() &&
+        currentBookingDate.getFullYear() === date.getFullYear();
+
+      // If it's the same as current booking date, disable it
+      if (isSameDateAsCurrentBooking) {
+        return false;
+      }
+    }
+
+    // If it passes all checks, it's available
+    return true;
   };
 
   const handleDateSelect = (date) => {

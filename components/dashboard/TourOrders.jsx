@@ -131,6 +131,15 @@ export default function TourOrders({
     return order.status === "paid" || order.status === "pending";
   };
 
+  // Check if order is disabled (has approved cancellation)
+  const isOrderDisabled = (order) => {
+    return (
+      order.cancellation_request === false &&
+      order.cancellation_status &&
+      order.cancellation_status.toLowerCase() === "approved"
+    );
+  };
+
   // Helper functions to check request status
   const hasActiveCancellationRequest = (order) => {
     return order.cancellation_request === true;
@@ -217,11 +226,13 @@ export default function TourOrders({
 
   const handleCancelClick = (order, e) => {
     e.stopPropagation();
+    if (isOrderDisabled(order)) return;
     setSelectedOrderForCancel(order);
   };
 
   const handleDateChangeClick = (order, e) => {
     e.stopPropagation();
+    if (isOrderDisabled(order)) return;
     setSelectedOrderForDateChange(order);
   };
 
@@ -274,7 +285,7 @@ export default function TourOrders({
       );
     }
 
-    if (canCancelOrder(order)) {
+    if (canCancelOrder(order) && !isOrderDisabled(order)) {
       return (
         <button
           className="btn btn-outline-danger btn-sm"
@@ -329,10 +340,10 @@ export default function TourOrders({
       );
     }
 
-    if (canChangeDate(order)) {
+    if (canChangeDate(order) && !isOrderDisabled(order)) {
       return (
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-primary btn-sm bg-yellow-4"
           onClick={(e) => handleDateChangeClick(order, e)}
           title="Change booking date"
           style={{
@@ -350,97 +361,110 @@ export default function TourOrders({
   };
 
   // Mobile Order Card Component
-  const MobileOrderCard = ({ order }) => (
-    <div
-      className="mobile-order-card"
-      onClick={() => onOrderSelect(order)}
-      style={{ cursor: "pointer" }}
-    >
-      <div className="card-header d-flex justify-content-between align-items-center">
-        <div>
-          <h6 className="mb-0 fw-bold">{order.id}</h6>
-          <small className="opacity-75">{order.customerName}</small>
+  const MobileOrderCard = ({ order }) => {
+    const disabled = isOrderDisabled(order);
+
+    return (
+      <div
+        className={`mobile-order-card ${disabled ? "opacity-50" : ""}`}
+        onClick={disabled ? undefined : () => onOrderSelect(order)}
+        style={{
+          cursor: disabled ? "not-allowed" : "pointer",
+          filter: disabled ? "grayscale(50%)" : "none",
+        }}
+      >
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <h6 className="mb-0 fw-bold">{order.id}</h6>
+            <small className="opacity-75">{order.customerName}</small>
+          </div>
+          <div className="d-flex align-items-center gap-2">
+            <span
+              className={`badge bg-${getStatusColor(
+                order.status
+              )} text-dark px-3 py-2`}
+            >
+              <i className={getStatusIcon(order.status)}></i>
+              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+            </span>
+            {!disabled && (
+              <ChangeDateButtonOrStatus order={order} isDesktop={false} />
+            )}
+          </div>
         </div>
-        <div className="d-flex align-items-center gap-2">
-          <span
-            className={`badge bg-${getStatusColor(
-              order.status
-            )} text-dark px-3 py-2`}
-          >
-            <i className={getStatusIcon(order.status)}></i>
-            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-          </span>
-          <ChangeDateButtonOrStatus order={order} isDesktop={false} />
-          <CancelButtonOrStatus order={order} isDesktop={false} />
-        </div>
-      </div>
-      <div className="card-body">
-        <div className="row g-3">
-          <div className="col-12">
-            <div className="d-flex align-items-start">
-              <i className="icon-map-pin text-primary me-2 mt-1"></i>
-              <div className="flex-grow-1">
-                <h6 className="mb-1 fw-semibold" title={order.tourName}>
-                  {order.tourName.length > 50
-                    ? `${order.tourName.substring(0, 50)}...`
-                    : order.tourName}
-                </h6>
-                <small className="text-muted">
-                  {order.selectedTime} • {order.guide || "Standard Package"}
-                </small>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-6">
-            <div className="d-flex align-items-center">
-              <i className="icon-users text-info me-2"></i>
-              <div>
-                <small className="text-muted d-block">Travelers</small>
-                <span className="fw-semibold">{order.participants}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-6">
-            <div className="d-flex align-items-center">
-              <i className="icon-calendar text-success me-2"></i>
-              <div>
-                <small className="text-muted d-block">Tour Date</small>
-                <span className="fw-semibold">
-                  {new Date(order.selectedDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-12">
-            <div className="d-flex justify-content-between align-items-center pt-2 border-top">
-              <div className="d-flex align-items-center">
-                <i className="icon-dollar-sign text-success me-2"></i>
-                <div>
-                  <span className="fw-bold text-success fs-5">
-                    ${order.totalPrice.toLocaleString()}
-                  </span>
-                  <small className="text-muted ms-1">USD</small>
+        <div className="card-body">
+          <div className="row g-3">
+            <div className="col-12">
+              <div className="d-flex align-items-start">
+                <i className="icon-map-pin text-primary me-2 mt-1"></i>
+                <div className="flex-grow-1">
+                  <h6 className="mb-1 fw-semibold" title={order.tourName}>
+                    {order.tourName.length > 50
+                      ? `${order.tourName.substring(0, 50)}...`
+                      : order.tourName}
+                  </h6>
+                  <small className="text-muted">
+                    {order.selectedTime} • {order.guide || "Standard Package"}
+                  </small>
                 </div>
               </div>
+            </div>
 
-              {order.status === "pending" && (
-                <small className="text-primary fw-semibold">
-                  <i className="icon-hand me-1"></i>
-                  Tap to pay
-                </small>
-              )}
+            <div className="col-6">
+              <div className="d-flex align-items-center">
+                <i className="icon-users text-info me-2"></i>
+                <div>
+                  <small className="text-muted d-block">Travelers</small>
+                  <span className="fw-semibold">{order.participants}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-6">
+              <div className="d-flex align-items-center">
+                <i className="icon-calendar text-success me-2"></i>
+                <div>
+                  <small className="text-muted d-block">Tour Date</small>
+                  <span className="fw-semibold">
+                    {new Date(order.selectedDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-12">
+              <div className="d-flex justify-content-between align-items-center pt-2 border-top">
+                <div className="d-flex align-items-center">
+                  <i className="icon-dollar-sign text-success me-2"></i>
+                  <div>
+                    <span className="fw-bold text-success fs-5">
+                      ${order.totalPrice.toLocaleString()}
+                    </span>
+                    <small className="text-muted ms-1">USD</small>
+                  </div>
+                </div>
+
+                <div className="d-flex align-items-center gap-2">
+                  {order.status === "pending" && !disabled && (
+                    <small className="text-primary fw-semibold">
+                      <i className="icon-hand me-1"></i>
+                      Tap to pay
+                    </small>
+                  )}
+                  {!disabled && (
+                    <CancelButtonOrStatus order={order} isDesktop={false} />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
@@ -714,7 +738,7 @@ export default function TourOrders({
                             style={{ width: "10%" }}
                           >
                             <i className="icon-info me-2"></i>
-                            Status
+                            Payment Status
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
@@ -761,149 +785,172 @@ export default function TourOrders({
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredOrders.map((order, index) => (
-                          <tr
-                            key={order.id}
-                            className="align-middle border-bottom"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => onOrderSelect(order)}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = "#f8f9fa";
-                              e.currentTarget.style.transform = "scale(1.01)";
-                              e.currentTarget.style.transition =
-                                "all 0.2s ease";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor =
-                                "transparent";
-                              e.currentTarget.style.transform = "scale(1)";
-                            }}
-                          >
-                            <td className="py-3">
-                              <div className="d-flex align-items-center">
-                                <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
-                                  <i className="icon-ticket text-primary"></i>
+                        {filteredOrders.map((order, index) => {
+                          const disabled = isOrderDisabled(order);
+
+                          return (
+                            <tr
+                              key={order.id}
+                              className={`align-middle border-bottom ${
+                                disabled ? "table-secondary opacity-50" : ""
+                              }`}
+                              style={{
+                                cursor: disabled ? "not-allowed" : "pointer",
+                                filter: disabled ? "grayscale(50%)" : "none",
+                              }}
+                              onClick={
+                                disabled
+                                  ? undefined
+                                  : () => onOrderSelect(order)
+                              }
+                              onMouseEnter={(e) => {
+                                if (!disabled) {
+                                  e.currentTarget.style.backgroundColor =
+                                    "#f8f9fa";
+                                  e.currentTarget.style.transform =
+                                    "scale(1.01)";
+                                  e.currentTarget.style.transition =
+                                    "all 0.2s ease";
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!disabled) {
+                                  e.currentTarget.style.backgroundColor =
+                                    "transparent";
+                                  e.currentTarget.style.transform = "scale(1)";
+                                }
+                              }}
+                            >
+                              <td className="py-3">
+                                <div className="d-flex align-items-center">
+                                  <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
+                                    <i className="icon-ticket text-primary"></i>
+                                  </div>
+                                  <div>
+                                    <strong className="text-primary d-block">
+                                      {order.id}
+                                    </strong>
+                                    <small className="text-muted">
+                                      {order.customerName}
+                                    </small>
+                                  </div>
                                 </div>
-                                <div>
-                                  <strong className="text-primary d-block">
-                                    {order.id}
-                                  </strong>
-                                  <small className="text-muted">
-                                    {order.customerName}
-                                  </small>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3">
-                              <div className="d-flex flex-column align-items-start">
-                                <span
-                                  className={`badge bg-${getStatusColor(
-                                    order.status
-                                  )} d-flex align-items-center justify-content-center mb-1 text-dark`}
-                                  style={{
-                                    width: "90px",
-                                    padding: "6px",
-                                    fontSize: "10px",
-                                  }}
-                                >
-                                  <i
-                                    className={getStatusIcon(order.status)}
-                                  ></i>
-                                  {order.status.charAt(0).toUpperCase() +
-                                    order.status.slice(1)}
-                                </span>
-                                {order.status === "pending" && (
-                                  <small
-                                    className="text-primary fw-semibold"
-                                    style={{ fontSize: "9px" }}
+                              </td>
+                              <td className="py-3">
+                                <div className="d-flex flex-column align-items-start">
+                                  <span
+                                    className={`badge bg-${getStatusColor(
+                                      order.status
+                                    )} d-flex align-items-center justify-content-center mb-1 text-dark`}
+                                    style={{
+                                      width: "90px",
+                                      padding: "6px",
+                                      fontSize: "10px",
+                                    }}
                                   >
-                                    <i className="icon-hand me-1"></i>
-                                    Click to pay
-                                  </small>
-                                )}
-                              </div>
-                            </td>
-                            <td className="py-3">
-                              <div className="d-flex align-items-center">
-                                <i className="icon-globe text-primary me-2"></i>
-                                <div style={{ maxWidth: "180px" }}>
-                                  <strong
-                                    title={order.tourName}
-                                    className="d-block text-truncate"
-                                  >
-                                    {order.tourName}
-                                  </strong>
-                                  <small className="text-muted d-block text-truncate">
-                                    {order.selectedTime} • $
-                                    {order.pricePerPerson}/person
-                                  </small>
+                                    <i
+                                      className={getStatusIcon(order.status)}
+                                    ></i>
+                                    {order.status.charAt(0).toUpperCase() +
+                                      order.status.slice(1)}
+                                  </span>
+                                  {order.status === "pending" && !disabled && (
+                                    <small
+                                      className="text-primary fw-semibold"
+                                      style={{ fontSize: "9px" }}
+                                    >
+                                      <i className="icon-hand me-1"></i>
+                                      Click to pay
+                                    </small>
+                                  )}
                                 </div>
-                              </div>
-                            </td>
-                            <td className="py-3 text-center">
-                              <div className="d-flex align-items-center justify-content-center">
-                                <div className="bg-info bg-opacity-10 rounded-circle p-1 me-1">
+                              </td>
+                              <td className="py-3">
+                                <div className="d-flex align-items-center">
+                                  <i className="icon-globe text-primary me-2"></i>
+                                  <div style={{ maxWidth: "180px" }}>
+                                    <strong
+                                      title={order.tourName}
+                                      className="d-block text-truncate"
+                                    >
+                                      {order.tourName}
+                                    </strong>
+                                    <small className="text-muted d-block text-truncate">
+                                      {order.selectedTime} • $
+                                      {order.pricePerPerson}/person
+                                    </small>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-3 text-center">
+                                <div className="d-flex align-items-center justify-content-center">
+                                  <div className="bg-info bg-opacity-10 rounded-circle p-1 me-1">
+                                    <i
+                                      className="icon-users text-info"
+                                      style={{ fontSize: "12px" }}
+                                    ></i>
+                                  </div>
+                                  <span className="fw-semibold">
+                                    {order.participants}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="py-3">
+                                <div className="d-flex align-items-center">
+                                  <i className="icon-calendar-check text-success me-2"></i>
+                                  <div>
+                                    <strong
+                                      className="d-block"
+                                      style={{ fontSize: "13px" }}
+                                    >
+                                      {new Date(
+                                        order.selectedDate
+                                      ).toLocaleDateString("en-US", {
+                                        month: "short",
+                                        day: "numeric",
+                                      })}
+                                    </strong>
+                                    <small className="text-muted">
+                                      {new Date(
+                                        order.selectedDate
+                                      ).toLocaleDateString("en-US", {
+                                        weekday: "short",
+                                      })}
+                                    </small>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-3">
+                                <div className="text-success fw-bold">
                                   <i
-                                    className="icon-users text-info"
+                                    className="icon-dollar-sign me-1"
                                     style={{ fontSize: "12px" }}
                                   ></i>
+                                  <span style={{ fontSize: "14px" }}>
+                                    {order.totalPrice.toLocaleString()}
+                                  </span>
                                 </div>
-                                <span className="fw-semibold">
-                                  {order.participants}
-                                </span>
-                              </div>
-                            </td>
-                            <td className="py-3">
-                              <div className="d-flex align-items-center">
-                                <i className="icon-calendar-check text-success me-2"></i>
-                                <div>
-                                  <strong
-                                    className="d-block"
-                                    style={{ fontSize: "13px" }}
-                                  >
-                                    {new Date(
-                                      order.selectedDate
-                                    ).toLocaleDateString("en-US", {
-                                      month: "short",
-                                      day: "numeric",
-                                    })}
-                                  </strong>
-                                  <small className="text-muted">
-                                    {new Date(
-                                      order.selectedDate
-                                    ).toLocaleDateString("en-US", {
-                                      weekday: "short",
-                                    })}
-                                  </small>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3">
-                              <div className="text-success fw-bold">
-                                <i
-                                  className="icon-dollar-sign me-1"
-                                  style={{ fontSize: "12px" }}
-                                ></i>
-                                <span style={{ fontSize: "14px" }}>
-                                  {order.totalPrice.toLocaleString()}
-                                </span>
-                              </div>
-                              <small className="text-muted">USD</small>
-                            </td>
-                            <td className="py-3 text-center">
-                              <ChangeDateButtonOrStatus
-                                order={order}
-                                isDesktop={true}
-                              />
-                            </td>
-                            <td className="py-3 text-center">
-                              <CancelButtonOrStatus
-                                order={order}
-                                isDesktop={true}
-                              />
-                            </td>
-                          </tr>
-                        ))}
+                                <small className="text-muted">USD</small>
+                              </td>
+                              <td className="py-3 text-center">
+                                {disabled ? (
+                                  <span className="text-muted">-</span>
+                                ) : (
+                                  <ChangeDateButtonOrStatus
+                                    order={order}
+                                    isDesktop={true}
+                                  />
+                                )}
+                              </td>
+                              <td className="py-3 text-center">
+                                <CancelButtonOrStatus
+                                  order={order}
+                                  isDesktop={true}
+                                />
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -914,9 +961,10 @@ export default function TourOrders({
         )}
       </div>
 
-      {/* Cancellation Modal - Only show if no active cancellation request */}
+      {/* Cancellation Modal - Only show if no active cancellation request and not disabled */}
       {selectedOrderForCancel &&
-        !hasActiveCancellationRequest(selectedOrderForCancel) && (
+        !hasActiveCancellationRequest(selectedOrderForCancel) &&
+        !isOrderDisabled(selectedOrderForCancel) && (
           <CancellationModal
             order={selectedOrderForCancel}
             onClose={() => setSelectedOrderForCancel(null)}
@@ -924,9 +972,10 @@ export default function TourOrders({
           />
         )}
 
-      {/* Change Date Modal - Only show if no active date change request */}
+      {/* Change Date Modal - Only show if no active date change request and not disabled */}
       {selectedOrderForDateChange &&
-        !hasActiveDateChangeRequest(selectedOrderForDateChange) && (
+        !hasActiveDateChangeRequest(selectedOrderForDateChange) &&
+        !isOrderDisabled(selectedOrderForDateChange) && (
           <ChangeDate
             isOpen={!!selectedOrderForDateChange}
             onClose={() => setSelectedOrderForDateChange(null)}
