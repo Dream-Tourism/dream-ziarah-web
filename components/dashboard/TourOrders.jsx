@@ -828,7 +828,7 @@ export default function TourOrders({
                                   </div>
                                   <div>
                                     <strong className="text-primary d-block">
-                                      {order.id}
+                                      {order.booking_id}
                                     </strong>
                                     <small className="text-muted">
                                       {order.customerName}

@@ -100,6 +100,7 @@ export const transformBookingData = (apiResponse) => {
     cancellation_request: booking.cancellation_request,
     cancellation_reason: booking.cancellation_reason,
     cancellation_status: booking.cancellation_status,
+    booking_id: booking.booking_id,
   }));
 
   return {
