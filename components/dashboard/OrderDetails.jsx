@@ -1,5 +1,6 @@
 "use client";
 
+import { BASE_URL2 } from "@/constant/constants";
 import { useState } from "react";
 
 export default function OrderDetails({
@@ -89,6 +90,73 @@ export default function OrderDetails({
     } else {
       // Fallback to original payment flow
       onPayment(selectedOrder.id);
+    }
+  };
+
+  const handlePrintBookingTicket = () => {
+    if (!selectedOrder.booking_ticket) {
+      alert("Booking ticket not available");
+      return;
+    }
+    const ticketUrl = `${BASE_URL2}${selectedOrder.booking_ticket}`;
+
+    try {
+      const ticketWindow = window.open(ticketUrl, "_blank");
+
+      // Check if popup was blocked (iPhone Safari, Chrome with popup blocker, etc.)
+      if (
+        !ticketWindow ||
+        ticketWindow.closed ||
+        typeof ticketWindow.closed == "undefined"
+      ) {
+        // Fallback: redirect current window if popup was blocked
+        if (confirm("Popup blocked. Open booking ticket in current tab?")) {
+          window.location.href = ticketUrl;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to open booking ticket:", error);
+      // Final fallback: redirect current window
+      if (
+        confirm(
+          "Failed to open in new tab. Open booking ticket in current tab?"
+        )
+      ) {
+        window.location.href = selectedOrder.booking_ticket;
+      }
+    }
+  };
+
+  const handlePrintPaymentInvoice = () => {
+    if (!selectedOrder.payment_invoice) {
+      alert("Payment invoice not available");
+      return;
+    }
+    const invoiceUrl = `${BASE_URL2}${selectedOrder.payment_invoice}`;
+    try {
+      const invoiceWindow = window.open(invoiceUrl, "_blank");
+
+      // Check if popup was blocked (iPhone Safari, Chrome with popup blocker, etc.)
+      if (
+        !invoiceWindow ||
+        invoiceWindow.closed ||
+        typeof invoiceWindow.closed == "undefined"
+      ) {
+        // Fallback: redirect current window if popup was blocked
+        if (confirm("Popup blocked. Open payment invoice in current tab?")) {
+          window.location.href = invoiceUrl;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to open payment invoice:", error);
+      // Final fallback: redirect current window
+      if (
+        confirm(
+          "Failed to open in new tab. Open payment invoice in current tab?"
+        )
+      ) {
+        window.location.href = selectedOrder.payment_invoice;
+      }
     }
   };
 
@@ -494,13 +562,61 @@ export default function OrderDetails({
           <div className="modal-footer bg-light border-0 p-3 p-md-4 flex-shrink-0">
             <div className="d-flex justify-content-between w-100 align-items-center flex-wrap gap-2">
               <div className="flex-grow-1">
-                <small className="text-muted">
+                {/* Show timestamp on desktop/tablet only */}
+                <small className="text-muted d-none d-md-inline">
                   <i className="icon-clock text-14 me-1"></i>
-                  <span className="d-none d-sm-inline">Last updated: </span>
+                  Last updated:{" "}
                   {new Date(selectedOrder.updatedAt).toLocaleString()}
                 </small>
+
+                {/* Show print buttons on mobile only */}
+                <div className="d-flex d-md-none gap-2">
+                  {selectedOrder.booking_ticket && (
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm"
+                      onClick={handlePrintBookingTicket}
+                    >
+                      <i className="icon-file-text text-14 me-1"></i>
+                      Print Ticket
+                    </button>
+                  )}
+                  {selectedOrder.payment_invoice && (
+                    <button
+                      type="button"
+                      className="btn btn-success btn-sm"
+                      onClick={handlePrintPaymentInvoice}
+                    >
+                      <i className="icon-receipt text-14 me-1"></i>
+                      Print Invoice
+                    </button>
+                  )}
+                </div>
               </div>
-              <div>
+
+              <div className="d-flex gap-2">
+                {/* Show print buttons on desktop/tablet */}
+                <div className="d-none d-md-flex gap-2">
+                  {selectedOrder.booking_ticket && (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handlePrintBookingTicket}
+                    >
+                      Print Ticket
+                    </button>
+                  )}
+                  {selectedOrder.payment_invoice && (
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={handlePrintPaymentInvoice}
+                    >
+                      Print Invoice
+                    </button>
+                  )}
+                </div>
+
                 <button
                   type="button"
                   className="btn btn-secondary"

@@ -786,56 +786,49 @@ export default function TourOrders({
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "15%" }}
                           >
-                            <i className="icon-hash me-2"></i>
                             Booking ID
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "10%" }}
                           >
-                            <i className="icon-info me-2"></i>
                             Payment Status
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "20%" }}
                           >
-                            <i className="icon-map-pin me-2"></i>
-                            Tour Destination
+                            Tour Name
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "8%" }}
                           >
-                            <i className="icon-users me-2"></i>
                             Travelers
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "12%" }}
                           >
-                            <i className="icon-calendar me-2"></i>
                             Tour Date
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "10%" }}
                           >
-                            <i className="icon-dollar-sign me-2"></i>
-                            Total Cost
+                          
+                            TotalCost
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "10%" }}
                           >
-                            <i className="icon-edit-2 me-2"></i>
                             Change Date
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "10%" }}
                           >
-                            <i className="icon-x me-2"></i>
                             Cancel
                           </th>
                         </tr>

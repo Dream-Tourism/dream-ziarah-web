@@ -101,6 +101,8 @@ export const transformBookingData = (apiResponse) => {
     cancellation_reason: booking.cancellation_reason,
     cancellation_status: booking.cancellation_status,
     booking_id: booking.booking_id,
+    booking_ticket: booking.booking_ticket,
+    payment_invoice: booking.payment_invoice,
   }));
 
   return {

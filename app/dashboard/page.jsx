@@ -18,7 +18,7 @@ const NAVIGATION_ITEMS = [
   {
     id: "dashboard",
     label: "Dashboard",
-    icon: "icon-pie-chart",
+    icon: "icon-route",
   },
   {
     id: "tour-orders",
