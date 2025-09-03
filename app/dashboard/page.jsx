@@ -134,7 +134,7 @@ function Dashboard() {
     refreshBookings,
   } = useTourBookings(user?.traveller_id);
 
-  console.log("bookingData", bookingData);
+  // console.log("bookingData", bookingData);
 
   // Memoized auth check
   useEffect(() => {

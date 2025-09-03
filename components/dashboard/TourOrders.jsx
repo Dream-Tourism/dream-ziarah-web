@@ -55,7 +55,25 @@ export default function TourOrders({
 
     // Filter by status
     if (filters.status !== "all") {
-      filtered = filtered.filter((order) => order.status === filters.status);
+      if (filters.status === "cancelled") {
+        // For cancelled status, include tours with approved cancellation
+        filtered = filtered.filter(
+          (order) =>
+            order.status === "cancelled" ||
+            (order.cancellation_status &&
+              order.cancellation_status.toLowerCase() === "approved")
+        );
+      } else {
+        // For other statuses, filter normally but exclude approved cancellations
+        filtered = filtered.filter(
+          (order) =>
+            order.status === filters.status &&
+            !(
+              order.cancellation_status &&
+              order.cancellation_status.toLowerCase() === "approved"
+            )
+        );
+      }
     }
 
     // Filter by date range
@@ -84,10 +102,29 @@ export default function TourOrders({
       );
     }
 
-    // Sort by status priority (paid > pending > cancelled)
-    filtered.sort(
-      (a, b) => statusPriority[b.status] - statusPriority[a.status]
-    );
+    // Sort by status priority (paid > pending > cancelled/refunded)
+    const statusPriorityUpdated = {
+      paid: 3,
+      pending: 2,
+      cancelled: 1,
+      refunded: 1, // Add refunded status with same priority as cancelled
+    };
+
+    filtered.sort((a, b) => {
+      // If order has approved cancellation, treat it as cancelled for sorting
+      const aStatus =
+        a.cancellation_status &&
+        a.cancellation_status.toLowerCase() === "approved"
+          ? "cancelled"
+          : a.status;
+      const bStatus =
+        b.cancellation_status &&
+        b.cancellation_status.toLowerCase() === "approved"
+          ? "cancelled"
+          : b.status;
+
+      return statusPriorityUpdated[bStatus] - statusPriorityUpdated[aStatus];
+    });
 
     return filtered;
   }, [orderData.orders, filters]);
@@ -120,7 +157,26 @@ export default function TourOrders({
 
   const getStatusCount = (status) => {
     if (status === "all") return orderData.orders.length;
-    return orderData.orders.filter((order) => order.status === status).length;
+
+    if (status === "cancelled") {
+      // Count tours with status "cancelled" OR approved cancellation
+      return orderData.orders.filter(
+        (order) =>
+          order.status === "cancelled" ||
+          (order.cancellation_status &&
+            order.cancellation_status.toLowerCase() === "approved")
+      ).length;
+    }
+
+    // For other statuses, count normally but exclude approved cancellations
+    return orderData.orders.filter(
+      (order) =>
+        order.status === status &&
+        !(
+          order.cancellation_status &&
+          order.cancellation_status.toLowerCase() === "approved"
+        )
+    ).length;
   };
 
   const canCancelOrder = (order) => {

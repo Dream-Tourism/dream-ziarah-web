@@ -62,7 +62,7 @@ export const transformBookingData = (apiResponse) => {
     pendingPayment: bookings.filter((booking) => booking.status === "pending")
       .length,
     cancelledOrders: bookings.filter(
-      (booking) => booking.status === "cancelled"
+      (booking) => booking.cancellation_status === "approved"
     ).length,
   };
 

@@ -57,7 +57,7 @@ export const useTourBookings = (travellerId) => {
           (order) => order.status === "pending"
         ).length,
         cancelledOrders: updatedOrders.filter(
-          (order) => order.status === "cancelled"
+          (order) => order.cancellation_status === "approved"
         ).length,
       };
 
