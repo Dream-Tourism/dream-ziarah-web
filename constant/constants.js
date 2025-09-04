@@ -9,7 +9,6 @@ export const BASE_URL = "http://192.168.68.127:8004";
 // export const BASE_URL = "https://api.labbaikintbd.com/";
 
 // export const BASE_URL = 'http://api.cashconnectbd.com';
-export const BASE_URL2 = "http://192.168.68.127:8004";
 
 //login
 export const LOGIN_URL = `${BASE_URL}/user/api/v1/user/login/`;
@@ -567,16 +566,16 @@ export const GET_MENUS_BY_ROLE = `${BASE_URL}/menu_item/api/v1/menu_item/nested_
 export const SEARCH_MENU = `${BASE_URL}/menu_item/api/v1/menu_item/search/`;
 
 export const GET_MENUS_WITHOUT_PAGINATION = `${BASE_URL}/cms_menu/api/v1/cms_menu/without_pagination/all/`;
-export const GET_TOUR_ENTRYID = `${BASE_URL2}/tour_content/api/v1/tour`;
-export const CHECKOUTDATA = `${BASE_URL2}/payments/api/v1/payments/checkout/create/`;
-export const getAllTourBookingByTravellerID = `${BASE_URL2}/tour_booking/api/v1/tour_booking/get_all_tour_booking_by_traveller_id/`;
-export const checkAvailability = `${BASE_URL2}/payments/api/v1/payments/availability/check/`;
+export const GET_TOUR_ENTRYID = `${BASE_URL}/tour_content/api/v1/tour`;
+export const CHECKOUTDATA = `${BASE_URL}/payments/api/v1/payments/checkout/create/`;
+export const getAllTourBookingByTravellerID = `${BASE_URL}/tour_booking/api/v1/tour_booking/get_all_tour_booking_by_traveller_id/`;
+export const checkAvailability = `${BASE_URL}/payments/api/v1/payments/availability/check/`;
 
-export const GET_ALL_TOUR = `${BASE_URL2}/tour_content/api/v1/tour/all/`;
+export const GET_ALL_TOUR = `${BASE_URL}/tour_content/api/v1/tour/all/`;
 
-export const GET_BOOKINGS_BY_ID = `${BASE_URL2}/tour_booking/api/v1/tour_booking/`;
+export const GET_BOOKINGS_BY_ID = `${BASE_URL}/tour_booking/api/v1/tour_booking/`;
 
-export const Update_ATour_BookingDate = `${BASE_URL2}/tour_booking/api/v1/tour_booking/date/update/`;
+export const Update_ATour_BookingDate = `${BASE_URL}/tour_booking/api/v1/tour_booking/date/update/`;
 
 //menu content
 

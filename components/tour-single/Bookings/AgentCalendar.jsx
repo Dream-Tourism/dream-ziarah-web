@@ -349,7 +349,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
     }
   };
 
-  console.log("bookingdetails", booking);
+  // console.log("bookingdetails", booking);
 
   const currentPriceOption = getCurrentPriceOption();
   const totalPrice = calculateTotalPrice();
@@ -576,6 +576,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
             priceOption={currentPriceOption}
             tourName={tourData?.name}
             duration={tourData?.duration}
+            
           />
         </div>
       )}

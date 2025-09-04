@@ -74,10 +74,10 @@ export default async function UmrahPage() {
 
   const { allTours, umrahTours, umrahPageTour } = data;
 
-  console.log("Successfully fetched tours:", {
-    totalTours: allTours.length,
-    umrahToursCount: umrahTours.length,
-  });
+  // console.log("Successfully fetched tours:", {
+  //   totalTours: allTours.length,
+  //   umrahToursCount: umrahTours.length,
+  // });
 
   return (
     <Wrapper>

@@ -1,6 +1,6 @@
 "use client";
 
-import { BASE_URL2 } from "@/constant/constants";
+import { BASE_URL } from "@/constant/constants";
 import { useState } from "react";
 
 export default function OrderDetails({
@@ -98,7 +98,7 @@ export default function OrderDetails({
       alert("Booking ticket not available");
       return;
     }
-    const ticketUrl = `${BASE_URL2}${selectedOrder.booking_ticket}`;
+    const ticketUrl = `${BASE_URL}${selectedOrder.booking_ticket}`;
 
     try {
       const ticketWindow = window.open(ticketUrl, "_blank");
@@ -132,7 +132,7 @@ export default function OrderDetails({
       alert("Payment invoice not available");
       return;
     }
-    const invoiceUrl = `${BASE_URL2}${selectedOrder.payment_invoice}`;
+    const invoiceUrl = `${BASE_URL}${selectedOrder.payment_invoice}`;
     try {
       const invoiceWindow = window.open(invoiceUrl, "_blank");
 

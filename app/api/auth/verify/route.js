@@ -1,4 +1,4 @@
-import { BASE_URL2 } from "@/constant/constants";
+import { BASE_URL } from "@/constant/constants";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -18,7 +18,7 @@ export async function GET(req) {
     };
 
     const response = await fetch(
-      `${BASE_URL2}/user/api/v1/user/session/verify/`,
+      `${BASE_URL}/user/api/v1/user/session/verify/`,
       {
         method: "GET",
         headers: headers,

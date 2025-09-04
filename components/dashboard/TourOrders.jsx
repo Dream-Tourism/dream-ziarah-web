@@ -19,7 +19,7 @@ export default function TourOrders({
     searchTerm: "",
   });
 
-  console.log("orderData", orderData);
+  // console.log("orderData", orderData);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
   const [selectedOrderForDateChange, setSelectedOrderForDateChange] =
     useState(null);
@@ -816,7 +816,6 @@ export default function TourOrders({
                             className="text-primary fw-semibold border-0 py-3"
                             style={{ width: "10%" }}
                           >
-                          
                             TotalCost
                           </th>
                           <th
@@ -926,7 +925,7 @@ export default function TourOrders({
                                     </strong>
                                     <small className="text-muted d-block text-truncate">
                                       {order.selectedTime} • $
-                                      {order.pricePerPerson}/person
+                                      {order.totalPrice}
                                     </small>
                                   </div>
                                 </div>

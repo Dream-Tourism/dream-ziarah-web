@@ -21,7 +21,7 @@ const ToursForMobile = dynamic(() =>
 );
 
 const MainHome = ({ allTours }) => {
-  console.log("All Tour Data in MainHome:", allTours);
+  // console.log("All Tour Data in MainHome:", allTours);
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
 
   const [dataAvailable, setDataAvailable] = useState(false);

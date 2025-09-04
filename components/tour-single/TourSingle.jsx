@@ -33,7 +33,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
   // const { tourIds, notFound } = useTourBySlug(params.name);
   // Use the new single tour hook
   // const { data: tourData, error, isLoading } = useSingleTour(tourIds);
-  console.log("tourIds", tourData);
+  // console.log("tourIds", tourData);
 
   useEffect(() => {
     if (tourData) {

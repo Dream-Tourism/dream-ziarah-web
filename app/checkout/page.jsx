@@ -16,6 +16,8 @@ const CheckoutPage = () => {
     email: "",
     acceptOffers: false,
   });
+
+  // console.log("Authenticated:", bookingData);
   //currency
   const { currentCurrency } = useSelector((state) => state.currency);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,7 +26,6 @@ const CheckoutPage = () => {
   const [touched, setTouched] = useState({});
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  // console.log("User:", user, "Authenticated:", isAuthenticated)
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -277,6 +278,7 @@ const CheckoutPage = () => {
           selected_time: bookingData.selectedTime,
           total_participants: bookingData.participantCount,
           total_price: bookingData.totalPrice,
+          guide: bookingData.selectedTourType?.guide,
         },
       };
 

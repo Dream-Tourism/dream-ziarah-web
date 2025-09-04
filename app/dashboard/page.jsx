@@ -11,7 +11,7 @@ import { logoutUserThunk, verifySessionThunk } from "@/features/auth/authSlice";
 import { ProtectedRoute } from "@/components/protected-route";
 import Returns from "@/components/dashboard/Returns";
 import { useTourBookings } from "@/hooks/useTourBookings";
-import { BASE_URL2 } from "@/constant/constants";
+import { BASE_URL } from "@/constant/constants";
 
 // Memoized navigation items to prevent unnecessary re-renders
 const NAVIGATION_ITEMS = [

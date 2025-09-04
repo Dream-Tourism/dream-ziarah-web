@@ -243,7 +243,7 @@ async function getTourData(slug) {
     ]);
 
     if (!tourBySlugData || !tourBySlugData.tourIds) {
-      console.log("Tour not found for slug:", slug);
+      // console.log("Tour not found for slug:", slug);
       return null;
     }
 
@@ -251,7 +251,7 @@ async function getTourData(slug) {
     const tourData = await getSingleTourServer(tourBySlugData.tourIds);
 
     if (!tourData) {
-      console.log("Tour data not found for ID:", tourBySlugData.tourIds);
+      // console.log("Tour data not found for ID:", tourBySlugData.tourIds);
       return null;
     }
 
@@ -267,24 +267,24 @@ async function getTourData(slug) {
 }
 
 export default async function Tour({ params }) {
-  console.log("Tour page params:", params);
+  // console.log("Tour page params:", params);
 
   // Fetch all tour data at the server level
   const data = await getTourData(params.name);
 
   // Handle not found case
   if (!data || !data.tourData) {
-    console.log("Tour not found, redirecting to 404");
+    // console.log("Tour not found, redirecting to 404");
     notFound();
   }
 
   const { tourData, allTours, tourIds } = data;
 
-  console.log("Successfully fetched tour data:", {
-    tourId: tourIds,
-    tourName: tourData?.name,
-    allToursCount: allTours?.length,
-  });
+  // console.log("Successfully fetched tour data:", {
+  //   tourId: tourIds,
+  //   tourName: tourData?.name,
+  //   allToursCount: allTours?.length,
+  // });
 
   return (
     <>

@@ -18,7 +18,7 @@ async function getTourData() {
     const allTours = await getAllToursServer();
 
     if (!allTours || allTours.length === 0) {
-      console.log("No tours found");
+      // console.log("No tours found");
       return null;
     }
 
@@ -26,7 +26,7 @@ async function getTourData() {
     const hajjTours = allTours.filter((tour) => tour.location_type === "Hajj");
 
     if (hajjTours.length === 0) {
-      console.log("No Hajj tours found");
+      // console.log("No Hajj tours found");
       return null;
     }
 
@@ -72,10 +72,10 @@ export default async function HajjPage() {
 
   const { allTours, hajjTours, hajjPageTour } = data;
 
-  console.log("Successfully fetched tours:", {
-    totalTours: allTours.length,
-    hajjToursCount: hajjTours.length,
-  });
+  // console.log("Successfully fetched tours:", {
+  //   totalTours: allTours.length,
+  //   hajjToursCount: hajjTours.length,
+  // });
 
   return (
     <Wrapper>

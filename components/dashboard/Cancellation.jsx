@@ -1,4 +1,4 @@
-import { BASE_URL2 } from "@/constant/constants";
+import { BASE_URL } from "@/constant/constants";
 import { useState } from "react";
 
 export default function CancellationModal({ order, onClose }) {
@@ -49,7 +49,7 @@ export default function CancellationModal({ order, onClose }) {
       }
 
       const response = await fetch(
-        `${BASE_URL2}/tour_booking/api/v1/tour_booking/cancel_request/${order.originalId}/`,
+        `${BASE_URL}/tour_booking/api/v1/tour_booking/cancel_request/${order.originalId}/`,
         {
           method: "POST",
           headers: {
