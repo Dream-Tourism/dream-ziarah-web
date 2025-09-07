@@ -576,7 +576,8 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
             priceOption={currentPriceOption}
             tourName={tourData?.name}
             duration={tourData?.duration}
-            
+            reviews={tourData?.reviews}
+            thumbnailImage={tourData?.cloudflare_thumbnail_image_url}
           />
         </div>
       )}

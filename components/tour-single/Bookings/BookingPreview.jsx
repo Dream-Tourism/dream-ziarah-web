@@ -16,6 +16,8 @@ const BookingPreview = ({
   priceOption,
   tourName,
   duration,
+  reviews,
+  thumbnailImage,
 }) => {
   const [isBooking, setIsBooking] = useState(false);
   // console.log("selectedTime", selectedTime);
@@ -33,7 +35,6 @@ const BookingPreview = ({
   //currency
   const { currentCurrency } = useSelector((state) => state.currency);
 
-  
   const setCookie = (name, value, days = 1) => {
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -58,9 +59,9 @@ const BookingPreview = ({
         priceOption,
         duration,
         bookingData,
-        tourImage: "/tour.png?height=120&width=180", // Add tour image
+        tourImage: thumbnailImage,
         rating: 4.2,
-        reviewCount: 814,
+        reviewCount: reviews,
         timestamp: new Date().toISOString(),
       };
 

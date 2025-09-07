@@ -247,10 +247,34 @@ export default function TourGallery({ tour, onDataAvailable }) {
   return (
     <>
       {/* Desktop Scroll Menus */}
-      {!isMobile && showScrollMenus && (
-        <div ref={scrollMenuRef} className="fixed-scroll-menus">
+      {!isMobile && (
+        <div
+          ref={scrollMenuRef}
+          className={`fixed-scroll-menus ${
+            showScrollMenus ? "menu-visible" : "menu-hidden"
+          }`}
+          style={{
+            transform: showScrollMenus ? "translateY(0)" : "translateY(-100%)",
+            opacity: showScrollMenus ? 1 : 0,
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            backdropFilter: "blur(10px)",
+            borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+            boxShadow: showScrollMenus
+              ? "0 4px 20px rgba(0, 0, 0, 0.15)"
+              : "0 0px 0px rgba(0, 0, 0, 0)",
+          }}
+        >
           {/* First Menu - Tour Name & Check Availability */}
-          <div className="tour-header-menu">
+          <div
+            className="tour-header-menu"
+            style={{
+              transform: showScrollMenus
+                ? "translateY(0)"
+                : "translateY(-20px)",
+              opacity: showScrollMenus ? 1 : 0,
+              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s", // 0.1s delay
+            }}
+          >
             <h2
               style={{
                 margin: 0,
@@ -264,15 +288,41 @@ export default function TourGallery({ tour, onDataAvailable }) {
             <button
               onClick={scrollToAvailability}
               className="menuCheckAvailabilityButton"
-              // onMouseOver={(e) => (e.target.style.backgroundColor = "#2563eb")}
-              // onMouseOut={(e) => (e.target.style.backgroundColor = "#3b82f6")}
+              style={{
+                border: "none",
+                borderRadius: "12px",
+                padding: "10px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+                transform: "translateY(0)",
+              }}
+              // onMouseEnter={(e) => {
+              //   e.target.style.transform = "translateY(-2px) scale(1.02)";
+              //   e.target.style.boxShadow = "0 6px 20px rgba(59, 130, 246, 0.4)";
+              // }}
+              // onMouseLeave={(e) => {
+              //   e.target.style.transform = "translateY(0) scale(1)";
+              //   e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)";
+              // }}
             >
               Check Availability
             </button>
           </div>
 
           {/* Second Menu - Tab Navigation */}
-          <div className="tab-navigation-menu">
+          <div
+            className="tab-navigation-menu"
+            style={{
+              transform: showScrollMenus
+                ? "translateY(0)"
+                : "translateY(-20px)",
+              opacity: showScrollMenus ? 1 : 0,
+              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s", // 0.2s delay
+            }}
+          >
             <div className="tab-navigation-inner">
               <button
                 onClick={() =>
@@ -287,11 +337,25 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   color: activeTab === "tour-snapshot" ? "#3b82f6" : "#666",
                   borderBottom:
                     activeTab === "tour-snapshot"
-                      ? "2px solid #3b82f6"
-                      : "2px solid transparent",
+                      ? "3px solid #3b82f6"
+                      : "3px solid transparent",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   whiteSpace: "nowrap",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== "tour-snapshot") {
+                    e.target.style.color = "#3b82f6";
+                    e.target.style.transform = "translateY(-2px)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== "tour-snapshot") {
+                    e.target.style.color = "#666";
+                    e.target.style.transform = "translateY(0)";
+                  }
                 }}
               >
                 Tour Snapshot
@@ -307,11 +371,24 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   color: activeTab === "overview" ? "#3b82f6" : "#666",
                   borderBottom:
                     activeTab === "overview"
-                      ? "2px solid #3b82f6"
-                      : "2px solid transparent",
+                      ? "3px solid #3b82f6"
+                      : "3px solid transparent",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   whiteSpace: "nowrap",
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== "overview") {
+                    e.target.style.color = "#3b82f6";
+                    e.target.style.transform = "translateY(-2px)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== "overview") {
+                    e.target.style.color = "#666";
+                    e.target.style.transform = "translateY(0)";
+                  }
                 }}
               >
                 Overview
@@ -327,11 +404,24 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   color: activeTab === "calendar" ? "#3b82f6" : "#666",
                   borderBottom:
                     activeTab === "calendar"
-                      ? "2px solid #3b82f6"
-                      : "2px solid transparent",
+                      ? "3px solid #3b82f6"
+                      : "3px solid transparent",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   whiteSpace: "nowrap",
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== "calendar") {
+                    e.target.style.color = "#3b82f6";
+                    e.target.style.transform = "translateY(-2px)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== "calendar") {
+                    e.target.style.color = "#666";
+                    e.target.style.transform = "translateY(0)";
+                  }
                 }}
               >
                 Calendar
@@ -349,11 +439,24 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   color: activeTab === "important-info" ? "#3b82f6" : "#666",
                   borderBottom:
                     activeTab === "important-info"
-                      ? "2px solid #3b82f6"
-                      : "2px solid transparent",
+                      ? "3px solid #3b82f6"
+                      : "3px solid transparent",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   whiteSpace: "nowrap",
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== "important-info") {
+                    e.target.style.color = "#3b82f6";
+                    e.target.style.transform = "translateY(-2px)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== "important-info") {
+                    e.target.style.color = "#666";
+                    e.target.style.transform = "translateY(0)";
+                  }
                 }}
               >
                 Important Info
@@ -373,8 +476,21 @@ export default function TourGallery({ tour, onDataAvailable }) {
                         ? "2px solid #3b82f6"
                         : "2px solid transparent",
                     cursor: "pointer",
-                    transition: "all 0.2s",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     whiteSpace: "nowrap",
+                    position: "relative",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeTab !== "itinerary") {
+                      e.target.style.color = "#3b82f6";
+                      e.target.style.transform = "translateY(-2px)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeTab !== "itinerary") {
+                      e.target.style.color = "#666";
+                      e.target.style.transform = "translateY(0)";
+                    }
                   }}
                 >
                   Itinerary
@@ -386,8 +502,16 @@ export default function TourGallery({ tour, onDataAvailable }) {
       )}
 
       {/* Mobile Top Menu (appears after scrolling) */}
-      {isMobile && showScrollMenus && (
-        <div className="mobile-top-menu">
+      {isMobile && (
+        <div
+          className="mobile-top-menu"
+          style={{
+            transform: showScrollMenus ? "translateY(0)" : "translateY(-100%)",
+            opacity: showScrollMenus ? 1 : 0,
+            visibility: showScrollMenus ? "visible" : "hidden",
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        >
           <h2
             style={{
               margin: 0,
@@ -396,6 +520,11 @@ export default function TourGallery({ tour, onDataAvailable }) {
               textAlign: "center",
               lineHeight: "1.3",
               color: "white",
+              transform: showScrollMenus
+                ? "translateY(0)"
+                : "translateY(-10px)",
+              opacity: showScrollMenus ? 1 : 0,
+              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s", // 0.1s delay
             }}
           >
             {tour?.name || "Tour Details"}
@@ -404,7 +533,8 @@ export default function TourGallery({ tour, onDataAvailable }) {
       )}
 
       {/* Mobile Bottom Menu (conditionally visible) */}
-      {isMobile && showMobileBottomButton && (
+      {/* Mobile Bottom Menu (conditionally visible) */}
+      {isMobile && (
         <div
           className="mobile-bottom-menu"
           style={{
@@ -417,6 +547,12 @@ export default function TourGallery({ tour, onDataAvailable }) {
             padding: "15px 20px",
             boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
             borderTop: "1px solid #f0f0f0",
+            transform: showMobileBottomButton
+              ? "translateY(0)"
+              : "translateY(100%)",
+            opacity: showMobileBottomButton ? 1 : 0,
+            visibility: showMobileBottomButton ? "visible" : "hidden",
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
           <button
@@ -432,7 +568,29 @@ export default function TourGallery({ tour, onDataAvailable }) {
               fontSize: "14px",
               fontWeight: "600",
               cursor: "pointer",
-              transition: "all 0.2s",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              transform: showMobileBottomButton
+                ? "translateY(0) scale(1)"
+                : "translateY(10px) scale(0.95)",
+              opacity: showMobileBottomButton ? 1 : 0,
+            }}
+            onTouchStart={(e) => {
+              e.target.style.transform = "translateY(-2px) scale(1.02)";
+            }}
+            onTouchEnd={(e) => {
+              e.target.style.transform = showMobileBottomButton
+                ? "translateY(0) scale(1)"
+                : "translateY(10px) scale(0.95)";
+            }}
+            onMouseEnter={(e) => {
+              if (showMobileBottomButton) {
+                e.target.style.transform = "translateY(-2px) scale(1.02)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = showMobileBottomButton
+                ? "translateY(0) scale(1)"
+                : "translateY(10px) scale(0.95)";
             }}
           >
             Check Availability
