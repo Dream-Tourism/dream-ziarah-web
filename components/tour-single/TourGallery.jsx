@@ -258,7 +258,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
             opacity: showScrollMenus ? 1 : 0,
             transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
             backdropFilter: "blur(10px)",
-            borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+
             boxShadow: showScrollMenus
               ? "0 4px 20px rgba(0, 0, 0, 0.15)"
               : "0 0px 0px rgba(0, 0, 0, 0)",
