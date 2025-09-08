@@ -1,21 +1,21 @@
 version: "3.8"
 services:
-  dreamziarah:
+  dreamziarahtest:
     build: .
-    image: dreamziarahcom-dreamziarah
-    container_name: ziarahapp
+    image: dreamziarahcom-dreamziarahtest
+    container_name: ziarahtestapp
     restart: always
     ports:
-      - 3003:3000
+      - 3004:3000
     # env_file:
     #   - .env.local
     networks:
-      - ziarahnet
+      - ziarahtestnet
     volumes:
-      - ziarahapp_data:/usr/share/ziarahapp/data
+      - ziarahtestapp_data:/usr/share/ziarahtestapp/data
 
 networks:
-  ziarahnet:
+  ziarahtestnet:
     driver: bridge
 volumes:
-  ziarahapp_data:
+  ziarahtestapp_data:
