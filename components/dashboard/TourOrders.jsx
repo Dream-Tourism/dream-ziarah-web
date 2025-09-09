@@ -790,7 +790,7 @@ export default function TourOrders({
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "10%" }}
+                            style={{ width: "10%", whiteSpace: "nowrap" }}
                           >
                             Payment Status
                           </th>
@@ -808,7 +808,7 @@ export default function TourOrders({
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "12%" }}
+                            style={{ width: "12%", whiteSpace: "nowrap" }}
                           >
                             Tour Date
                           </th>
@@ -820,7 +820,7 @@ export default function TourOrders({
                           </th>
                           <th
                             className="text-primary fw-semibold border-0 py-3"
-                            style={{ width: "10%" }}
+                            style={{ width: "10%", whiteSpace: "nowrap" }}
                           >
                             Change Date
                           </th>
@@ -875,7 +875,10 @@ export default function TourOrders({
                                     <i className="icon-ticket text-primary"></i>
                                   </div>
                                   <div>
-                                    <strong className="text-primary d-block">
+                                    <strong
+                                      className="text-primary d-block"
+                                      style={{ whiteSpace: "nowrap" }}
+                                    >
                                       {order.booking_id}
                                     </strong>
                                     <small className="text-muted">
@@ -924,8 +927,7 @@ export default function TourOrders({
                                       {order.tourName}
                                     </strong>
                                     <small className="text-muted d-block text-truncate">
-                                      {order.selectedTime} • $
-                                      {order.totalPrice}
+                                      {order.selectedTime} • ${order.totalPrice}
                                     </small>
                                   </div>
                                 </div>
@@ -970,10 +972,6 @@ export default function TourOrders({
                               </td>
                               <td className="py-3">
                                 <div className="text-success fw-bold">
-                                  <i
-                                    className="icon-dollar-sign me-1"
-                                    style={{ fontSize: "12px" }}
-                                  ></i>
                                   <span style={{ fontSize: "14px" }}>
                                     {order.totalPrice.toLocaleString()}
                                   </span>

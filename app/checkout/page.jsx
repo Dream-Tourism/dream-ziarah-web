@@ -183,39 +183,38 @@ const CheckoutPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-const getTimeRange = () => {
-  if (!bookingData) return "";
+  const getTimeRange = () => {
+    if (!bookingData) return "";
 
-  const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
-  const durationStr = bookingData.duration;      // e.g. "4 hours"
+    const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
+    const durationStr = bookingData.duration; // e.g. "4 hours"
 
-  // Parse duration number
-  const hoursToAdd = parseInt(durationStr);
+    // Parse duration number
+    const hoursToAdd = parseInt(durationStr);
 
-  // Parse start time
-  const [time, modifier] = startTimeStr.split(" "); // ["08:30", "am"]
-  let [hours, minutes] = time.split(":").map(Number);
+    // Parse start time
+    const [time, modifier] = startTimeStr.split(" "); // ["08:30", "am"]
+    let [hours, minutes] = time.split(":").map(Number);
 
-  if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
-  if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+    if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
+    if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
 
-  const startDate = new Date();
-  startDate.setHours(hours, minutes);
+    const startDate = new Date();
+    startDate.setHours(hours, minutes);
 
-  // Add duration
-  const endDate = new Date(startDate.getTime() + hoursToAdd * 60 * 60 * 1000);
+    // Add duration
+    const endDate = new Date(startDate.getTime() + hoursToAdd * 60 * 60 * 1000);
 
-  // Format back to hh:mm am/pm
-  const endHours = endDate.getHours();
-  const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
-  const endModifier = endHours >= 12 ? "pm" : "am";
-  const formattedEndHours = endHours % 12 === 0 ? 12 : endHours % 12;
+    // Format back to hh:mm am/pm
+    const endHours = endDate.getHours();
+    const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
+    const endModifier = endHours >= 12 ? "pm" : "am";
+    const formattedEndHours = endHours % 12 === 0 ? 12 : endHours % 12;
 
-  const endTimeStr = `${formattedEndHours}:${endMinutes} ${endModifier}`;
+    const endTimeStr = `${formattedEndHours}:${endMinutes} ${endModifier}`;
 
-  return `${startTimeStr} - ${endTimeStr}`;
-};
-
+    return `${startTimeStr} - ${endTimeStr}`;
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -306,6 +305,7 @@ const getTimeRange = () => {
           total_participants: bookingData.participantCount,
           total_price: bookingData.totalPrice,
           guide: bookingData.selectedTourType?.guide,
+          cancel_url: bookingData?.url,
         },
       };
 

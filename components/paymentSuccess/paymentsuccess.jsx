@@ -1,15 +1,15 @@
 "use client";
 
+import useTourBookingUUID from "@/hooks/useTourBookingUUID";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import useTourBookingID from "@/hooks/useTourBookingID";
 
 const PaymentSuccess = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const booking_id = searchParams.get("booking_id");
 
-  const { booking, loading, error } = useTourBookingID(booking_id);
+  const { booking, loading, error } = useTourBookingUUID(booking_id);
   const [animateIn, setAnimateIn] = useState(false);
 
   useEffect(() => {

@@ -2,10 +2,10 @@
 //http://192.168.0.8:8002
 
 //base url local
-// export const BASE_URL = "http://192.168.68.127:8004";
+export const BASE_URL = "http://192.168.68.127:8004";
 
 //base url producton
-export const BASE_URL = "https://api.dreamziarah.com";
+// export const BASE_URL = "https://api.dreamziarah.com";
 //
 // export const BASE_URL = "https://ziarahapi.dreamtourism.co.uk";
 // export const BASE_URL = "https://api.activemanpowerservices.com/";
@@ -578,6 +578,8 @@ export const checkAvailability = `${BASE_URL}/payments/api/v1/payments/availabil
 export const GET_ALL_TOUR = `${BASE_URL}/tour_content/api/v1/tour/all/`;
 
 export const GET_BOOKINGS_BY_ID = `${BASE_URL}/tour_booking/api/v1/tour_booking/`;
+
+export const GET_BOOKINGS_BY_UUID = `${BASE_URL}/tour_booking/api/v1/tour_booking/`;
 
 export const Update_ATour_BookingDate = `${BASE_URL}/tour_booking/api/v1/tour_booking/date/update/`;
 

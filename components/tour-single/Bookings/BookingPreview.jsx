@@ -18,6 +18,7 @@ const BookingPreview = ({
   duration,
   reviews,
   thumbnailImage,
+  url,
 }) => {
   const [isBooking, setIsBooking] = useState(false);
   // console.log("selectedTime", selectedTime);
@@ -63,6 +64,7 @@ const BookingPreview = ({
         rating: 4.2,
         reviewCount: reviews,
         timestamp: new Date().toISOString(),
+        url,
       };
 
       // Set cookies with booking information

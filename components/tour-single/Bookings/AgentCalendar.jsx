@@ -9,8 +9,10 @@ import CustomDropdown from "./CustomDropdown";
 import { checkAvailability } from "@/constant/constants";
 import { useSelector } from "react-redux";
 import convertCurrency from "@/utils/currency";
+import { useSearchParams } from "next/navigation";
 
 const AgentCalendar = ({ tourData = null, refFunction }) => {
+  const searchParams = useSearchParams();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [dropDownTime, setDropDownTime] = useState("00:00");
@@ -28,6 +30,14 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState({}); // Added error state
   const [errorMessage, setErrorMessage] = useState(""); // Added global error message
+
+  // Construct full URL
+  const currentUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}${
+          window.location.pathname
+        }${searchParams.toString()}`
+      : "";
 
   //currency
   const { currentCurrency } = useSelector((state) => state.currency);
@@ -578,6 +588,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
             duration={tourData?.duration}
             reviews={tourData?.reviews}
             thumbnailImage={tourData?.cloudflare_thumbnail_image_url}
+            url={currentUrl}
           />
         </div>
       )}
