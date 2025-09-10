@@ -39,7 +39,6 @@ const TopDestinations = () => {
           slidesToScroll: 3,
         },
       },
-
       {
         breakpoint: 768,
         settings: {
@@ -50,8 +49,9 @@ const TopDestinations = () => {
       {
         breakpoint: 520,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 2.3, // Show 2 full + partial 3rd slide
           slidesToScroll: 1,
+          centerMode: false,
         },
       },
     ],
@@ -59,42 +59,58 @@ const TopDestinations = () => {
 
   return (
     <>
-      <Slider {...settings}>
-        {modifiedDestinations?.map((item) => (
-          <div
-            className={`${item.colClass} top_destination_width px-5`}
-            key={item.id}
-            data-aos="fade"
-            data-aos-delay={item.delayAnimation}
-          >
-            <Link
-              href={`/destinations/${item?.name?.toLowerCase()}`}
-              className="citiesCard -type-3 d-block h-full rounded-4 "
+      <div className="destinations-slider-wrapper">
+        <Slider {...settings}>
+          {modifiedDestinations?.map((item) => (
+            <div
+              className={`${item.colClass} top_destination_width px-5`}
+              key={item.id}
+              data-aos="fade"
+              data-aos-delay={item.delayAnimation}
             >
-              <div className="citiesCard__image ratio ratio-3:2">
-                <Image
-                  className="col-12 js-lazy"
-                  src={item?.img}
-                  width={800}
-                  height={600}
-                  quality={100}
-                  priority
-                  alt={`${item?.name} Images`}
-                />
-              </div>
-              <div className="citiesCard__content d-flex justify-content-center align-items-center">
-                <h4 className="text-26 fw-600 text-white text-capitalize">
-                  {item.name == "Jedda"
-                    ? "Jeddah"
-                    : item.name == "Medina"
-                    ? "Madina"
-                    : item.name}
-                </h4>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </Slider>
+              <Link
+                href={`/destinations/${item?.name?.toLowerCase()}`}
+                className="citiesCard -type-3 d-block h-full rounded-4 "
+              >
+                <div className="citiesCard__image ratio ratio-3:2">
+                  <Image
+                    className="col-12 js-lazy"
+                    src={item?.img}
+                    width={800}
+                    height={600}
+                    quality={100}
+                    priority
+                    alt={`${item?.name} Images`}
+                  />
+                </div>
+                <div className="citiesCard__content d-flex justify-content-center align-items-center">
+                  <h4 className="text-26 fw-600 text-white text-capitalize">
+                    {item.name == "Jedda"
+                      ? "Jeddah"
+                      : item.name == "Medina"
+                      ? "Madina"
+                      : item.name}
+                  </h4>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </Slider>
+      </div>
+
+      {/* Add this CSS to your global styles or component CSS file */}
+      <style jsx>{`
+        @media (max-width: 520px) {
+          .destinations-slider-wrapper .slick-list {
+            overflow: visible;
+            padding-right: 30px;
+          }
+
+          .destinations-slider-wrapper .slick-track {
+            margin-left: 0;
+          }
+        }
+      `}</style>
     </>
   );
 };

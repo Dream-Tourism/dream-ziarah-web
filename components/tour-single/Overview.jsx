@@ -12,27 +12,36 @@ const Overview = ({ tour }) => {
     setShowFullDescription(!showFullDescription);
   };
 
+  // Function to clean description for mobile - removes empty paragraph tags
+  const cleanDescriptionForMobile = (description) => {
+    return description?.replace(/<p>&nbsp;<\/p>/g, "");
+  };
+
   // Calculate the length for displaying half of the description
-  const halfLength = Math.ceil((currentTour?.description?.length || 0) / 2);
+  const cleanedDescription = cleanDescriptionForMobile(
+    currentTour?.description
+  );
+  const halfLength = Math.ceil((cleanedDescription?.length || 0) / 2);
 
   return (
     <>
       <div className="row x-gap-40 y-gap-40">
         <div className="col-12 text-dark-1 text-15">
           <h3 className="text-22 fw-600 pb-15">Overview</h3>
-          {currentTour?.description && (
+          {cleanedDescription && (
             <>
-              <Interweave
-                className="description-content"
-                allowAttributes
-                allowElements
-                disableLineBreaks={true}
-                content={
-                  showFullDescription
-                    ? currentTour.description
-                    : currentTour.description.slice(0, halfLength)
-                }
-              />
+              <div className="description-content mobile-optimized">
+                <Interweave
+                  allowAttributes
+                  allowElements
+                  disableLineBreaks={true}
+                  content={
+                    showFullDescription
+                      ? cleanedDescription
+                      : cleanedDescription.slice(0, halfLength)
+                  }
+                />
+              </div>
 
               <button
                 className="d-block lh-15 text-14 text-blue-1 underline fw-600 mt-5"
@@ -71,6 +80,23 @@ const Overview = ({ tour }) => {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .mobile-optimized {
+          /* Reduce paragraph spacing on mobile */
+        }
+
+        @media (max-width: 768px) {
+          .mobile-optimized :global(p) {
+            margin-bottom: 0.5rem !important;
+          }
+
+          .mobile-optimized :global(p:empty),
+          .mobile-optimized :global(p):has(:global(br):only-child) {
+            display: none !important;
+          }
+        }
+      `}</style>
     </>
   );
 };

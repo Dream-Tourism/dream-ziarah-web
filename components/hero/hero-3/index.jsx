@@ -116,7 +116,7 @@ const index = ({
                     <div className="text-center">
                       <h1
                         className="text-25 lg:text-25 md:text-25  text-white"
-                        data-aos="fade-up"
+                        // data-aos="fade-up"
                         style={{
                           textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                         }}
@@ -166,7 +166,7 @@ const index = ({
                 <div className="text-center">
                   <h1
                     className="text-45 lg:text-40 md:text-30 text-white"
-                    data-aos="fade-up"
+                    // data-aos="fade-up"
                     style={{
                       textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                     }}

@@ -35,6 +35,36 @@ export default function TourGallery({ tour, onDataAvailable }) {
   const scrollMenuRef = useRef(null);
   const sidebarMobileRef = useRef(null);
 
+  // Handle touch events for mobile lightbox
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextImage();
+    }
+    if (isRightSwipe) {
+      prevImage();
+    }
+  };
+
   // Get images from tour_images or fallback to cloudflare_thumbnail_image_url
   const getImageArray = () => {
     if (tour?.tour_images && tour.tour_images.length > 0) {
@@ -499,7 +529,6 @@ export default function TourGallery({ tour, onDataAvailable }) {
           </div>
         </div>
       )}
-
       {/* Mobile Top Menu (appears after scrolling) */}
       {isMobile && (
         <div
@@ -530,7 +559,6 @@ export default function TourGallery({ tour, onDataAvailable }) {
           </h2>
         </div>
       )}
-
       {/* Mobile Bottom Menu (conditionally visible) */}
       {/* Mobile Bottom Menu (conditionally visible) */}
       {isMobile && (
@@ -596,7 +624,6 @@ export default function TourGallery({ tour, onDataAvailable }) {
           </button>
         </div>
       )}
-
       <section className="pt-40 js-pin-container">
         <div className="container">
           {/* Full Width Gallery Section */}
@@ -811,7 +838,6 @@ export default function TourGallery({ tour, onDataAvailable }) {
         </div>
         {/* End container */}
       </section>
-
       {dataAvailable && (
         <>
           <section className="pt-40" ref={importantInfoRef}>
@@ -843,35 +869,207 @@ export default function TourGallery({ tour, onDataAvailable }) {
           )}
         </>
       )}
-
       {/* Add bottom padding for mobile to account for fixed bottom menu */}
       {isMobile && showMobileBottomButton && <div style={{ height: "80px" }} />}
 
       {/* Fullscreen Lightbox */}
       {lightboxOpen && (
-        <div className="lightbox-overlay" onClick={closeLightbox}>
+        <div
+          className="lightbox-overlay"
+          onClick={closeLightbox}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.95)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: isMobile ? "60px 20px" : "40px", // More top/bottom padding on mobile
+          }}
+        >
           <div
             className="lightbox-container"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "relative",
+              width: "100%",
+              height: isMobile ? "60vh" : "100%", // Limit height on mobile
+              maxWidth: isMobile ? "100%" : "90vw",
+              maxHeight: isMobile ? "60vh" : "90vh", // Consistent mobile height limit
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: isMobile ? "12px" : "0", // Rounded corners on mobile
+              overflow: "hidden",
+              backgroundColor: isMobile ? "rgba(0, 0, 0, 0.8)" : "transparent", // Subtle background on mobile
+            }}
           >
-            <button className="lightbox-close" onClick={closeLightbox}>
+            {/* Close button */}
+            <button
+              className="lightbox-close"
+              onClick={closeLightbox}
+              style={{
+                position: "absolute",
+                top: isMobile ? "-50px" : "20px", // Move outside container on mobile
+                right: isMobile ? "10px" : "20px",
+                zIndex: 10001,
+                width: isMobile ? "40px" : "50px",
+                height: isMobile ? "40px" : "50px",
+                borderRadius: "50%",
+                border: "none",
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                color: "#000",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: isMobile ? "16px" : "20px",
+                fontWeight: "bold",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+                e.target.style.transform = "scale(1.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+                e.target.style.transform = "scale(1)";
+              }}
+            >
               <i className="icon icon-close text-20"></i>
             </button>
-            <button className="lightbox-prev" onClick={prevImage}>
-              <i className="icon icon-chevron-left text-20"></i>
-            </button>
-            <button className="lightbox-next" onClick={nextImage}>
-              <i className="icon icon-chevron-right text-20"></i>
-            </button>
-            <div className="lightbox-image-container">
+
+            {/* Previous button */}
+            {tourImages?.length > 1 && (
+              <button
+                className="lightbox-prev"
+                onClick={prevImage}
+                style={{
+                  position: "absolute",
+                  left: isMobile ? "-50px" : "20px", // Move outside container on mobile
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 10001,
+                  width: isMobile ? "40px" : "50px",
+                  height: isMobile ? "40px" : "50px",
+                  borderRadius: "50%",
+                  border: "none",
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  color: "#000",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: isMobile ? "16px" : "20px",
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+                  e.target.style.transform = "translateY(-50%) scale(1.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+                  e.target.style.transform = "translateY(-50%) scale(1)";
+                }}
+              >
+                <i className="icon icon-chevron-left text-20"></i>
+              </button>
+            )}
+
+            {/* Next button */}
+            {tourImages?.length > 1 && (
+              <button
+                className="lightbox-next"
+                onClick={nextImage}
+                style={{
+                  position: "absolute",
+                  right: isMobile ? "-50px" : "20px", // Move outside container on mobile
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 10001,
+                  width: isMobile ? "40px" : "50px",
+                  height: isMobile ? "40px" : "50px",
+                  borderRadius: "50%",
+                  border: "none",
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  color: "#000",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: isMobile ? "16px" : "20px",
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+                  e.target.style.transform = "translateY(-50%) scale(1.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+                  e.target.style.transform = "translateY(-50%) scale(1)";
+                }}
+              >
+                <i className="icon icon-chevron-right text-20"></i>
+              </button>
+            )}
+
+            {/* Image container */}
+            <div
+              className="lightbox-image-container"
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: isMobile ? "12px" : "0",
+                overflow: "hidden",
+              }}
+            >
               <Image
                 src={tourImages?.[currentImageIndex] || "/placeholder.svg"}
                 alt={`${tour?.name || "Tour"} - Image ${currentImageIndex + 1}`}
                 fill
                 className="object-contain"
                 sizes="100vw"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                }}
               />
             </div>
+
+            {/* Image counter for mobile */}
+            {isMobile && tourImages?.length > 1 && (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "20px", // Keep inside container
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  color: "#000",
+                  padding: "6px 12px",
+                  borderRadius: "16px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                }}
+              >
+                {currentImageIndex + 1} / {tourImages.length}
+              </div>
+            )}
           </div>
         </div>
       )}
