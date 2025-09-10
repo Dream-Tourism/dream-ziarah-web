@@ -141,30 +141,29 @@ export default function TourGallery({ tour, onDataAvailable }) {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.body.scrollHeight;
 
       // Show menus after scrolling 300px
-      if (scrollY > 300) {
-        setShowScrollMenus(true);
-      } else {
-        setShowScrollMenus(false);
-      }
+      setShowScrollMenus(scrollY > 300);
 
-      // Handle mobile bottom button visibility based on sidebar position
-      if (isMobile && sidebarMobileRef.current) {
-        const sidebarRect = sidebarMobileRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
+      if (isMobile) {
+        let hideButton = false;
 
-        // Hide button when sidebar is in viewport, show when passed
-        if (sidebarRect.top <= windowHeight && sidebarRect.bottom >= 0) {
-          // Sidebar is in viewport - hide button
-          setShowMobileBottomButton(false);
-        } else {
-          // Sidebar is not in viewport - show button
-          setShowMobileBottomButton(true);
+        // Handle mobile bottom button visibility based on sidebar position
+        if (sidebarMobileRef.current) {
+          const sidebarRect = sidebarMobileRef.current.getBoundingClientRect();
+          if (sidebarRect.top <= windowHeight && sidebarRect.bottom >= 0) {
+            hideButton = true; // sidebar in viewport, hide button
+          }
         }
-      } else if (isMobile) {
-        // If sidebar ref is not available yet, show button by default
-        setShowMobileBottomButton(true);
+
+        // Hide button when reaching bottom of page (footer)
+        if (scrollY + windowHeight >= fullHeight - 50) {
+          hideButton = true;
+        }
+
+        setShowMobileBottomButton(!hideButton);
       }
     };
 
