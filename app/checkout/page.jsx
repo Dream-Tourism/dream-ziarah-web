@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useGetLogoUrlQuery } from "@/features/site-setting/siteSettingApi";
 import { useSelector } from "react-redux";
 import convertCurrency from "@/utils/currency";
+import Loading from "../loading";
+import Link from "next/link";
 
 const CheckoutPage = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -472,15 +474,19 @@ const CheckoutPage = () => {
       >
         <div className="container d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center gap-2">
-            {!logoLoading && logoUrl && (
-              <Image
-                src={logoUrl || "/placeholder.svg"}
-                alt="Logo"
-                width={120}
-                height={120}
-                style={{ objectFit: "contain" }}
-              />
-            )}
+            <Link href="/">
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <Image
+                  style={{ width: "60px", height: "60px" }}
+                  src={logoUrl}
+                  width={128}
+                  height={128}
+                  alt="Hajj, Umrah and Ziarah"
+                />
+              )}
+            </Link>
             <h4 className="mb-0 text-black">Secure Checkout</h4>
           </div>
 

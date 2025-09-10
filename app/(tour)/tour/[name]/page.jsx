@@ -13,6 +13,15 @@ import {
 } from "@/services/tourService";
 import { notFound } from "next/navigation";
 
+function getFullUrl(slug) {
+  const baseUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "https://dreamtourism.it";
+  const fullPath = `${baseUrl}/tour/${slug}`;
+  return fullPath;
+}
+
 const tourMetadatas = {
   //makka
 
@@ -267,6 +276,7 @@ async function getTourData(slug) {
 }
 
 export default async function Tour({ params }) {
+  const { slug } = await params;
   // console.log("Tour page params:", params);
 
   // Fetch all tour data at the server level
@@ -285,7 +295,7 @@ export default async function Tour({ params }) {
   //   tourName: tourData?.name,
   //   allToursCount: allTours?.length,
   // });
-
+  const fullUrl = getFullUrl(slug);
   return (
     <>
       <Wrapper>
@@ -294,6 +304,7 @@ export default async function Tour({ params }) {
           tourData={tourData}
           allTours={allTours}
           tourIds={tourIds}
+          fullUrl={fullUrl}
         >
           <TourHeading params={params} tourData={tourData} />
         </TourSingle>

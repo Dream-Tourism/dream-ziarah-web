@@ -18,8 +18,19 @@ import { toast } from "react-toastify";
 import Itinerary from "./itinerary/index";
 import { useTourBySlug } from "@/hooks/useTourBySlug";
 import { useSingleTour } from "@/hooks/useSingleTour";
+import {
+  EmailIcon,
+  EmailShareButton,
+  FacebookIcon,
+  FacebookMessengerIcon,
+  FacebookMessengerShareButton,
+  FacebookShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from "react-share";
+import Image from "next/image";
 
-const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
+const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
   const dispatch = useDispatch();
   const [makka, setMakka] = useState(false);
   const [jedda, setJedda] = useState(false);
@@ -170,26 +181,99 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours }) => {
           <div className="row y-gap-30">
             {children}
 
-            <div className="col-xl-4">
+            <div className="col-xl-4 d-flex justify-content-end align-items-end">
               <div className="row ">
                 <div className="col-auto btn-group dropup">
                   <button
                     type="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
-                    className="button px-10 py-10 -blue-1 "
+                    className="button px-10 py-10 -blue-1 border border-blue-1"
                   >
                     <i className="icon-share mr-10"></i>
                     Share
                   </button>
+                  <ul className="dropdown-menu">
+                    <li className="d-flex my-2">
+                      <FacebookShareButton className="me-2" url={fullUrl}>
+                        <FacebookIcon size={32} round={true} />
+                      </FacebookShareButton>
+                      <FacebookMessengerShareButton
+                        className="me-2"
+                        url={fullUrl}
+                      >
+                        <FacebookMessengerIcon size={32} round={true} />
+                      </FacebookMessengerShareButton>
+                      <WhatsappShareButton className="me-2" url={fullUrl}>
+                        <WhatsappIcon size={32} round={true} />
+                      </WhatsappShareButton>
+                      <EmailShareButton
+                        className="me-2"
+                        url={fullUrl}
+                        subject="Check out this amazing tour!"
+                        body={`I found this great tour. Check it out here:`}
+                      >
+                        <EmailIcon size={32} round={true} />
+                      </EmailShareButton>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginLeft: "-15px",
+                        }}
+                        onClick={copyToClipboard}
+                      >
+                        {isCopyLoading ? (
+                          <div
+                            style={{
+                              marginLeft: "10px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Loading />
+                          </div>
+                        ) : (
+                          <i
+                            className="icon-copy"
+                            style={{ height: 32, width: 32 }}
+                          ></i>
+                        )}
+                        {copied ? (
+                          <span
+                            style={{
+                              marginLeft: "-15px",
+                            }}
+                          >
+                            copied!
+                          </span>
+                        ) : (
+                          <>
+                            {!isCopyLoading && (
+                              <Image
+                                width={40}
+                                height={40}
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                                alt="images"
+                                src="https://imagedelivery.net/dIKhvGtesTiRSxhQ2oKWkA/80bd75f3-6ddb-4c93-1acf-7b4fb358f200/public"
+                              />
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </li>
+                  </ul>
                 </div>
 
-                <div className="col-auto">
+                {/* <div className="col-auto">
                   <button className="button px-10 py-10 -blue-1 bg-light-2">
                     <i className="icon-heart mr-10"></i>
                     Save
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

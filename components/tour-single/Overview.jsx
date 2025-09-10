@@ -82,18 +82,22 @@ const Overview = ({ tour }) => {
       </div>
 
       <style jsx>{`
-        .mobile-optimized {
-          /* Reduce paragraph spacing on mobile */
-        }
-
+        /* Only apply gap reduction on mobile devices */
         @media (max-width: 768px) {
-          .mobile-optimized :global(p) {
-            margin-bottom: 0.5rem !important;
+          .mobile-gap-fix :global(p:empty),
+          .mobile-gap-fix :global(p):has(:global(&nbsp;):only-child) {
+            display: none !important;
           }
 
-          .mobile-optimized :global(p:empty),
-          .mobile-optimized :global(p):has(:global(br):only-child) {
-            display: none !important;
+          .mobile-gap-fix :global(p) {
+            margin-bottom: 0.75rem !important;
+          }
+        }
+
+        /* Preserve desktop spacing */
+        @media (min-width: 769px) {
+          .mobile-gap-fix :global(p) {
+            margin-bottom: 1rem;
           }
         }
       `}</style>

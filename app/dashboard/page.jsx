@@ -338,7 +338,6 @@ function Dashboard() {
         .dashboard-sidebar {
           background: var(--bs-blue-1, #0d6efd);
           color: white;
-          width: 250px;
           flex-shrink: 0;
           position: relative;
           transition: transform 0.3s ease-in-out;
@@ -356,9 +355,9 @@ function Dashboard() {
 
         .mobile-menu-toggle {
           position: fixed;
-          top: 140px;
+          top: 90px;
           left: 1rem;
-          z-index: 1060;
+          z-index: 1050;
           border-radius: 50px;
           padding: 0.5rem 1rem;
         }
@@ -448,7 +447,6 @@ function Dashboard() {
         /* Large screens */
         @media (min-width: 992px) {
           .dashboard-sidebar {
-            width: 280px;
           }
 
           .dashboard-content {
