@@ -186,7 +186,7 @@ export default function LoginPage() {
                     id="username"
                     name="username"
                     type="text"
-                    placeholder="Enter your username or email"
+                    placeholder="Email or Username"
                     value={formData.username}
                     onChange={handleInputChange}
                     required
@@ -220,7 +220,7 @@ export default function LoginPage() {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="Password"
                       value={formData.password}
                       onChange={handleInputChange}
                       required
