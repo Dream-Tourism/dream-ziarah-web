@@ -9,7 +9,6 @@ import SupportTickets from "@/components/dashboard/SupportTickets";
 import AccountSettings from "@/components/dashboard/AccountSettings";
 import { logoutUserThunk, verifySessionThunk } from "@/features/auth/authSlice";
 import { ProtectedRoute } from "@/components/protected-route";
-import Returns from "@/components/dashboard/Returns";
 import { useTourBookings } from "@/hooks/useTourBookings";
 import { BASE_URL } from "@/constant/constants";
 
@@ -26,18 +25,13 @@ const NAVIGATION_ITEMS = [
     icon: "icon-route",
   },
   {
-    id: "returns",
-    label: "Returns",
-    icon: "icon-route",
-  },
-  {
     id: "support",
     label: "Support",
     icon: "icon-route",
   },
   {
     id: "account",
-    label: "Account Settings",
+    label: "Profile",
     icon: "icon-route",
   },
 ];
@@ -236,8 +230,6 @@ function Dashboard() {
         return <DashboardSummary {...props} />;
       case "tour-orders":
         return <TourOrders {...props} onOrderSelect={setSelectedOrder} />;
-      case "returns":
-        return <Returns />;
       case "support":
         return <SupportTickets />;
       case "account":
@@ -327,12 +319,12 @@ function Dashboard() {
       <style jsx>{`
         .dashboard-container {
           min-height: 100vh;
-          padding-top: 120px;
         }
 
         .dashboard-layout {
           display: flex;
           min-height: calc(100vh - 120px);
+          padding-top: 120px;
         }
 
         .dashboard-sidebar {
@@ -414,6 +406,7 @@ function Dashboard() {
 
           .dashboard-sidebar.sidebar-open {
             transform: translateX(0);
+            width: 250px;
           }
 
           .dashboard-main {
@@ -447,6 +440,7 @@ function Dashboard() {
         /* Large screens */
         @media (min-width: 992px) {
           .dashboard-sidebar {
+            width: 200px;
           }
 
           .dashboard-content {

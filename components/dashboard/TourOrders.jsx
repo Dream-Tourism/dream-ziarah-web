@@ -665,7 +665,7 @@ export default function TourOrders({
                 </label>
                 <input
                   type="date"
-                  className="form-control border-2"
+                  className="form-control border"
                   style={{ borderColor: "#3554d1" }}
                   value={filters.dateFrom}
                   onChange={(e) =>
@@ -680,7 +680,7 @@ export default function TourOrders({
                 </label>
                 <input
                   type="date"
-                  className="form-control border-2"
+                  className="form-control border"
                   style={{ borderColor: "#3554d1" }}
                   value={filters.dateTo}
                   onChange={(e) =>
@@ -695,7 +695,7 @@ export default function TourOrders({
                 </label>
                 <input
                   type="text"
-                  className="form-control border-2"
+                  className="form-control border"
                   style={{ borderColor: "#3554d1" }}
                   placeholder="Search by ID, tour, or customer..."
                   value={filters.searchTerm}
