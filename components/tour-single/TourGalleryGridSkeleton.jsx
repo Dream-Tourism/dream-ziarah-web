@@ -7,19 +7,47 @@ const TourGalleryGridSkeleton = () => {
   const width = useWindowSize();
   const isMobile = width < 768;
 
-  // Slider settings for mobile skeleton
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-    nextArrow: <Arrow type="next" />,
-    prevArrow: <Arrow type="prev" />,
-  };
+  // Custom arrow component for mobile slider skeleton
+  function MobileArrow(props) {
+    let className =
+      props.type === "next"
+        ? "mobile-slider-nav -next"
+        : "mobile-slider-nav -prev";
 
-  // Custom arrow component for slider
+    const arrowStyle = {
+      position: "absolute",
+      top: "50%",
+      transform: "translateY(-50%)",
+      zIndex: 2,
+      width: "40px",
+      height: "40px",
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
+      border: "none",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+      transition: "all 0.2s ease",
+      ...(props.type === "next" ? { right: "15px" } : { left: "15px" }),
+    };
+
+    const char =
+      props.type === "next" ? (
+        <i className="icon icon-chevron-right text-16 text-dark-1"></i>
+      ) : (
+        <i className="icon icon-chevron-left text-16 text-dark-1"></i>
+      );
+
+    return (
+      <button className={className} onClick={props.onClick} style={arrowStyle}>
+        {char}
+      </button>
+    );
+  }
+
+  // Custom arrow component for desktop slider
   function Arrow(props) {
     let className =
       props.type === "next"
@@ -42,6 +70,18 @@ const TourGalleryGridSkeleton = () => {
       </button>
     );
   }
+
+  // Slider settings for mobile skeleton
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    nextArrow: <MobileArrow type="next" />,
+    prevArrow: <MobileArrow type="prev" />,
+  };
 
   return (
     <section className="pt-40 js-pin-container">
@@ -68,51 +108,7 @@ const TourGalleryGridSkeleton = () => {
               </div>
             </div>
           </div>
-        ) : (
-          // Mobile View Skeleton - Matches the mobile grid slider
-          <div className="mobile-slider-skeleton-container">
-            <Slider {...sliderSettings}>
-              {/* First slide */}
-              <div>
-                <div className="mobile-grid-slide-skeleton">
-                  {/* Large image (60% width, full height) */}
-                  <div className="mobile-grid-large">
-                    <div className="skeleton-pulse rounded-4 h-full w-full"></div>
-                  </div>
-                  <div className="mobile-grid-small-container">
-                    {/* Small image top (40% width, 50% height) */}
-                    <div className="mobile-grid-small">
-                      <div className="skeleton-pulse rounded-4 h-full w-full"></div>
-                    </div>
-                    {/* Small image bottom (40% width, 50% height) */}
-                    <div className="mobile-grid-small">
-                      <div className="skeleton-pulse rounded-4 h-full w-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Second slide */}
-              <div>
-                <div className="mobile-grid-slide-skeleton">
-                  {/* Large image (60% width, full height) */}
-                  <div className="mobile-grid-large">
-                    <div className="skeleton-pulse rounded-4 h-full w-full"></div>
-                  </div>
-                  <div className="mobile-grid-small-container">
-                    {/* Small image top (40% width, 50% height) */}
-                    <div className="mobile-grid-small">
-                      <div className="skeleton-pulse rounded-4 h-full w-full"></div>
-                    </div>
-                    {/* Small image bottom (40% width, 50% height) */}
-                    <div className="mobile-grid-small">
-                      <div className="skeleton-pulse rounded-4 h-full w-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Slider>
-          </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

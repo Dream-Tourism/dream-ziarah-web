@@ -139,8 +139,8 @@ export default function TourGallery({ tour, onDataAvailable }) {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
-    nextArrow: <Arrow type="next" />,
-    prevArrow: <Arrow type="prev" />,
+    nextArrow: <MobileArrow type="next" />, // Changed from Arrow to MobileArrow
+    prevArrow: <MobileArrow type="prev" />, // Changed from Arrow to MobileArrow
   };
 
   // Custom arrow component for slider
@@ -167,6 +167,58 @@ export default function TourGallery({ tour, onDataAvailable }) {
     );
   }
 
+  // Custom arrow component for mobile slider
+  function MobileArrow(props) {
+    let className =
+      props.type === "next"
+        ? "mobile-slider-nav -next"
+        : "mobile-slider-nav -prev";
+
+    const arrowStyle = {
+      position: "absolute",
+      top: "35%",
+      transform: "translateY(-50%)",
+      zIndex: 2,
+      width: "40px",
+      height: "40px",
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
+      border: "none",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+      transition: "all 0.2s ease",
+      ...(props.type === "next" ? { right: "15px" } : { left: "15px" }),
+    };
+
+    const char =
+      props.type === "next" ? (
+        <i className="icon icon-chevron-right text-16 text-dark-1"></i>
+      ) : (
+        <i className="icon icon-chevron-left text-16 text-dark-1"></i>
+      );
+
+    return (
+      <button
+        className={className}
+        onClick={props.onClick}
+        style={arrowStyle}
+        onTouchStart={(e) => {
+          e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+          e.target.style.transform = "translateY(-50%) scale(0.95)";
+        }}
+        onTouchEnd={(e) => {
+          e.target.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+          e.target.style.transform = "translateY(-50%) scale(1)";
+        }}
+      >
+        {char}
+      </button>
+    );
+  }
+
   // Handle scroll to show/hide menus
   useEffect(() => {
     const handleScroll = () => {
@@ -175,7 +227,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
       const fullHeight = document.body.scrollHeight;
 
       // Show menus after scrolling 300px
-      setShowScrollMenus(scrollY > 300);
+      setShowScrollMenus(scrollY > 20);
 
       if (isMobile) {
         let hideButton = false;
@@ -710,97 +762,37 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   )}
 
                   {/* Mobile View */}
+                  {/* Mobile View */}
                   {isMobile && (
                     <div className="mobile-slider-container">
-                      {hasSingleImage ? (
-                        // Single image for mobile - no grid, no slider
-                        <div
-                          className="mobile-single-image"
-                          onClick={() => handleImageClick(0)}
-                        >
-                          <Image
-                            src={normalizedImages[0] || "/placeholder.svg"}
-                            alt={`${tour?.name || "Tour"} - Image 1`}
-                            width={800}
-                            height={500}
-                            style={{ width: "100%", height: "auto" }}
-                            sizes="100vw"
-                            className="object-cover rounded-4"
-                            priority={true}
-                            onLoad={handleImageLoad}
-                          />
-                        </div>
-                      ) : (
-                        // Multiple images - use grid slider with 3 images per slide
-                        <Slider {...sliderSettings}>
-                          {mobileImageGroups.map((group, groupIndex) => (
-                            <div key={groupIndex}>
-                              <div className="mobile-grid-slide">
-                                {/* Always 3 images layout (1 large + 2 small) */}
-                                <div
-                                  className="mobile-grid-large"
-                                  onClick={() =>
-                                    handleImageClick(groupIndex * 3)
-                                  }
-                                >
-                                  <Image
-                                    src={group[0] || "/placeholder.svg"}
-                                    alt={`${tour?.name || "Tour"} - Image ${
-                                      groupIndex * 3 + 1
-                                    }`}
-                                    width={600}
-                                    height={600}
-                                    style={{ height: "auto" }}
-                                    sizes="60vw"
-                                    className="object-cover w-full h-full rounded-4"
-                                    onLoad={handleImageLoad}
-                                  />
-                                </div>
-                                <div className="mobile-grid-small-container">
-                                  <div
-                                    className="mobile-grid-small"
-                                    onClick={() =>
-                                      handleImageClick(groupIndex * 3 + 1)
-                                    }
-                                  >
-                                    <Image
-                                      src={group[1] || "/placeholder.svg"}
-                                      alt={`${tour?.name || "Tour"} - Image ${
-                                        groupIndex * 3 + 2
-                                      }`}
-                                      width={300}
-                                      height={200}
-                                      style={{ height: "auto" }}
-                                      sizes="40vw"
-                                      className="object-cover w-full h-full rounded-4"
-                                      onLoad={handleImageLoad}
-                                    />
-                                  </div>
-                                  <div
-                                    className="mobile-grid-small"
-                                    onClick={() =>
-                                      handleImageClick(groupIndex * 3 + 2)
-                                    }
-                                  >
-                                    <Image
-                                      src={group[2] || "/placeholder.svg"}
-                                      alt={`${tour?.name || "Tour"} - Image ${
-                                        groupIndex * 3 + 3
-                                      }`}
-                                      width={300}
-                                      height={200}
-                                      style={{ height: "auto" }}
-                                      sizes="40vw"
-                                      className="object-cover w-full h-full rounded-4"
-                                      onLoad={handleImageLoad}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
+                      <Slider
+                        {...sliderSettings}
+                        beforeChange={(oldIndex, newIndex) => {
+                          // Optional: track current slide if needed
+                        }}
+                      >
+                        {normalizedImages.map((image, index) => (
+                          <div key={index}>
+                            <div
+                              className="mobile-slide-single"
+                              onClick={() => handleImageClick(index)}
+                            >
+                              <Image
+                                src={image || "/placeholder.svg"}
+                                alt={`${tour?.name || "Tour"} - Image ${
+                                  index + 1
+                                }`}
+                                width={800}
+                                height={500}
+                                style={{ width: "100%" }}
+                                sizes="100vw"
+                                className="object-cover w-full rounded-4"
+                                onLoad={handleImageLoad}
+                              />
                             </div>
-                          ))}
-                        </Slider>
-                      )}
+                          </div>
+                        ))}
+                      </Slider>
                     </div>
                   )}
                 </>
@@ -1028,25 +1020,19 @@ export default function TourGallery({ tour, onDataAvailable }) {
               className="lightbox-image-container"
               style={{
                 position: "relative",
-                width: "100%",
                 height: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                borderRadius: isMobile ? "12px" : "0",
                 overflow: "hidden",
               }}
             >
               <Image
                 src={tourImages?.[currentImageIndex] || "/placeholder.svg"}
                 alt={`${tour?.name || "Tour"} - Image ${currentImageIndex + 1}`}
-                fill
+                width={800}
+                height={800}
                 className="object-contain"
-                sizes="100vw"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                }}
               />
             </div>
 

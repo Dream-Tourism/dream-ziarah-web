@@ -125,7 +125,7 @@ const index = ({
                       </h1>
                       <p
                         className="text-white text-12 mt-5"
-                        data-aos="fade-up"
+                        // data-aos="fade-up"
                         data-aos-delay="100"
                         style={{
                           textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
@@ -175,7 +175,7 @@ const index = ({
                   </h1>
                   <p
                     className="text-white mt-5"
-                    data-aos="fade-up"
+                    // data-aos="fade-up"
                     data-aos-delay="100"
                     style={{
                       textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
@@ -190,7 +190,7 @@ const index = ({
           <div className="container">
             <div
               className="mainSearch-wrap bg-white shadow-1"
-              data-aos="fade-up"
+              // data-aos="fade-up"
               data-aos-delay="200"
             >
               <MainFilterSearchBox />
