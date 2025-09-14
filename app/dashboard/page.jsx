@@ -126,6 +126,10 @@ function Dashboard() {
     error: bookingsError,
     updateBookingStatus,
     refreshBookings,
+    changePage,
+    currentPage,
+    pageSize,
+    changePageSize,
   } = useTourBookings(user?.traveller_id);
 
   // console.log("bookingData", bookingData);
@@ -229,7 +233,17 @@ function Dashboard() {
       case "dashboard":
         return <DashboardSummary {...props} />;
       case "tour-orders":
-        return <TourOrders {...props} onOrderSelect={setSelectedOrder} />;
+        return (
+          <TourOrders
+            {...props}
+            onOrderSelect={setSelectedOrder}
+            // Add these pagination props
+            onPageChange={changePage}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageSizeChange={changePageSize}
+          />
+        );
       case "support":
         return <SupportTickets />;
       case "account":

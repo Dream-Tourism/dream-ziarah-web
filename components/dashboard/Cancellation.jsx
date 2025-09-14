@@ -1,5 +1,5 @@
 import { BASE_URL } from "@/constant/constants";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CancellationModal({ order, onClose }) {
   const [formData, setFormData] = useState({
@@ -8,6 +8,50 @@ export default function CancellationModal({ order, onClose }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [refundPolicies, setRefundPolicies] = useState([]);
+  const [policiesLoading, setPoliciesLoading] = useState(true);
+  const [policiesError, setPoliciesError] = useState("");
+
+  // Fetch refund policies when modal opens
+  useEffect(() => {
+    const fetchRefundPolicies = async () => {
+      if (!order?.tour_id) {
+        setPoliciesError("Tour ID not available");
+        setPoliciesLoading(false);
+        return;
+      }
+
+      try {
+        setPoliciesLoading(true);
+        setPoliciesError("");
+
+        const response = await fetch(
+          `${BASE_URL}/tour_booking/api/v1/tour_booking/checking_cancellation_policies/${order.originalId}/`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch refund policies");
+        }
+
+        const data = await response.json();
+        // Assuming the API returns an array of policies or an object with policies
+        setRefundPolicies(data.policies || data || []);
+      } catch (err) {
+        console.error("Error fetching refund policies:", err);
+        setPoliciesError(err.message || "Failed to load refund policies");
+      } finally {
+        setPoliciesLoading(false);
+      }
+    };
+
+    fetchRefundPolicies();
+  }, [order?.tour_id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -108,7 +152,7 @@ export default function CancellationModal({ order, onClose }) {
                           {order.tourName}
                         </div>
                         <small className="text-muted">
-                          {order.participants} travelers •{" "}
+                          {order.participants} travelers â€¢{" "}
                           {new Date(order.selectedDate).toLocaleDateString()}
                         </small>
                       </div>
@@ -193,6 +237,64 @@ export default function CancellationModal({ order, onClose }) {
                         retrieve your order once it is cancelled.
                       </li>
                     </ol>
+                  </div>
+                </div>
+              </div>
+
+              {/* Refund Policies */}
+              <div className="mb-4">
+                <label className="form-label fw-semibold">
+                  Refund Policies
+                </label>
+                <div className="card bg-light border">
+                  <div className="card-body">
+                    {policiesLoading ? (
+                      <div className="d-flex align-items-center">
+                        <div
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <span className="small text-muted">
+                          Loading refund policies...
+                        </span>
+                      </div>
+                    ) : policiesError ? (
+                      <div className="alert alert-warning small mb-0">
+                        <i className="icon-alert-triangle me-2"></i>
+                        {policiesError}
+                      </div>
+                    ) : refundPolicies.length > 0 ? (
+                      <div>
+                        {Array.isArray(refundPolicies) ? (
+                          <ol className="small mb-0">
+                            {refundPolicies.map((policy, index) => (
+                              <li key={index} className="mb-2">
+                                {typeof policy === "string"
+                                  ? policy
+                                  : policy.description ||
+                                    policy.text ||
+                                    JSON.stringify(policy)}
+                              </li>
+                            ))}
+                          </ol>
+                        ) : (
+                          <div className="small">
+                            {typeof refundPolicies === "string"
+                              ? refundPolicies
+                              : refundPolicies.description ||
+                                refundPolicies.text ||
+                                "Refund policies will be applied according to the terms and conditions."}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="small text-muted">
+                        No specific refund policies available. Standard terms
+                        and conditions apply.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
