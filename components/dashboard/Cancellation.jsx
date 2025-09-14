@@ -8,9 +8,10 @@ export default function CancellationModal({ order, onClose }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [refundPolicies, setRefundPolicies] = useState([]);
+  const [refundPolicies, setRefundPolicies] = useState(null);
   const [policiesLoading, setPoliciesLoading] = useState(true);
   const [policiesError, setPoliciesError] = useState("");
+  const [showFullPolicies, setShowFullPolicies] = useState(false);
 
   // Fetch refund policies when modal opens
   useEffect(() => {
@@ -40,8 +41,13 @@ export default function CancellationModal({ order, onClose }) {
         }
 
         const data = await response.json();
-        // Assuming the API returns an array of policies or an object with policies
-        setRefundPolicies(data.policies || data || []);
+        if (data?.message) {
+          // Handle case when no refund policies are found
+          setPoliciesError(data.message); // show message in alert UI
+          setRefundPolicies(null); // clear any old policies
+        } else {
+          setRefundPolicies(data); // normal case
+        }
       } catch (err) {
         console.error("Error fetching refund policies:", err);
         setPoliciesError(err.message || "Failed to load refund policies");
@@ -87,7 +93,7 @@ export default function CancellationModal({ order, onClose }) {
         };
       } else {
         cancellationData = {
-          cancellation_reason: formData.reason, // send predefined reason directly
+          cancellation_reason: formData.reason,
           cancellation_request: true,
         };
       }
@@ -107,13 +113,38 @@ export default function CancellationModal({ order, onClose }) {
         throw new Error("Failed to submit cancellation request");
       }
 
-      // If API success, close modal
       onClose();
     } catch (err) {
       setError(err.message || "Failed to submit cancellation request");
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatDateTime = (date, time) => {
+    const dateObj = new Date(`${date}T${time}`);
+    return dateObj.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const formatCurrentDateTime = (date, time) => {
+    const dateObj = new Date(`${date}T${time}`);
+    return dateObj.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   return (
@@ -152,7 +183,7 @@ export default function CancellationModal({ order, onClose }) {
                           {order.tourName}
                         </div>
                         <small className="text-muted">
-                          {order.participants} travelers â€¢{" "}
+                          {order.participants} travelers •{" "}
                           {new Date(order.selectedDate).toLocaleDateString()}
                         </small>
                       </div>
@@ -261,31 +292,167 @@ export default function CancellationModal({ order, onClose }) {
                         </span>
                       </div>
                     ) : policiesError ? (
-                      <div className="alert alert-warning small mb-0">
-                        <i className="icon-alert-triangle me-2"></i>
-                        {policiesError}
+                      <div className="small text-muted">
+                        {policiesError} — standard cancellation terms apply.
                       </div>
-                    ) : refundPolicies.length > 0 ? (
+                    ) : refundPolicies ? (
                       <div>
-                        {Array.isArray(refundPolicies) ? (
-                          <ol className="small mb-0">
-                            {refundPolicies.map((policy, index) => (
-                              <li key={index} className="mb-2">
-                                {typeof policy === "string"
-                                  ? policy
-                                  : policy.description ||
-                                    policy.text ||
-                                    JSON.stringify(policy)}
-                              </li>
-                            ))}
-                          </ol>
-                        ) : (
-                          <div className="small">
-                            {typeof refundPolicies === "string"
-                              ? refundPolicies
-                              : refundPolicies.description ||
-                                refundPolicies.text ||
-                                "Refund policies will be applied according to the terms and conditions."}
+                        {/* Current Refund Information */}
+                        <div className="mb-3 p-3 bg-success bg-opacity-10 rounded border border-success border-opacity-25">
+                          <div className="d-flex align-items-center mb-2">
+                            <i className="icon-check-circle text-success me-2"></i>
+                            <span className="fw-semibold text-success">
+                              Current Refund Eligibility
+                            </span>
+                          </div>
+                          <p className="mb-2 small">
+                            If you cancel this booking now, you will receive{" "}
+                            <span className="fw-bold text-success fs-6">
+                              {refundPolicies?.refund_percentage}%
+                            </span>{" "}
+                            of your paid amount, which equals{" "}
+                            <span className="fw-bold text-success fs-6">
+                              ${refundPolicies?.refunded_amount}
+                            </span>
+                            .
+                          </p>
+                        </div>
+
+                        {/* Timing Information */}
+                        <div className="mb-3 p-3 bg-info bg-opacity-10 rounded border border-info border-opacity-25">
+                          <div className="d-flex align-items-center mb-2">
+                            <i className="icon-clock text-info me-2"></i>
+                            <span className="fw-semibold text-info">
+                              Booking Schedule
+                            </span>
+                          </div>
+                          <div className="row small">
+                            <div className="col-md-6">
+                              <div className="mb-1">
+                                <span className="text-muted">
+                                  Tour Date & Time:
+                                </span>
+                              </div>
+                              <div className="fw-bold">
+                                {formatDateTime(
+                                  refundPolicies?.all_times?.tour_date,
+                                  refundPolicies?.all_times?.tour_time
+                                )}
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="mb-1">
+                                <span className="text-muted">
+                                  Current Date & Time:
+                                </span>
+                              </div>
+                              <div className="fw-bold">
+                                {formatCurrentDateTime(
+                                  refundPolicies?.all_times?.current_date,
+                                  refundPolicies?.all_times?.current_time
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Read Our Policies Button */}
+                        <div className="text-center mb-3">
+                          <button
+                            type="button"
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={() =>
+                              setShowFullPolicies(!showFullPolicies)
+                            }
+                          >
+                            <i
+                              className={`icon-${
+                                showFullPolicies ? "chevron-up" : "chevron-down"
+                              } me-2`}
+                            ></i>
+                            {showFullPolicies ? "Hide" : "Read Our"} Full Refund
+                            Policies
+                          </button>
+                        </div>
+
+                        {/* Full Policy List - Expandable */}
+                        {showFullPolicies && (
+                          <div className="border-top pt-3">
+                            <h6 className="fw-semibold mb-3 text-primary">
+                              <i className="icon-file-text me-2"></i>
+                              Complete Refund Policy Schedule
+                            </h6>
+                            <div className="table-responsive">
+                              <table className="table table-sm table-hover">
+                                <thead className="table-light">
+                                  <tr>
+                                    <th className="fw-semibold">
+                                      Cancellation Window
+                                    </th>
+                                    <th className="fw-semibold text-end">
+                                      Refund Percentage
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {refundPolicies?.published_policy_list.map(
+                                    (policy, index) => (
+                                      <tr
+                                        key={index}
+                                        className={
+                                          refundPolicies?.refund_percentage ===
+                                          parseFloat(policy?.refund_percentage)
+                                            ? "table-success fw-semibold"
+                                            : ""
+                                        }
+                                      >
+                                        <td className="small">
+                                          {policy?.range.includes(
+                                            "More than"
+                                          ) && (
+                                            <i className="icon-trending-up text-success me-2"></i>
+                                          )}
+                                          {policy?.range}
+                                          {refundPolicies?.refund_percentage ===
+                                            parseFloat(
+                                              policy?.refund_percentage
+                                            ) && (
+                                            <span className="badge bg-success ms-2 small">
+                                              Current
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td className="text-end small">
+                                          <span
+                                            className={
+                                              refundPolicies?.refund_percentage ===
+                                              parseFloat(
+                                                policy?.refund_percentage
+                                              )
+                                                ? "fw-bold text-success"
+                                                : parseFloat(
+                                                    policy?.refund_percentage
+                                                  ) === 0
+                                                ? "text-danger"
+                                                : "text-warning"
+                                            }
+                                          >
+                                            {policy?.refund_percentage}
+                                          </span>
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                            <div className="alert alert-info small mt-3 mb-0">
+                              <i className="icon-info me-2"></i>
+                              <strong>Note:</strong> Refund percentages are
+                              calculated based on the time remaining before your
+                              scheduled tour date. The earlier you cancel, the
+                              higher refund percentage you'll receive.
+                            </div>
                           </div>
                         )}
                       </div>
@@ -308,7 +475,7 @@ export default function CancellationModal({ order, onClose }) {
               )}
 
               {/* Submit Button */}
-              <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-end sticky-bottom bg-white pt-3 mt-4 border-top">
                 <button
                   type="button"
                   className="btn btn-outline-secondary me-2"
