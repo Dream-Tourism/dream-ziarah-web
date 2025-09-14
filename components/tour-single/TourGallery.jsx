@@ -176,7 +176,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
 
     const arrowStyle = {
       position: "absolute",
-      top: "35%",
+      top: "50%",
       transform: "translateY(-50%)",
       zIndex: 2,
       width: "40px",
@@ -765,34 +765,28 @@ export default function TourGallery({ tour, onDataAvailable }) {
                   {/* Mobile View */}
                   {isMobile && (
                     <div className="mobile-slider-container">
-                      <Slider
-                        {...sliderSettings}
-                        beforeChange={(oldIndex, newIndex) => {
-                          // Optional: track current slide if needed
-                        }}
-                      >
-                        {normalizedImages.map((image, index) => (
-                          <div key={index}>
-                            <div
-                              className="mobile-slide-single"
-                              onClick={() => handleImageClick(index)}
-                            >
-                              <Image
-                                src={image || "/placeholder.svg"}
-                                alt={`${tour?.name || "Tour"} - Image ${
-                                  index + 1
-                                }`}
-                                width={800}
-                                height={500}
-                                style={{ width: "100%" }}
-                                sizes="100vw"
-                                className="object-cover w-full rounded-4"
-                                onLoad={handleImageLoad}
-                              />
+                      <div className="mobile-slider-wrapper">
+                        <Slider {...sliderSettings}>
+                          {normalizedImages.map((image, index) => (
+                            <div key={index} className="mobile-slide-wrapper">
+                              <div
+                                className="mobile-slide-single"
+                                onClick={() => handleImageClick(index)}
+                              >
+                                <Image
+                                  src={image || "/placeholder.svg"}
+                                  alt={`${tour?.name || "Tour"} - Image ${
+                                    index + 1
+                                  }`}
+                                  fill
+                                  onLoad={handleImageLoad}
+                                  priority={index === 0}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </Slider>
+                          ))}
+                        </Slider>
+                      </div>
                     </div>
                   )}
                 </>
