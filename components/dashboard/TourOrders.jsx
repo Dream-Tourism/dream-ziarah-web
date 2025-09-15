@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
-import CancellationModal from "./Cancellation"; // Import the separate component
-import ChangeDate from "./ChangeDate"; // Import the ChangeDate modal
+import { useState, useMemo, useEffect } from "react";
+import CancellationModal from "./Cancellation";
+import ChangeDate from "./ChangeDate";
+import PaginationControls from "./PaginationControls";
+import MobileOrderCard from "./MobileOrderCard";
+import FilterTourOrder from "./FilterTourOrder";
 
 export default function TourOrders({
   orderData,
@@ -23,10 +26,10 @@ export default function TourOrders({
     searchTerm: "",
   });
 
-  // console.log("orderData", orderData);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
   const [selectedOrderForDateChange, setSelectedOrderForDateChange] =
     useState(null);
+
   useEffect(() => {
     if (!selectedOrderForCancel && !selectedOrderForDateChange) {
       onRefresh();
@@ -52,257 +55,12 @@ export default function TourOrders({
     );
   }
 
-  //pagination
-
-  const PaginationControls = () => {
-    // First check if we have pagination data
-    if (!orderData) return null;
-
-    const {
-      totalPages = 0,
-      totalElements = 0,
-      page: currentPageFromData = 1,
-    } = orderData;
-
-    // Use the current page from props or fallback to data
-    const activePage = currentPage || currentPageFromData;
-
-    // Calculate pagination info
-    const startItem = totalElements > 0 ? (activePage - 1) * pageSize + 1 : 0;
-    const endItem = Math.min(activePage * pageSize, totalElements);
-
-    // Generate page numbers with ellipsis logic
-    const getPageNumbers = () => {
-      const pages = [];
-      const showPages = 5;
-
-      if (totalPages <= showPages) {
-        for (let i = 1; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        const startPage = Math.max(1, activePage - 2);
-        const endPage = Math.min(totalPages, activePage + 2);
-
-        for (let i = startPage; i <= endPage; i++) {
-          pages.push(i);
-        }
-      }
-      return pages;
-    };
-
-    const handlePageClick = useCallback(
-      (page) => {
-        if (
-          page !== activePage &&
-          page >= 1 &&
-          page <= totalPages &&
-          !loading
-        ) {
-          onPageChange(page);
-        }
-      },
-      [activePage, totalPages, loading, onPageChange]
-    );
-
-    const handlePageSizeChange = useCallback(
-      (newSize) => {
-        if (newSize !== pageSize && !loading) {
-          onPageSizeChange(newSize);
-        }
-      },
-      [pageSize, loading, onPageSizeChange]
-    );
-
-    // Don't render pagination if there's no data or only one page
-    if (!totalElements || totalPages <= 1) {
-      return null;
-    }
-
-    return (
-      <div className="card border-0 shadow-sm mt-4">
-        <div className="card-body">
-          <div className="row align-items-center">
-            {/* Results Info */}
-            <div className="col-12 col-md-6 mb-3 mb-md-0">
-              <div className="d-flex align-items-center flex-wrap">
-                <span className="text-muted me-3">
-                  <i className="icon-info me-2"></i>
-                  Showing <strong>{startItem}</strong> to{" "}
-                  <strong>{endItem}</strong> of <strong>{totalElements}</strong>{" "}
-                  bookings
-                </span>
-
-                {/* Page Size Selector */}
-                <div className="d-flex align-items-center">
-                  <span className="text-muted me-2 small">Show:</span>
-                  <select
-                    className="form-select form-select-sm"
-                    style={{ width: "auto", minWidth: "70px" }}
-                    value={pageSize}
-                    onChange={(e) =>
-                      handlePageSizeChange(Number(e.target.value))
-                    }
-                    disabled={loading}
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Pagination Controls */}
-            <div className="col-12 col-md-6">
-              <div className="d-flex justify-content-md-end justify-content-center align-items-center gap-2">
-                {/* Previous Button */}
-                <button
-                  className="btn btn-outline-primary btn-sm d-flex align-items-center"
-                  onClick={() => handlePageClick(activePage - 1)}
-                  disabled={activePage <= 1 || loading}
-                  style={{ minWidth: "80px" }}
-                >
-                  <i className="icon-arrow-left me-1"></i>
-                  <span className="d-none d-sm-inline">Previous</span>
-                  <span className="d-sm-none">Prev</span>
-                </button>
-
-                {/* Mobile Page Info */}
-                <div className="">
-                  <span className="btn btn-outline-secondary">
-                    {activePage} / {totalPages}
-                  </span>
-                </div>
-
-                {/* Desktop Page Numbers */}
-                <div className="d-none d-sm-flex align-items-center gap-1">
-                  {/* First page if not in range */}
-                  {activePage > 3 && totalPages > 5 && (
-                    <>
-                      <button
-                        className={`btn btn-sm ${
-                          activePage === 1
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => handlePageClick(1)}
-                        disabled={loading}
-                        style={{ minWidth: "35px" }}
-                      >
-                        1
-                      </button>
-                      {activePage > 4 && (
-                        <span className="text-muted">...</span>
-                      )}
-                    </>
-                  )}
-
-                  {/* Page numbers around current page */}
-                  {getPageNumbers().map((pageNum) => (
-                    <button
-                      key={pageNum}
-                      className={`btn btn-sm ${
-                        activePage === pageNum
-                          ? "btn-primary"
-                          : "btn-outline-primary"
-                      }`}
-                      onClick={() => handlePageClick(pageNum)}
-                      disabled={loading}
-                      style={{ minWidth: "35px" }}
-                    >
-                      {pageNum}
-                    </button>
-                  ))}
-
-                  {/* Last page if not in range */}
-                  {activePage < totalPages - 2 && totalPages > 5 && (
-                    <>
-                      {activePage < totalPages - 3 && (
-                        <span className="text-muted">...</span>
-                      )}
-                      <button
-                        className={`btn btn-sm ${
-                          activePage === totalPages
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => handlePageClick(totalPages)}
-                        disabled={loading}
-                        style={{ minWidth: "35px" }}
-                      >
-                        {totalPages}
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                {/* Next Button */}
-                <button
-                  className="btn btn-outline-primary btn-sm d-flex align-items-center"
-                  onClick={() => handlePageClick(activePage + 1)}
-                  disabled={activePage >= totalPages || loading}
-                  style={{ minWidth: "80px" }}
-                >
-                  <span className="d-none d-sm-inline">Next</span>
-                  <span className="d-sm-none">Next</span>
-                  <i className="icon-arrow-right ms-1"></i>
-                </button>
-
-                {/* Quick jump buttons for desktop */}
-                <div className="d-none d-lg-flex ms-2 gap-1">
-                  <button
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => handlePageClick(1)}
-                    disabled={activePage === 1 || loading}
-                    title="First page"
-                    style={{ minWidth: "35px" }}
-                  >
-                    <i className="icon-chevrons-left"></i>
-                  </button>
-                  <button
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => handlePageClick(totalPages)}
-                    disabled={activePage === totalPages || loading}
-                    title="Last page"
-                    style={{ minWidth: "35px" }}
-                  >
-                    <i className="icon-chevrons-right"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Loading Overlay */}
-          {loading && (
-            <div className="position-absolute top-50 start-50 translate-middle">
-              <div className="d-flex align-items-center text-primary">
-                <div
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                >
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-                <span>Loading...</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const statusPriority = { paid: 3, pending: 2, cancelled: 1 };
-
   const filteredOrders = useMemo(() => {
     let filtered = [...orderData.orders];
 
     // Filter by status
     if (filters.status !== "all") {
       if (filters.status === "cancelled") {
-        // For cancelled status, include tours with approved cancellation
         filtered = filtered.filter(
           (order) =>
             order.status === "cancelled" ||
@@ -310,7 +68,6 @@ export default function TourOrders({
               order.cancellation_status.toLowerCase() === "approved")
         );
       } else {
-        // For other statuses, filter normally but exclude approved cancellations
         filtered = filtered.filter(
           (order) =>
             order.status === filters.status &&
@@ -348,16 +105,15 @@ export default function TourOrders({
       );
     }
 
-    // Sort by status priority (paid > pending > cancelled/refunded)
+    // Sort by status priority
     const statusPriorityUpdated = {
       paid: 3,
       pending: 2,
       cancelled: 1,
-      refunded: 1, // Add refunded status with same priority as cancelled
+      refunded: 1,
     };
 
     filtered.sort((a, b) => {
-      // If order has approved cancellation, treat it as cancelled for sorting
       const aStatus =
         a.cancellation_status &&
         a.cancellation_status.toLowerCase() === "approved"
@@ -375,6 +131,7 @@ export default function TourOrders({
     return filtered;
   }, [orderData.orders, filters]);
 
+  // Helper functions
   const getStatusIcon = (status) => {
     switch (status) {
       case "paid":
@@ -405,7 +162,6 @@ export default function TourOrders({
     if (status === "all") return orderData.orders.length;
 
     if (status === "cancelled") {
-      // Count tours with status "cancelled" OR approved cancellation
       return orderData.orders.filter(
         (order) =>
           order.status === "cancelled" ||
@@ -414,7 +170,6 @@ export default function TourOrders({
       ).length;
     }
 
-    // For other statuses, count normally but exclude approved cancellations
     return orderData.orders.filter(
       (order) =>
         order.status === status &&
@@ -433,7 +188,6 @@ export default function TourOrders({
     return order.status === "paid" || order.status === "pending";
   };
 
-  // Check if order is disabled (has approved cancellation)
   const isOrderDisabled = (order) => {
     return (
       order.cancellation_request === false &&
@@ -442,7 +196,6 @@ export default function TourOrders({
     );
   };
 
-  // Helper functions to check request status
   const hasActiveCancellationRequest = (order) => {
     return order.cancellation_request === true;
   };
@@ -452,7 +205,6 @@ export default function TourOrders({
   };
 
   const getDateChangeRequestStatus = (order) => {
-    // If there's an active request, show the status
     if (order.date_change_request === true) {
       return {
         showStatus: true,
@@ -462,7 +214,6 @@ export default function TourOrders({
       };
     }
 
-    // If request is false but has approved/rejected status
     if (
       order.date_change_request === false &&
       order.date_change_request_status
@@ -486,12 +237,10 @@ export default function TourOrders({
       };
     }
 
-    // Default: no status to show (initial state or null status)
     return { showStatus: false };
   };
 
   const getCancellationRequestStatus = (order) => {
-    // If there's an active request, show the status
     if (order.cancellation_request === true) {
       return {
         showStatus: true,
@@ -501,7 +250,6 @@ export default function TourOrders({
       };
     }
 
-    // If request is false but has approved/rejected status
     if (order.cancellation_request === false && order.cancellation_status) {
       const status = order.cancellation_status.toLowerCase();
       return {
@@ -522,10 +270,10 @@ export default function TourOrders({
       };
     }
 
-    // Default: no status to show (initial state or null status)
     return { showStatus: false };
   };
 
+  // Event handlers
   const handleCancelClick = (order, e) => {
     e.stopPropagation();
     if (isOrderDisabled(order)) return;
@@ -544,7 +292,6 @@ export default function TourOrders({
       setSelectedOrderForCancel(null);
     } catch (error) {
       console.error("Cancel request failed:", error);
-      // Error handling is done in the parent component and modal
     }
   };
 
@@ -552,15 +299,13 @@ export default function TourOrders({
     try {
       await onDateChange(dateChangeData);
       setSelectedOrderForDateChange(null);
-      // Optionally refresh the data
       onRefresh();
     } catch (error) {
       console.error("Date change request failed:", error);
-      // Error handling is done in the parent component and modal
     }
   };
 
-  // Component to render cancel button or status
+  // Component to render cancel button or status for desktop view
   const CancelButtonOrStatus = ({ order, isDesktop = false }) => {
     const statusInfo = getCancellationRequestStatus(order);
 
@@ -607,7 +352,7 @@ export default function TourOrders({
     return <span className="text-muted">-</span>;
   };
 
-  // Component to render change date button or status
+  // Component to render change date button or status for desktop view
   const ChangeDateButtonOrStatus = ({ order, isDesktop = false }) => {
     const statusInfo = getDateChangeRequestStatus(order);
 
@@ -662,117 +407,10 @@ export default function TourOrders({
     return <span className="text-muted">-</span>;
   };
 
-  // Mobile Order Card Component
-  const MobileOrderCard = ({ order }) => {
-    const disabled = isOrderDisabled(order);
-
-    return (
-      <div
-        className={`mobile-order-card ${disabled ? "opacity-50" : ""}`}
-        onClick={disabled ? undefined : () => onOrderSelect(order)}
-        style={{
-          cursor: disabled ? "not-allowed" : "pointer",
-          filter: disabled ? "grayscale(50%)" : "none",
-        }}
-      >
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <div>
-            <h6 className="mb-0 fw-bold">{order.id}</h6>
-            <small className="opacity-75">{order.customerName}</small>
-          </div>
-          <div className="d-flex align-items-center gap-2">
-            <span
-              className={`badge bg-${getStatusColor(
-                order.status
-              )} text-dark px-3 py-2`}
-            >
-              <i className={getStatusIcon(order.status)}></i>
-              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-            </span>
-            {!disabled && (
-              <ChangeDateButtonOrStatus order={order} isDesktop={false} />
-            )}
-          </div>
-        </div>
-        <div className="card-body">
-          <div className="row g-3">
-            <div className="col-12">
-              <div className="d-flex align-items-start">
-                <i className="icon-map-pin text-primary me-2 mt-1"></i>
-                <div className="flex-grow-1">
-                  <h6 className="mb-1 fw-semibold" title={order.tourName}>
-                    {order.tourName.length > 50
-                      ? `${order.tourName.substring(0, 50)}...`
-                      : order.tourName}
-                  </h6>
-                  <small className="text-muted">
-                    {order.selectedTime} • {order.guide || "Standard Package"}
-                  </small>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-6">
-              <div className="d-flex align-items-center">
-                <i className="icon-users text-info me-2"></i>
-                <div>
-                  <small className="text-muted d-block">Travelers</small>
-                  <span className="fw-semibold">{order.participants}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-6">
-              <div className="d-flex align-items-center">
-                <i className="icon-calendar text-success me-2"></i>
-                <div>
-                  <small className="text-muted d-block">Tour Date</small>
-                  <span className="fw-semibold">
-                    {new Date(order.selectedDate).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12">
-              <div className="d-flex justify-content-between align-items-center pt-2 border-top">
-                <div className="d-flex align-items-center">
-                  <i className="icon-dollar-sign text-success me-2"></i>
-                  <div>
-                    <span className="fw-bold text-success fs-5">
-                      ${order.totalPrice.toLocaleString()}
-                    </span>
-                    <small className="text-muted ms-1">USD</small>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center gap-2">
-                  {order.status === "pending" && !disabled && (
-                    <small className="text-primary fw-semibold">
-                      <i className="icon-hand me-1"></i>
-                      Tap to pay
-                    </small>
-                  )}
-                  {!disabled && (
-                    <CancelButtonOrStatus order={order} isDesktop={false} />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       <div style={{ marginTop: "20px" }}>
-        {" "}
-        {/* Fixed margin */}
+        {/* Header */}
         <div className="d-flex align-items-center justify-content-between mb-4 flex-wrap">
           <div className="d-flex align-items-center mb-2 mb-md-0">
             <i
@@ -809,174 +447,16 @@ export default function TourOrders({
             )}
           </button>
         </div>
+
         {/* Filters Section */}
-        <div
-          className="card border-0 shadow-sm mb-4"
-          style={{
-            background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-          }}
-        >
-          <div className="card-body">
-            {/* Status Filter Buttons */}
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="form-label text-primary fw-semibold mb-3">
-                  <i className="icon-filter me-2"></i>
-                  Filter by Status
-                </label>
-                <div
-                  className="btn-group w-100 d-flex flex-column flex-sm-row"
-                  role="group"
-                >
-                  <button
-                    type="button"
-                    className={`btn ${
-                      filters.status === "all"
-                        ? "btn-primary"
-                        : "btn-outline-primary"
-                    } position-relative mb-2 mb-sm-0`}
-                    style={{
-                      backgroundColor:
-                        filters.status === "all" ? "#3554d1" : "transparent",
-                      borderColor: "#3554d1",
-                      color: filters.status === "all" ? "white" : "#3554d1",
-                    }}
-                    onClick={() => setFilters({ ...filters, status: "all" })}
-                  >
-                    <i className="icon-list me-2"></i>
-                    All Tours
-                    <span className="badge bg-light text-dark ms-2">
-                      {getStatusCount("all")}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn ${
-                      filters.status === "paid"
-                        ? "btn-success"
-                        : "btn-outline-success"
-                    } position-relative mb-2 mb-sm-0`}
-                    onClick={() => setFilters({ ...filters, status: "paid" })}
-                  >
-                    <i className="icon-check-circle me-2"></i>
-                    Confirmed
-                    <span className="badge bg-light text-dark ms-2">
-                      {getStatusCount("paid")}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn ${
-                      filters.status === "pending"
-                        ? "btn-warning"
-                        : "btn-outline-warning"
-                    } position-relative mb-2 mb-sm-0`}
-                    onClick={() =>
-                      setFilters({ ...filters, status: "pending" })
-                    }
-                  >
-                    <i className="icon-clock me-2"></i>
-                    Pending
-                    <span className="badge bg-light text-dark ms-2">
-                      {getStatusCount("pending")}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn ${
-                      filters.status === "cancelled"
-                        ? "btn-danger"
-                        : "btn-outline-danger"
-                    } position-relative`}
-                    onClick={() =>
-                      setFilters({ ...filters, status: "cancelled" })
-                    }
-                  >
-                    <i className="icon-x-circle me-2"></i>
-                    Cancelled
-                    <span className="badge bg-light text-dark ms-2">
-                      {getStatusCount("cancelled")}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
+        <FilterTourOrder
+          filters={filters}
+          onFiltersChange={setFilters}
+          getStatusCount={getStatusCount}
+          orderDataLength={orderData.orders.length}
+          filteredOrdersLength={filteredOrders.length}
+        />
 
-            {/* Date and Search Filters */}
-            <div className="row g-3">
-              <div className="col-md-4">
-                <label className="form-label text-primary fw-semibold">
-                  <i className="icon-calendar me-2"></i>
-                  From Date
-                </label>
-                <input
-                  type="date"
-                  className="form-control border"
-                  style={{ borderColor: "#3554d1" }}
-                  value={filters.dateFrom}
-                  onChange={(e) =>
-                    setFilters({ ...filters, dateFrom: e.target.value })
-                  }
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label text-primary fw-semibold">
-                  <i className="icon-calendar me-2"></i>
-                  To Date
-                </label>
-                <input
-                  type="date"
-                  className="form-control border"
-                  style={{ borderColor: "#3554d1" }}
-                  value={filters.dateTo}
-                  onChange={(e) =>
-                    setFilters({ ...filters, dateTo: e.target.value })
-                  }
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label text-primary fw-semibold">
-                  <i className="icon-search me-2"></i>
-                  Search Tours
-                </label>
-                <input
-                  type="text"
-                  className="form-control border"
-                  style={{ borderColor: "#3554d1" }}
-                  placeholder="Search by ID, tour, or customer..."
-                  value={filters.searchTerm}
-                  onChange={(e) =>
-                    setFilters({ ...filters, searchTerm: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="row mt-3">
-              <div className="col-12">
-                <button
-                  className="btn btn-outline-secondary me-2 btn-sm"
-                  onClick={() =>
-                    setFilters({
-                      status: "all",
-                      dateFrom: "",
-                      dateTo: "",
-                      searchTerm: "",
-                    })
-                  }
-                >
-                  <i className="icon-refresh-cw me-2"></i>
-                  Clear Filters
-                </button>
-                <span className="text-muted">
-                  <i className="icon-info me-1"></i>
-                  Showing {filteredOrders.length} of {orderData.orders.length}{" "}
-                  bookings
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
         {/* Orders Display */}
         {loading ? (
           <div className="text-center py-5">
@@ -1001,7 +481,20 @@ export default function TourOrders({
             {/* Mobile View - Cards */}
             <div className="d-sm-none">
               {filteredOrders.map((order) => (
-                <MobileOrderCard key={order.id} order={order} />
+                <MobileOrderCard
+                  key={order.id}
+                  order={order}
+                  onOrderSelect={onOrderSelect}
+                  onCancelClick={handleCancelClick}
+                  onDateChangeClick={handleDateChangeClick}
+                  getStatusIcon={getStatusIcon}
+                  getStatusColor={getStatusColor}
+                  getCancellationRequestStatus={getCancellationRequestStatus}
+                  getDateChangeRequestStatus={getDateChangeRequestStatus}
+                  canCancelOrder={canCancelOrder}
+                  canChangeDate={canChangeDate}
+                  isOrderDisabled={isOrderDisabled}
+                />
               ))}
             </div>
 
@@ -1082,7 +575,7 @@ export default function TourOrders({
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredOrders.map((order, index) => {
+                        {filteredOrders.map((order) => {
                           const disabled = isOrderDisabled(order);
 
                           return (
@@ -1252,12 +745,21 @@ export default function TourOrders({
                 </div>
               </div>
             </div>
-            <PaginationControls />
+
+            {/* Pagination */}
+            <PaginationControls
+              orderData={orderData}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              loading={loading}
+              onPageChange={onPageChange}
+              onPageSizeChange={onPageSizeChange}
+            />
           </>
         )}
       </div>
 
-      {/* Cancellation Modal - Only show if no active cancellation request and not disabled */}
+      {/* Modals */}
       {selectedOrderForCancel &&
         !hasActiveCancellationRequest(selectedOrderForCancel) &&
         !isOrderDisabled(selectedOrderForCancel) && (
@@ -1268,7 +770,6 @@ export default function TourOrders({
           />
         )}
 
-      {/* Change Date Modal - Only show if no active date change request and not disabled */}
       {selectedOrderForDateChange &&
         !hasActiveDateChangeRequest(selectedOrderForDateChange) &&
         !isOrderDisabled(selectedOrderForDateChange) && (
