@@ -170,8 +170,8 @@ export default function TourOrders({
                 </button>
 
                 {/* Mobile Page Info */}
-                <div className="d-sm-none">
-                  <span className="btn btn-outline-secondary btn-sm disabled">
+                <div className="">
+                  <span className="btn btn-outline-secondary">
                     {activePage} / {totalPages}
                   </span>
                 </div>
@@ -1025,7 +1025,10 @@ export default function TourOrders({
                 </div>
                 <div className="card-body p-0">
                   <div className="table-responsive">
-                    <table className="table table-hover mb-0">
+                    <table
+                      className="table table-hover mb-0"
+                      style={{ overflow: "hidden" }}
+                    >
                       <thead style={{ backgroundColor: "#f8f9fa" }}>
                         <tr>
                           <th

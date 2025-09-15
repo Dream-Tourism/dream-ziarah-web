@@ -147,6 +147,19 @@ export default function CancellationModal({ order, onClose }) {
     });
   };
 
+  //auto close module after 5 minutes
+  useEffect(() => {
+    // Set up auto-close timer for 5 minutes (300000 milliseconds)
+    const autoCloseTimer = setTimeout(() => {
+      onClose();
+    }, 60 * 1000); // 5 minutes in milliseconds
+
+    // Cleanup timer if component unmounts or modal closes manually
+    return () => {
+      clearTimeout(autoCloseTimer);
+    };
+  }, []);
+
   return (
     <div
       className="modal fade show"
