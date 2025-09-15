@@ -193,7 +193,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
                     <i className="icon-share mr-10"></i>
                     Share
                   </button>
-                  <ul className="dropdown-menu">
+                  <ul className="dropdown-menu dropdown-menu-end">
                     <li className="d-flex my-2">
                       <FacebookShareButton className="me-2" url={fullUrl}>
                         <FacebookIcon size={32} round={true} />

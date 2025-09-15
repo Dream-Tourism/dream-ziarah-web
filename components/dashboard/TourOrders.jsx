@@ -189,10 +189,19 @@ export default function TourOrders({
   };
 
   const isOrderDisabled = (order) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize to start of day
+
+    const orderDate = new Date(order.selectedDate);
+    orderDate.setHours(0, 0, 0, 0); // normalize to start of day
+
+    const isPastDate = orderDate < today;
+
     return (
-      order.cancellation_request === false &&
-      order.cancellation_status &&
-      order.cancellation_status.toLowerCase() === "approved"
+      isPastDate ||
+      (order.cancellation_request === false &&
+        order.cancellation_status &&
+        order.cancellation_status.toLowerCase() === "approved")
     );
   };
 

@@ -11,6 +11,7 @@ import { logoutUserThunk, verifySessionThunk } from "@/features/auth/authSlice";
 import { ProtectedRoute } from "@/components/protected-route";
 import { useTourBookings } from "@/hooks/useTourBookings";
 import { BASE_URL } from "@/constant/constants";
+import Image from "next/image";
 
 // Memoized navigation items to prevent unnecessary re-renders
 const NAVIGATION_ITEMS = [
@@ -50,10 +51,20 @@ const SidebarNavigation = ({
       <div className="p-3 flex-shrink-0">
         <div className="text-center mb-4 pb-3 border-bottom border-white border-opacity-25">
           <div
-            className="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+            className="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overflow-hidden"
             style={{ width: "60px", height: "60px" }}
           >
-            <i className="icon-user" style={{ fontSize: "2rem" }}></i>
+            {user?.cloudflare_image_url ? (
+              <Image
+                src={user.cloudflare_image_url}
+                alt={user?.first_name || "User"}
+                width={60}
+                height={60}
+                className="rounded-circle object-cover"
+              />
+            ) : (
+              <i className="icon-user" style={{ fontSize: "2rem" }}></i>
+            )}
           </div>
           <h6 className="mb-0 opacity-75">Welcome back,</h6>
           <h5 className="fw-bold">{user?.first_name || "Travel Manager"}</h5>
