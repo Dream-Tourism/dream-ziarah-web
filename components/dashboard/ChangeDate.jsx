@@ -5,8 +5,6 @@ import Calendar from "../tour-single/Bookings/Calendar";
 import { Update_ATour_BookingDate } from "@/constant/constants";
 import { useSingleTour } from "@/hooks/useSingleTour";
 
-// API endpoint
-
 const ChangeDate = ({ isOpen, onClose, order, onDateChange }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableDates, setAvailableDates] = useState([]);
@@ -187,7 +185,9 @@ const ChangeDate = ({ isOpen, onClose, order, onDateChange }) => {
                 ></i>
                 <div>
                   <h5 className="modal-title mb-0">Change Booking Date</h5>
-                  <small className="opacity-75">Booking ID: {order?.id}</small>
+                  <small className="opacity-75">
+                    Booking ID: {order?.booking_id}
+                  </small>
                 </div>
               </div>
               <button

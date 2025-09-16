@@ -11,6 +11,9 @@ export const metadata = {
     "Dream Ziarah specializes in providing spiritual journeys with exclusive Ziyarat tours in Makkah & Madina, alongside comprehensive Umrah and Hajj packages. Explore sacred sites with us and embark on a journey of faith and discovery.",
 };
 
+// This will disable caching and fetch fresh data on every request
+export const revalidate = 0;
+
 async function getTourData() {
   try {
     const allTours = await getAllToursServer();

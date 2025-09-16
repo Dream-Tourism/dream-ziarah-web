@@ -2,11 +2,18 @@ import { GET_ALL_TOUR, GET_TOUR_ENTRYID } from "@/constant/constants";
 
 export async function getAllToursServer() {
   try {
-    const response = await fetch(`${GET_ALL_TOUR}`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Add timestamp to prevent caching
+    const timestamp = new Date().getTime();
+    const url = `${GET_ALL_TOUR}?t=${timestamp}`;
+
+    const response = await fetch(url, {
+      cache: "no-store", // This tells Next.js not to cache the response
       headers: {
         "Content-Type": "application/json",
-        // Add any authentication headers if needed
+        // Additional headers to prevent caching
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
       },
     });
 
@@ -49,10 +56,14 @@ export async function getSingleTourServer(tourId) {
   try {
     if (!tourId) return null;
 
-    const response = await fetch(`${GET_TOUR_ENTRYID}/${tourId}/`, {
-      next: { revalidate: 3600 },
+    const timestamp = new Date().getTime();
+    const url = `${GET_TOUR_ENTRYID}/${tourId}/?t=${timestamp}`;
+
+    const response = await fetch(url, {
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
       },
     });
 
