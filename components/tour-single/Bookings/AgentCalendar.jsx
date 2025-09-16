@@ -67,7 +67,87 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
     return `${year}-${month}-${day}`;
   };
 
-  // console.log("selectedTime", availableTimes);
+  // Helper function to convert 12-hour time to 24-hour time for comparison
+  const convertTo24Hour = (time12h) => {
+    const [time, modifier] = time12h.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (hours === "12") {
+      hours = "00";
+    }
+
+    if (modifier === "PM" && hours !== "12") {
+      hours = String(parseInt(hours, 10) + 12); // convert back to string
+    }
+
+    // Ensure hours is a string before using padStart
+    hours = hours.toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  };
+
+  // Helper function to get current time plus 4 hours
+  const getCurrentTimePlus4Hours = () => {
+    const now = new Date();
+    const plus4Hours = new Date(now.getTime() + 4 * 60 * 60 * 1000);
+    return plus4Hours.getHours() * 100 + plus4Hours.getMinutes();
+  };
+
+  // Helper function to convert time string to minutes for comparison
+  const timeToMinutes = (timeStr) => {
+    const time24 = convertTo24Hour(timeStr);
+    const [hours, minutes] = time24.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  // Helper function to filter times based on 4-hour advance requirement
+  const filterAvailableTimes = (times, selectedDate) => {
+    if (!times || times.length === 0) return [];
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const compareDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate()
+    );
+
+    // If selected date is not today, return all times
+    if (compareDate.getTime() !== today.getTime()) {
+      return times;
+    }
+
+    // If selected date is today, filter times that are at least 4 hours from now
+    const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+    const minRequiredTime = currentTimeMinutes + 4 * 60; // Add 4 hours
+
+    return times.filter((timeStr) => {
+      const timeMinutes = timeToMinutes(timeStr);
+      return timeMinutes >= minRequiredTime;
+    });
+  };
+
+  // Helper function to check if a date should be disabled
+  const isDateDisabled = (date, availableTimes) => {
+    if (!availableTimes || availableTimes.length === 0) return true;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const compareDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+
+    // If it's not today, don't disable
+    if (compareDate.getTime() !== today.getTime()) {
+      return false;
+    }
+
+    // If it's today, check if any times are available after 4 hours from now
+    const filteredTimes = filterAvailableTimes(availableTimes, date);
+    return filteredTimes.length === 0;
+  };
 
   // Get unique tour types
   const getUniqueTourTypes = () => {
@@ -111,10 +191,17 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
       );
 
       if (matchingOption) {
-        setAvailableTimes(matchingOption.available_times || []);
-        setAvailableDates(
-          matchingOption.available_dates?.map((date) => new Date(date)) || []
+        const rawTimes = matchingOption.available_times || [];
+        const rawDates =
+          matchingOption.available_dates?.map((date) => new Date(date)) || [];
+
+        // Filter out dates that have no available times after 4-hour rule
+        const validDates = rawDates.filter(
+          (date) => !isDateDisabled(date, rawTimes)
         );
+
+        setAvailableTimes(rawTimes);
+        setAvailableDates(validDates);
       } else {
         setAvailableTimes([]);
         setAvailableDates([]);
@@ -127,6 +214,12 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
       setBookingData(null);
     }
   }, [selectedTourType, participantCount, priceList]);
+
+  // Update filtered times when selected date changes
+  const getFilteredTimesForSelectedDate = () => {
+    if (!selectedDate || !availableTimes) return [];
+    return filterAvailableTimes(availableTimes, selectedDate);
+  };
 
   // Scroll when calendar opens on desktop
   useEffect(() => {
@@ -201,6 +294,9 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
       // Reset booking availability when date changes
       setBookingAvailable(false);
       setBookingData(null);
+      // Reset selected time when date changes since available times might change
+      setSelectedTime("");
+      setDropDownTime("00:00");
     }
   };
 
@@ -359,7 +455,8 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
     }
   };
 
-  // console.log("bookingdetails", booking);
+  // Get filtered times for the selected date
+  const filteredTimes = getFilteredTimesForSelectedDate();
 
   const currentPriceOption = getCurrentPriceOption();
   const totalPrice = calculateTotalPrice();
@@ -496,16 +593,41 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
           )}
         </div>
 
-        {/* Time Selection - Only show if there are available times */}
-        {availableTimes.length > 0 && (
+        {/* Time Selection - Only show if there are available times for selected date */}
+        {selectedDate && filteredTimes.length > 0 && (
           <CustomDropdown
             label="Select Time"
             icon="icon-twitter"
             value={dropDownTime}
-            options={availableTimes}
+            options={filteredTimes}
             onChange={handleTimeChange}
             hasError={errors.time}
           />
+        )}
+
+        {/* Show message if no times available for selected date */}
+        {selectedDate && filteredTimes.length === 0 && (
+          <div className="mb-3">
+            <div
+              className="form-control d-flex align-items-center bg-light rounded"
+              style={{
+                padding: "12px 16px",
+                height: "48px",
+                width: "100%",
+                border: "1px solid #e0e0e0",
+                color: "#6c757d",
+                cursor: "not-allowed",
+              }}
+            >
+              <i className="icon-twitter text-14 me-2" />
+              <span
+                className="flex-grow-1"
+                style={{ fontSize: isMobile ? "14px" : "16px" }}
+              >
+                No times available for selected date (4hr advance required)
+              </span>
+            </div>
+          </div>
         )}
 
         {/* Price Display */}
@@ -549,7 +671,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
             isCheckingAvailability ||
             !currentPriceOption ||
             availableDates.length === 0 ||
-            availableTimes.length === 0
+            (selectedDate && filteredTimes.length === 0)
           }
         >
           {availabilityMessage}
