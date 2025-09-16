@@ -160,6 +160,9 @@ export default function CancellationModal({ order, onClose }) {
     };
   }, []);
 
+  // Check if user is eligible for cancellation
+  const isEligibleForCancellation = refundPolicies?.refund_eligible !== false;
+
   return (
     <div
       className="modal fade show"
@@ -213,7 +216,7 @@ export default function CancellationModal({ order, onClose }) {
                             value={formData.reason}
                             onChange={handleInputChange}
                             required
-                            disabled={loading}
+                            disabled={loading || !isEligibleForCancellation}
                           >
                             <option value="">Select a Reason</option>
                             <option value="weather_conditions">
@@ -257,7 +260,7 @@ export default function CancellationModal({ order, onClose }) {
                     value={formData.additionalDetails}
                     onChange={handleInputChange}
                     placeholder="Please specify your reason for cancellation..."
-                    disabled={loading}
+                    disabled={loading || !isEligibleForCancellation}
                     required
                   />
                 </div>
@@ -310,26 +313,67 @@ export default function CancellationModal({ order, onClose }) {
                       </div>
                     ) : refundPolicies ? (
                       <div>
-                        {/* Current Refund Information */}
-                        <div className="mb-3 p-3 bg-success bg-opacity-10 rounded border border-success border-opacity-25">
-                          <div className="d-flex align-items-center mb-2">
-                            <i className="icon-check-circle text-success me-2"></i>
-                            <span className="fw-semibold text-success">
-                              Current Refund Eligibility
-                            </span>
+                        {/* Cancellation Not Eligible Warning */}
+                        {!isEligibleForCancellation && (
+                          <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
+                            <div className="d-flex align-items-center mb-2">
+                              <i className="icon-x-circle text-danger me-2"></i>
+                              <span className="fw-semibold text-danger">
+                                Cancellation Not Available
+                              </span>
+                            </div>
+                            <p className="mb-2 small text-danger">
+                              Unfortunately, you cannot cancel this tour booking
+                              as it falls outside our cancellation policy
+                              timeframe. According to our policies, no refund is
+                              available for cancellations made at this time.
+                            </p>
+                            <p className="mb-0 small text-muted">
+                              Please contact our customer service team if you
+                              have any questions or need assistance with your
+                              booking.
+                            </p>
                           </div>
-                          <p className="mb-2 small">
-                            If you cancel this booking now, you will receive{" "}
-                            <span className="fw-bold text-success fs-6">
-                              {refundPolicies?.refund_percentage}%
-                            </span>{" "}
-                            of your paid amount, which equals{" "}
-                            <span className="fw-bold text-success fs-6">
-                              ${refundPolicies?.refunded_amount}
-                            </span>
-                            .
-                          </p>
-                        </div>
+                        )}
+
+                        {/* Current Refund Information - Only show if eligible */}
+                        {isEligibleForCancellation ? (
+                          <div className="mb-3 p-3 bg-success bg-opacity-10 rounded border border-success border-opacity-25">
+                            <div className="d-flex align-items-center mb-2">
+                              <i className="icon-check-circle text-success me-2"></i>
+                              <span className="fw-semibold text-success">
+                                Current Refund Eligibility
+                              </span>
+                            </div>
+                            <p className="mb-2 small">
+                              If you cancel this booking now, you will receive{" "}
+                              <span className="fw-bold text-success fs-6">
+                                {refundPolicies?.refund_percentage}%
+                              </span>{" "}
+                              of your paid amount, which equals{" "}
+                              <span className="fw-bold text-success fs-6">
+                                ${refundPolicies?.refunded_amount}
+                              </span>
+                              .
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
+                            <div className="d-flex align-items-center mb-2">
+                              <i className="icon-x-circle text-danger me-2"></i>
+                              <span className="fw-semibold text-danger">
+                                No Refund Available
+                              </span>
+                            </div>
+                            <p className="mb-2 small">
+                              Current refund eligibility:{" "}
+                              <span className="fw-bold text-danger fs-6">
+                                {refundPolicies?.refund_percentage}%
+                              </span>{" "}
+                              (${refundPolicies?.refunded_amount})
+                            </p>
+                          </div>
+                        )}
 
                         {/* Timing Information */}
                         <div className="mb-3 p-3 bg-info bg-opacity-10 rounded border border-info border-opacity-25">
@@ -487,7 +531,7 @@ export default function CancellationModal({ order, onClose }) {
                 </div>
               )}
 
-              {/* Submit Button */}
+              {/* Submit Button - Only show if eligible for cancellation */}
               <div className="d-flex justify-content-end sticky-bottom bg-white pt-3 mt-4 border-top">
                 <button
                   type="button"
@@ -495,28 +539,33 @@ export default function CancellationModal({ order, onClose }) {
                   onClick={onClose}
                   disabled={loading}
                 >
-                  Cancel
+                  {isEligibleForCancellation ? "Cancel" : "Close"}
                 </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading || !formData.reason.trim()}
-                  style={{ backgroundColor: "#6c757d", borderColor: "#6c757d" }}
-                >
-                  {loading ? (
-                    <>
-                      <div
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </div>
-                      Processing...
-                    </>
-                  ) : (
-                    "SUBMIT"
-                  )}
-                </button>
+                {isEligibleForCancellation && (
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading || !formData.reason.trim()}
+                    style={{
+                      backgroundColor: "#6c757d",
+                      borderColor: "#6c757d",
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <div
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                        Processing...
+                      </>
+                    ) : (
+                      "SUBMIT"
+                    )}
+                  </button>
+                )}
               </div>
             </form>
           </div>
