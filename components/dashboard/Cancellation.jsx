@@ -161,7 +161,9 @@ export default function CancellationModal({ order, onClose }) {
   }, []);
 
   // Check if user is eligible for cancellation
-  const isEligibleForCancellation = refundPolicies?.refund_eligible !== false;
+  const isEligibleForCancellation =
+    refundPolicies?.refund_eligible !== false &&
+    refundPolicies?.original_remaining_times?.original_remaining_days > 0;
 
   return (
     <div
@@ -324,8 +326,11 @@ export default function CancellationModal({ order, onClose }) {
                             </div>
                             <p className="mb-2 small text-danger">
                               Unfortunately, you cannot cancel this tour booking
-                              as it falls outside our cancellation policy
-                              timeframe. According to our policies, no refund is
+                              {refundPolicies?.original_remaining_times
+                                ?.original_remaining_days === 0
+                                ? " as the tour is scheduled for today or has already passed"
+                                : " as it falls outside our cancellation policy timeframe"}
+                              . According to our policies, no refund is
                               available for cancellations made at this time.
                             </p>
                             <p className="mb-0 small text-muted">
@@ -358,21 +363,24 @@ export default function CancellationModal({ order, onClose }) {
                             </p>
                           </div>
                         ) : (
-                          <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
-                            <div className="d-flex align-items-center mb-2">
-                              <i className="icon-x-circle text-danger me-2"></i>
-                              <span className="fw-semibold text-danger">
-                                No Refund Available
-                              </span>
+                          refundPolicies?.original_remaining_times
+                            ?.original_remaining_days > 0 && (
+                            <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
+                              <div className="d-flex align-items-center mb-2">
+                                <i className="icon-x-circle text-danger me-2"></i>
+                                <span className="fw-semibold text-danger">
+                                  No Refund Available
+                                </span>
+                              </div>
+                              <p className="mb-2 small">
+                                Current refund eligibility:{" "}
+                                <span className="fw-bold text-danger fs-6">
+                                  {refundPolicies?.refund_percentage}%
+                                </span>{" "}
+                                (${refundPolicies?.refunded_amount})
+                              </p>
                             </div>
-                            <p className="mb-2 small">
-                              Current refund eligibility:{" "}
-                              <span className="fw-bold text-danger fs-6">
-                                {refundPolicies?.refund_percentage}%
-                              </span>{" "}
-                              (${refundPolicies?.refunded_amount})
-                            </p>
-                          </div>
+                          )
                         )}
 
                         {/* Timing Information */}

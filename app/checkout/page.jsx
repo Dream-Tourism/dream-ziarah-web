@@ -185,18 +185,48 @@ const CheckoutPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const getTimeRange = () => {
-    if (!bookingData) return "";
+const getTimeRange = () => {
+  if (!bookingData) return "";
 
-    const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
-    const durationStr = bookingData.duration; // e.g. "4 hours"
+  const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
+  const durationStr = bookingData.duration; // e.g. "4 hours"
 
+  // Handle cases where selectedTime is null, undefined, or empty
+  if (!startTimeStr || typeof startTimeStr !== 'string' || startTimeStr.trim() === '') {
+    return "Time not selected";
+  }
+
+  // Handle cases where duration is null, undefined, or empty
+  if (!durationStr || typeof durationStr !== 'string' || durationStr.trim() === '') {
+    return startTimeStr; // Just return the start time if no duration
+  }
+
+  try {
     // Parse duration number
-    const hoursToAdd = parseInt(durationStr);
+    const durationMatch = durationStr.match(/(\d+)/);
+    if (!durationMatch) {
+      return startTimeStr; // Just return start time if duration can't be parsed
+    }
+    const hoursToAdd = parseInt(durationMatch[1]);
 
     // Parse start time
-    const [time, modifier] = startTimeStr.split(" "); // ["08:30", "am"]
-    let [hours, minutes] = time.split(":").map(Number);
+    const timeParts = startTimeStr.split(" ");
+    if (timeParts.length < 2) {
+      return startTimeStr; // Return as-is if format is unexpected
+    }
+
+    const [time, modifier] = timeParts; // ["08:30", "am"]
+    const timeSplit = time.split(":");
+    if (timeSplit.length < 2) {
+      return startTimeStr; // Return as-is if time format is unexpected
+    }
+
+    let [hours, minutes] = timeSplit.map(Number);
+
+    // Validate parsed numbers
+    if (isNaN(hours) || isNaN(minutes)) {
+      return startTimeStr; // Return as-is if parsing failed
+    }
 
     if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
     if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
@@ -216,7 +246,11 @@ const CheckoutPage = () => {
     const endTimeStr = `${formattedEndHours}:${endMinutes} ${endModifier}`;
 
     return `${startTimeStr} - ${endTimeStr}`;
-  };
+  } catch (error) {
+    console.error("Error calculating time range:", error);
+    return startTimeStr || "Time not available"; // Fallback
+  }
+};
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -719,9 +753,12 @@ const CheckoutPage = () => {
                         style={{ fontSize: "14px" }}
                       ></i>
                       <span style={{ fontSize: "14px" }}>
-                        {formatDate(bookingData.selectedDate)} at{" "}
-                        {getTimeRange()}
-                      </span>
+    {formatDate(bookingData.selectedDate)}
+    {bookingData.selectedTime && getTimeRange() !== "No Time For this Selection" 
+      ? ` at ${getTimeRange()}` 
+      : ""
+    }
+  </span>
                     </div>
                     <div className="d-flex align-items-center mb-2">
                       <i

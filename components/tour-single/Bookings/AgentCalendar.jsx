@@ -129,7 +129,8 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
 
   // Helper function to check if a date should be disabled
   const isDateDisabled = (date, availableTimes) => {
-    if (!availableTimes || availableTimes.length === 0) return true;
+    // If there are no times at all in the tour data, don't disable any dates
+    if (!availableTimes || availableTimes.length === 0) return false;
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -196,9 +197,11 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
           matchingOption.available_dates?.map((date) => new Date(date)) || [];
 
         // Filter out dates that have no available times after 4-hour rule
-        const validDates = rawDates.filter(
-          (date) => !isDateDisabled(date, rawTimes)
-        );
+        // Only if there are times in the data
+        const validDates =
+          rawTimes.length > 0
+            ? rawDates.filter((date) => !isDateDisabled(date, rawTimes))
+            : rawDates;
 
         setAvailableTimes(rawTimes);
         setAvailableDates(validDates);
@@ -219,6 +222,16 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
   const getFilteredTimesForSelectedDate = () => {
     if (!selectedDate || !availableTimes) return [];
     return filterAvailableTimes(availableTimes, selectedDate);
+  };
+
+  // Check if tour has time slots configured
+  const hasTimeSlots = () => {
+    const currentOption = getCurrentPriceOption();
+    return (
+      currentOption &&
+      currentOption.available_times &&
+      currentOption.available_times.length > 0
+    );
   };
 
   // Scroll when calendar opens on desktop
@@ -381,7 +394,8 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
     } else if (!selectedDate) {
       newErrors.date = true;
       errorMsg = "Please select a date";
-    } else if (!selectedTime) {
+    } else if (hasTimeSlots() && !selectedTime) {
+      // Only require time selection if tour has time slots
       newErrors.time = true;
       errorMsg = "Please select a time";
     }
@@ -402,7 +416,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
       tour_details: {
         tour_id: tourData?.id,
         selected_date: formatDateToYYYYMMDD(selectedDate),
-        selected_time: selectedTime,
+        selected_time: hasTimeSlots() ? selectedTime : null, // Only include time if tour has time slots
         total_participants: participantCount,
         total_price: totalPrice,
         guide: selectedTourType?.guide,
@@ -593,8 +607,8 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
           )}
         </div>
 
-        {/* Time Selection - Only show if there are available times for selected date */}
-        {selectedDate && filteredTimes.length > 0 && (
+        {/* Time Selection - Only show if tour has time slots AND there are available times for selected date */}
+        {hasTimeSlots() && selectedDate && filteredTimes.length > 0 && (
           <CustomDropdown
             label="Select Time"
             icon="icon-twitter"
@@ -605,8 +619,8 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
           />
         )}
 
-        {/* Show message if no times available for selected date */}
-        {selectedDate && filteredTimes.length === 0 && (
+        {/* Show message if tour has time slots but no times available for selected date */}
+        {hasTimeSlots() && selectedDate && filteredTimes.length === 0 && (
           <div className="mb-3">
             <div
               className="form-control d-flex align-items-center bg-light rounded"
@@ -671,7 +685,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
             isCheckingAvailability ||
             !currentPriceOption ||
             availableDates.length === 0 ||
-            (selectedDate && filteredTimes.length === 0)
+            (hasTimeSlots() && selectedDate && filteredTimes.length === 0)
           }
         >
           {availabilityMessage}
@@ -701,7 +715,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
             tourId={tourData?.id}
             bookingData={bookingData}
             selectedDate={selectedDate}
-            selectedTime={selectedTime}
+            selectedTime={hasTimeSlots() ? selectedTime : null}
             selectedTourType={selectedTourType}
             participantCount={participantCount}
             totalPrice={totalPrice}
