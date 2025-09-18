@@ -19,12 +19,18 @@ const ToursTaif = dynamic(() => import("@/components/tours/ToursTaif"));
 const ToursForMobile = dynamic(() =>
   import("@/components/tours/ToursForMobile")
 );
+const ToursHajjUmrah = dynamic(() =>
+  import("@/components/tours/ToursHajjUmrah")
+);
+const ToursHajjUmrahForMobile = dynamic(() =>
+  import("@/components/tours/ToursHajjUmrahForMobile")
+);
 const ServicesOverview = dynamic(() =>
   import("@/components/services/ServicesOverview")
 );
 
 const MainHome = ({ allTours }) => {
-  // console.log("All Tour Data in MainHome:", allTours);
+  console.log("All Tour Data in MainHome:", allTours);
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
 
   const [dataAvailable, setDataAvailable] = useState(false);
@@ -35,6 +41,7 @@ const MainHome = ({ allTours }) => {
   const isMobile = width > 768;
 
   const { currentTab } = useSelector((state) => state.hero) || {};
+
   // Function to handle data availability big device
   const handleDataAvailability = (isDataAvailable) => {
     setDataAvailable(isDataAvailable);
@@ -65,6 +72,7 @@ const MainHome = ({ allTours }) => {
       <ServicesOverview />
       {/* End Services Overview */}
 
+      {/* Hajj/Umrah Section for Mobile */}
       {!isMobile && mobileDataAvailable ? (
         <>
           <section className="layout-pt-md layout-pb-md">
@@ -340,10 +348,9 @@ const MainHome = ({ allTours }) => {
 
           {/* End Top Destinations Section */}
         </>
-      ) : (
-        ""
-      )}
+      ) : null}
 
+      {/* Desktop Hajj/Umrah Section */}
       {isMobile && dataAvailable && (
         <>
           <section className="layout-pt-md layout-pb-md ">
@@ -352,10 +359,52 @@ const MainHome = ({ allTours }) => {
                 <div className="col-8 col-lg-auto">
                   <div className="sectionTitle -md ">
                     <h2 className="sectionTitle__title md:text-24">
-                      Ziyarat In Makkah
+                      Book Affordable Umrah and Hajj Deals
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Explore Sacred Ziyarat Places in Makkah
+                      Get Makkah ziyarat package and luxury umrah packages in
+                      Saudi Arabia.
+                    </p>
+                  </div>
+                </div>
+                {/* End .col */}
+
+                {/* <div className="col-4 col-lg-auto">
+                  <Link
+                    href="/tours/?location=Hajj"
+                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                  >
+                    More <div className="icon-arrow-top-right ml-15" />
+                  </Link>
+                </div> */}
+                {/* End .col */}
+              </div>
+
+              <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                <ToursHajjUmrah
+                  filterLocation="HajjUmrah"
+                  allTours={allTours}
+                />
+              </div>
+            </div>
+          </section>
+          {/* End Hajj/Umrah Tours Sections */}
+        </>
+      )}
+
+      {/* Regular Desktop Sections for other tabs */}
+      {isMobile && dataAvailable && currentTab !== "Hajj" && (
+        <>
+          <section className="layout-pt-md layout-pb-md ">
+            <div className="container">
+              <div className="row y-gap-22 justify-between items-start">
+                <div className="col-8 col-lg-auto">
+                  <div className="sectionTitle -md ">
+                    <h2 className="sectionTitle__title md:text-24">
+                      Ziyarat In {currentTab}
+                    </h2>
+                    <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                      Explore Sacred Ziyarat Places in {currentTab}
                     </p>
                   </div>
                 </div>
@@ -363,7 +412,7 @@ const MainHome = ({ allTours }) => {
 
                 <div className="col-4 col-lg-auto">
                   <Link
-                    href="/tours/?location=Makkah"
+                    href={`/tours/?location=${currentTab}`}
                     className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                   >
                     More <div className="icon-arrow-top-right ml-15" />
@@ -373,15 +422,15 @@ const MainHome = ({ allTours }) => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Makkah" allTours={allTours} />
+                <Tours filterLocation={currentTab} allTours={allTours} />
               </div>
             </div>
           </section>
-          {/* End Makka Tours Sections */}
+          {/* End Current Tab Tours Sections */}
         </>
       )}
 
-      {dataAvailable && isMobile && (
+      {dataAvailable && isMobile && currentTab !== "Hajj" && (
         <>
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
