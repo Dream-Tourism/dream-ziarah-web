@@ -19,6 +19,9 @@ const ToursTaif = dynamic(() => import("@/components/tours/ToursTaif"));
 const ToursForMobile = dynamic(() =>
   import("@/components/tours/ToursForMobile")
 );
+const ServicesOverview = dynamic(() =>
+  import("@/components/services/ServicesOverview")
+);
 
 const MainHome = ({ allTours }) => {
   // console.log("All Tour Data in MainHome:", allTours);
@@ -57,6 +60,11 @@ const MainHome = ({ allTours }) => {
         data={data}
       />
       {/* End Hero 3 */}
+
+      {/* Services Overview Section */}
+      <ServicesOverview />
+      {/* End Services Overview */}
+
       {!isMobile && mobileDataAvailable ? (
         <>
           <section className="layout-pt-md layout-pb-md">
