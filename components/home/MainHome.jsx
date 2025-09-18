@@ -78,7 +78,7 @@ const MainHome = ({ allTours }) => {
         <>
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
+              <div className="row justify-center text-center">
                 <div className="col-12">
                   <div className="sectionTitle -md d-flex justify-content-between">
                     <h2 className="sectionTitle__title md:text-24">
@@ -124,8 +124,8 @@ const MainHome = ({ allTours }) => {
           {currentTab !== "Makkah" && mobileTourDataAvailable && (
             <section className="layout-pt-md layout-pb-md ">
               <div className="container">
-                <div className="row y-gap-22 justify-between items-start">
-                  <div className="col-8 col-lg-auto">
+                <div className="row justify-center text-center">
+                  <div className="col-12">
                     <div className="sectionTitle -md ">
                       <h2 className="sectionTitle__title md:text-24">
                         Book Makkah Ziyarat Places List Tour
@@ -158,8 +158,8 @@ const MainHome = ({ allTours }) => {
           {currentTab !== "Madina" && mobileTourDataAvailable && (
             <section className="layout-pt-md layout-pb-md">
               <div className="container">
-                <div className="row y-gap-22 justify-between items-start">
-                  <div className="col-8 col-lg-auto ">
+                <div className="row justify-center text-center">
+                  <div className="col-12">
                     <div className="sectionTitle -md">
                       <h2 className="sectionTitle__title md:text-24">
                         Book Guided Madinah Ziyarat Tour
@@ -193,8 +193,8 @@ const MainHome = ({ allTours }) => {
           {currentTab !== "Jeddah" && mobileTourDataAvailable && (
             <section className="layout-pt-md layout-pb-md">
               <div className="container">
-                <div className="row y-gap-22 justify-between items-start">
-                  <div className="col-8 col-lg-auto">
+                <div className="row justify-center text-center">
+                  <div className="col-12">
                     <div className="sectionTitle -md">
                       <h2 className="sectionTitle__title md:text-24">
                         Book Guided Ziyarat in Jeddah Holy Places
@@ -236,8 +236,8 @@ const MainHome = ({ allTours }) => {
           {currentTab !== "Taif" && mobileTourDataAvailable && (
             <section className="layout-pt-md layout-pb-md">
               <div className="container">
-                <div className="row y-gap-22 justify-between items-start">
-                  <div className="col-8 col-lg-auto">
+                <div className="row justify-center text-center">
+                  <div className="col-12">
                     <div className="sectionTitle -md">
                       <h2 className="sectionTitle__title md:text-24">
                         Book Day Trip Taif Ziyarat Places
@@ -281,7 +281,7 @@ const MainHome = ({ allTours }) => {
               <section className="layout-pt-md layout-pb-md">
                 <div className="container">
                   <div className="row justify-center text-center">
-                    <div className="col-auto">
+                    <div className="col-12">
                       <div className="sectionTitle -md">
                         <h2 className="sectionTitle__title md:text-24">
                           Why Book With Us
@@ -306,7 +306,7 @@ const MainHome = ({ allTours }) => {
               <section className="layout-pt-md layout-pb-md">
                 <div className="container">
                   <div className="row justify-center text-center">
-                    <div className="col-auto">
+                    <div className="col-12">
                       <div className="sectionTitle -md">
                         <h2 className="sectionTitle__title md:text-24">
                           Explore Ziyarat Tours Makkah, Madinah, and Taif
@@ -333,7 +333,7 @@ const MainHome = ({ allTours }) => {
               <section className="layout-pt-md layout-pb-md">
                 <div className="container">
                   <div className="row justify-center text-center">
-                    <div className="col-auto">
+                    <div className="col-12">
                       <div className="sectionTitle -md">
                         <h2 className="sectionTitle__title md:text-24">
                           What Pilgrims Say About Ziyarat Places in Makkah and
@@ -369,8 +369,8 @@ const MainHome = ({ allTours }) => {
           {/* Always show Hajj/Umrah section on desktop */}
           <section className="layout-pt-md layout-pb-md ">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-center">
-                <div className="col-8 col-lg-auto">
+              <div className="row justify-center text-center">
+                <div className="col-12">
                   <div className="sectionTitle -md ">
                     <h2 className="sectionTitle__title md:text-24">
                       Book Affordable Umrah and Hajj Deals
@@ -397,8 +397,8 @@ const MainHome = ({ allTours }) => {
           {/* Always show Makkah section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
-                <div className="col-8 col-lg-auto ">
+              <div className="row justify-center text-center">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       Book Makkah Ziyarat Places List Tour
@@ -423,8 +423,8 @@ const MainHome = ({ allTours }) => {
           {/* Always show Madina section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
-                <div className="col-8 col-lg-auto ">
+              <div className="row justify-center text-center">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       Book Guided Madinah Ziyarat Tour
@@ -449,8 +449,8 @@ const MainHome = ({ allTours }) => {
           {/* Always show Jeddah section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
-                <div className="col-8 col-lg-auto">
+              <div className="row justify-center text-center">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       Book Guided Ziyarat in Jeddah Holy Places
@@ -475,8 +475,8 @@ const MainHome = ({ allTours }) => {
           {/* Always show Taif section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
-                <div className="col-8 col-lg-auto">
+              <div className="row justify-center text-center">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       Book Day Trip Taif Ziyarat Places
@@ -502,7 +502,7 @@ const MainHome = ({ allTours }) => {
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
-                <div className="col-auto">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       Why Book With Us
@@ -528,7 +528,7 @@ const MainHome = ({ allTours }) => {
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
-                <div className="col-auto">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       Explore Ziyarat Tours Makkah, Madinah, and Taif
@@ -556,7 +556,7 @@ const MainHome = ({ allTours }) => {
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
-                <div className="col-auto">
+                <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
                       What Pilgrims Say About Ziyarat Places in Makkah and

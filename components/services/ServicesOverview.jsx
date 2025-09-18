@@ -378,8 +378,8 @@ const ServicesOverview = () => {
   return (
     <section className="layout-pt-md layout-pb-md">
       <div className="container">
-        <div className="row y-gap-22 justify-between items-start">
-          <div className="col-8 col-lg-auto">
+        <div className="row justify-center text-center">
+          <div className="col-12">
             <div className="sectionTitle -md">
               <h2 className="sectionTitle__title md:text-24">
                 Ziyarat Tours,Umrah & Hajj Packages
