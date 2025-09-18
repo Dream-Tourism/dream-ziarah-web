@@ -86,15 +86,6 @@ const MainHome = ({ allTours }) => {
                         ? "Book Affordable Umrah and Hajj Deals"
                         : `Book ${currentTab} Ziyarat Places List Tour`}
                     </h2>
-                    {currentTab !== "Hajj" && (
-                      <Link
-                        href={`/tours/?location=${currentTab}`}
-                        className="button -md -blue-1 bg-blue-1-05 text-blue-1 md:text-13"
-                      >
-                        More{" "}
-                        <div className="icon-arrow-top-right ml-15 md:text-13" />
-                      </Link>
-                    )}
                   </div>
                 </div>
                 {/* End .col */}
@@ -148,15 +139,6 @@ const MainHome = ({ allTours }) => {
                     </div>
                   </div>
                   {/* End .col */}
-
-                  <div className="col-4 col-lg-auto">
-                    <Link
-                      href="/tours/?location=Makkah"
-                      className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                    >
-                      More <div className="icon-arrow-top-right ml-15" />
-                    </Link>
-                  </div>
                   {/* End .col */}
                 </div>
 
@@ -192,14 +174,6 @@ const MainHome = ({ allTours }) => {
                   </div>
                   {/* End .col */}
 
-                  <div className="col-4 col-lg-auto">
-                    <Link
-                      href="/tours/?location=Medina"
-                      className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                    >
-                      More <div className="icon-arrow-top-right ml-15" />
-                    </Link>
-                  </div>
                   {/* End .col */}
                 </div>
 
@@ -235,14 +209,14 @@ const MainHome = ({ allTours }) => {
                   </div>
                   {/* End .col */}
 
-                  <div className="col-4 col-lg-auto">
+                  {/* <div className="col-4 col-lg-auto">
                     <Link
                       href="/tours/?location=Jedda"
                       className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                     >
                       More <div className="icon-arrow-top-right ml-15" />
                     </Link>
-                  </div>
+                  </div> */}
                   {/* End .col */}
                 </div>
 
@@ -278,14 +252,14 @@ const MainHome = ({ allTours }) => {
                   </div>
                   {/* End .col */}
 
-                  <div className="col-4 col-lg-auto">
+                  {/* <div className="col-4 col-lg-auto">
                     <Link
                       href="/tours/?location=Taif"
                       className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                     >
                       More <div className="icon-arrow-top-right ml-15" />
                     </Link>
-                  </div>
+                  </div> */}
                   {/* End .col */}
                 </div>
 
@@ -395,7 +369,7 @@ const MainHome = ({ allTours }) => {
           {/* Always show Hajj/Umrah section on desktop */}
           <section className="layout-pt-md layout-pb-md ">
             <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
+              <div className="row y-gap-22 justify-between items-center">
                 <div className="col-8 col-lg-auto">
                   <div className="sectionTitle -md ">
                     <h2 className="sectionTitle__title md:text-24">
@@ -437,14 +411,6 @@ const MainHome = ({ allTours }) => {
                     </p>
                   </div>
                 </div>
-                <div className="col-4 col-lg-auto">
-                  <Link
-                    href="/tours/?location=Makkah"
-                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                  >
-                    More <div className="icon-arrow-top-right ml-15" />
-                  </Link>
-                </div>
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
@@ -470,14 +436,6 @@ const MainHome = ({ allTours }) => {
                       sites in Saudi Arabia!
                     </p>
                   </div>
-                </div>
-                <div className="col-4 col-lg-auto">
-                  <Link
-                    href="/tours/?location=Medina"
-                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                  >
-                    More <div className="icon-arrow-top-right ml-15" />
-                  </Link>
                 </div>
               </div>
 
@@ -505,14 +463,6 @@ const MainHome = ({ allTours }) => {
                     </p>
                   </div>
                 </div>
-                <div className="col-4 col-lg-auto">
-                  <Link
-                    href="/tours/?location=Jedda"
-                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                  >
-                    More <div className="icon-arrow-top-right ml-15" />
-                  </Link>
-                </div>
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
@@ -538,14 +488,6 @@ const MainHome = ({ allTours }) => {
                       in holy sites in Saudi Arabia!
                     </p>
                   </div>
-                </div>
-                <div className="col-4 col-lg-auto">
-                  <Link
-                    href="/tours/?location=Taif"
-                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                  >
-                    More <div className="icon-arrow-top-right ml-15" />
-                  </Link>
                 </div>
               </div>
 
