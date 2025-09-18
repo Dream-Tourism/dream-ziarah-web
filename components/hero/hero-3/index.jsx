@@ -1,5 +1,4 @@
 "use client";
-import { useGetSliderImagesQuery } from "@/features/image/imageApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import MainFilterSearchBox from "./MainFilterSearchBox";
@@ -15,7 +14,7 @@ const index = ({
   onMobileDataAvailable,
 }) => {
   const width = useWindowSize();
-  const isMobile = width > 768;
+  const isMobile = width < 768;
 
   const { tabs, currentTab } = useSelector((state) => state.hero) || {};
   const dispatch = useDispatch();
@@ -61,7 +60,7 @@ const index = ({
     <CoverSkeleton />
   ) : (
     <>
-      {!isMobile ? (
+      {isMobile ? (
         <section className="masthead__bg bg-dark-5 -type-2 z-2">
           <div className="row">
             <div className="col-12">
@@ -115,13 +114,14 @@ const index = ({
                   <div className="col-xl-9 d-lg-flex flex-column justify-content-center align-items-center mt-10">
                     <div className="text-center">
                       <h1
-                        className="text-25 lg:text-25 md:text-25  text-white"
+                        className="text-20 lg:text-20 md:text-20  text-white"
                         // data-aos="fade-up"
                         style={{
                           textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                         }}
                       >
-                        Book Your Ziyarat <br /> in Makkah & Madina
+                        Book Your Ziyarat <br />
+                        in Makkah and Umrah tour Packages
                       </h1>
                       <p
                         className="text-white text-12 mt-5"
@@ -131,7 +131,8 @@ const index = ({
                           textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                         }}
                       >
-                        Immerse in Spiritual Quests
+                        Find Makkah ziyarat tour and umrah packages with guided
+                        ziyarat tours in Saudi Arabia.
                       </p>
                     </div>
                     {/* End hero title */}
@@ -171,7 +172,8 @@ const index = ({
                       textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                     }}
                   >
-                    Book Your Ziyarat <br /> in Makkah & Madina
+                    Book Your Ziyarat <br />
+                    in Makkah and Umrah tour Packages
                   </h1>
                   <p
                     className="text-white mt-5"
@@ -181,7 +183,10 @@ const index = ({
                       textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                     }}
                   >
-                    Immerse in Spiritual Quests
+                    Find Makkah ziyarat tour and umrah packages with guided
+                    ziyarat tours in Saudi Arabia. Visit Haram Sharif and the
+                    Prophet’s Mosque with English guides. Get cheap hajj deals
+                    and ziyarat places in Makkah list now, spots fill fast!
                   </p>
                 </div>
               </div>

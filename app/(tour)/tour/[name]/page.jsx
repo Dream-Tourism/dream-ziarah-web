@@ -1,23 +1,16 @@
 import Wrapper from "@/components/layout/Wrapper";
 import TourHeading from "@/components/tour-single/TourHeading";
 import TourSingle from "@/components/tour-single/TourSingle";
-import { useAllTour } from "@/hooks/useAllTour";
-import { useSingleTour } from "@/hooks/useSingleTour";
-import { useTourBySlug } from "@/hooks/useTourBySlug";
 import getAllContentByMenuId from "@/services/contentService";
 import getAllMenuItem from "@/services/menuService";
-import {
-  getAllToursServer,
-  getSingleTourServer,
-  getTourBySlugServer,
-} from "@/services/tourService";
+import { getAllToursServer, getTourBySlugServer } from "@/services/tourService";
 import { notFound } from "next/navigation";
 
 function getFullUrl(slug) {
   const baseUrl =
     typeof window !== "undefined"
       ? window.location.origin
-      : "https://dreamtourism.it";
+      : "https://dreamziarah.com/";
   const fullPath = `${baseUrl}/tour/${slug}`;
   return fullPath;
 }
@@ -257,10 +250,10 @@ async function getTourData(slug) {
     }
 
     // Get detailed tour data
-    const tourData = await getSingleTourServer(tourBySlugData.tourIds);
+    const tourData = tourBySlugData?.tour;
 
     if (!tourData) {
-      // console.log("Tour data not found for ID:", tourBySlugData.tourIds);
+      // console.log("Tour data not found for ID:", tourData);
       return null;
     }
 
@@ -289,6 +282,8 @@ export default async function Tour({ params }) {
   }
 
   const { tourData, allTours, tourIds } = data;
+
+  // console.log("Tour data not found for ID:", tourData);
 
   // console.log("Successfully fetched tour data:", {
   //   tourId: tourIds,
