@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import TestimonialSection from "../Testimonial/TestimonialSection";
 
 const TopDestinations = dynamic(() =>
   import("@/components/destinations/TopDestinations")
@@ -30,7 +31,7 @@ const ServicesOverview = dynamic(() =>
 );
 
 const MainHome = ({ allTours }) => {
-  console.log("All Tour Data in MainHome:", allTours);
+  // console.log("All Tour Data in MainHome:", allTours);
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
 
   const [dataAvailable, setDataAvailable] = useState(false);
@@ -81,22 +82,28 @@ const MainHome = ({ allTours }) => {
                 <div className="col-12">
                   <div className="sectionTitle -md d-flex justify-content-between">
                     <h2 className="sectionTitle__title md:text-24">
-                      Ziyarat In {currentTab}
+                      {currentTab === "Hajj"
+                        ? "Book Affordable Umrah and Hajj Deals"
+                        : `Book ${currentTab} Ziyarat Places List Tour`}
                     </h2>
-                    <Link
-                      href={`/tours/?location=${currentTab}`}
-                      className="button -md -blue-1 bg-blue-1-05 text-blue-1 md:text-13"
-                    >
-                      More{" "}
-                      <div className="icon-arrow-top-right ml-15 md:text-13" />
-                    </Link>
+                    {currentTab !== "Hajj" && (
+                      <Link
+                        href={`/tours/?location=${currentTab}`}
+                        className="button -md -blue-1 bg-blue-1-05 text-blue-1 md:text-13"
+                      >
+                        More{" "}
+                        <div className="icon-arrow-top-right ml-15 md:text-13" />
+                      </Link>
+                    )}
                   </div>
                 </div>
                 {/* End .col */}
 
                 <div className="col-12 mb-5" style={{ marginTop: "-6px" }}>
                   <p className="sectionTitle__text  sm:mt-0 md:text-13">
-                    Explore Sacred Ziyarat Places in {currentTab}
+                    {currentTab === "Hajj"
+                      ? "Get Makkah ziyarat package and luxury umrah packages in Saudi Arabia."
+                      : `Explore Sacred Ziyarat Places in ${currentTab}`}
                   </p>
                 </div>
                 {/* End .col */}
@@ -105,193 +112,196 @@ const MainHome = ({ allTours }) => {
               {/* End .row */}
 
               <div className="row y-gap-40 mb-5">
-                <ToursForMobile
-                  searchLocation={currentTab}
-                  onMobileTourDataAvailable={handleMobileTourDataAvailability}
-                />
+                {currentTab === "Hajj" ? (
+                  <ToursHajjUmrahForMobile
+                    searchLocation={currentTab}
+                    onMobileTourDataAvailable={handleMobileTourDataAvailability}
+                  />
+                ) : (
+                  <ToursForMobile
+                    searchLocation={currentTab}
+                    onMobileTourDataAvailable={handleMobileTourDataAvailability}
+                  />
+                )}
               </div>
               {/* End .row */}
             </div>
             {/* End .container */}
           </section>
-          {currentTab == "Makkah" ? (
-            ""
-          ) : (
-            <>
-              {mobileTourDataAvailable && (
-                <section className="layout-pt-md layout-pb-md ">
-                  <div className="container">
-                    <div className="row y-gap-22 justify-between items-start">
-                      <div className="col-8 col-lg-auto">
-                        <div className="sectionTitle -md ">
-                          <h2 className="sectionTitle__title md:text-24">
-                            Ziyarat In Makkah
-                          </h2>
-                          <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                            Explore Sacred Ziyarat Places in Makkah
-                          </p>
-                        </div>
-                      </div>
-                      {/* End .col */}
 
-                      <div className="col-4 col-lg-auto">
-                        <Link
-                          href="/tours/?location=Makkah"
-                          className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                        >
-                          More <div className="icon-arrow-top-right ml-15" />
-                        </Link>
-                      </div>
-                      {/* End .col */}
+          {/* Show Makkah section only if current tab is NOT Makkah */}
+          {currentTab !== "Makkah" && mobileTourDataAvailable && (
+            <section className="layout-pt-md layout-pb-md ">
+              <div className="container">
+                <div className="row y-gap-22 justify-between items-start">
+                  <div className="col-8 col-lg-auto">
+                    <div className="sectionTitle -md ">
+                      <h2 className="sectionTitle__title md:text-24">
+                        Book Makkah Ziyarat Places List Tour
+                      </h2>
+                      <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                        Reserve the Makkah ziyarat tour at Haram Sharif. Choose
+                        $25-$40 packages with or without guides for the list of
+                        ziyarat places in Makkah. Secure your sacred journey
+                        spot now!
+                      </p>
                     </div>
-
-                    {/* End .row */}
-
-                    <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <Tours filterLocation="Makkah" allTours={allTours} />
-                    </div>
-                    {/* End .row */}
                   </div>
-                  {/* End .container */}
-                </section>
-              )}
-            </>
+                  {/* End .col */}
+
+                  <div className="col-4 col-lg-auto">
+                    <Link
+                      href="/tours/?location=Makkah"
+                      className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                    >
+                      More <div className="icon-arrow-top-right ml-15" />
+                    </Link>
+                  </div>
+                  {/* End .col */}
+                </div>
+
+                {/* End .row */}
+
+                <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                  <Tours filterLocation="Makkah" allTours={allTours} />
+                </div>
+                {/* End .row */}
+              </div>
+              {/* End .container */}
+            </section>
           )}
-          {/* End Makka Tours Sections */}
-          {currentTab == "Madina" ? (
-            ""
-          ) : (
-            <>
-              {mobileTourDataAvailable && (
-                <section className="layout-pt-md layout-pb-md">
-                  <div className="container">
-                    <div className="row y-gap-22 justify-between items-start">
-                      <div className="col-8 col-lg-auto ">
-                        <div className="sectionTitle -md">
-                          <h2 className="sectionTitle__title md:text-24">
-                            Ziyarat In Madina
-                          </h2>
-                          <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                            Explore Sacred Ziyarat Places in Madina
-                          </p>
-                        </div>
-                      </div>
-                      {/* End .col */}
+          {/* End Makkah Tours Sections */}
 
-                      <div className="col-4 col-lg-auto">
-                        <Link
-                          href="/tours/?location=Medina"
-                          className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                        >
-                          More <div className="icon-arrow-top-right ml-15" />
-                        </Link>
-                      </div>
-                      {/* End .col */}
+          {/* Show Madina section only if current tab is NOT Madina */}
+          {currentTab !== "Madina" && mobileTourDataAvailable && (
+            <section className="layout-pt-md layout-pb-md">
+              <div className="container">
+                <div className="row y-gap-22 justify-between items-start">
+                  <div className="col-8 col-lg-auto ">
+                    <div className="sectionTitle -md">
+                      <h2 className="sectionTitle__title md:text-24">
+                        Book Guided Madinah Ziyarat Tour
+                      </h2>
+                      <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                        Plan Madinah ziyarat tour at the Prophet’s Mosque. Enjoy
+                        $25-$40 packages with English guides for the ziyarat
+                        places in Madinah. Limited spots, book now for the holy
+                        sites in Saudi Arabia!
+                      </p>
                     </div>
-
-                    {/* End .row */}
-
-                    <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <Tours filterLocation="Madina" allTours={allTours} />
-                    </div>
-                    {/* End .row */}
                   </div>
-                  {/* End .container */}
-                </section>
-              )}
-            </>
+                  {/* End .col */}
+
+                  <div className="col-4 col-lg-auto">
+                    <Link
+                      href="/tours/?location=Medina"
+                      className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                    >
+                      More <div className="icon-arrow-top-right ml-15" />
+                    </Link>
+                  </div>
+                  {/* End .col */}
+                </div>
+
+                {/* End .row */}
+
+                <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                  <Tours filterLocation="Madina" allTours={allTours} />
+                </div>
+                {/* End .row */}
+              </div>
+              {/* End .container */}
+            </section>
           )}
           {/* End Madina Tours Sections */}
 
-          {currentTab == "Jeddah" ? (
-            ""
-          ) : (
-            <>
-              {mobileTourDataAvailable && (
-                <section className="layout-pt-md layout-pb-md">
-                  <div className="container">
-                    <div className="row y-gap-22 justify-between items-start">
-                      <div className="col-8 col-lg-auto">
-                        <div className="sectionTitle -md">
-                          <h2 className="sectionTitle__title md:text-24">
-                            Ziyarat In Jeddah
-                          </h2>
-                          <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                            Explore Sacred Ziyarat Places in Jeddah
-                          </p>
-                        </div>
-                      </div>
-                      {/* End .col */}
-
-                      <div className="col-4 col-lg-auto">
-                        <Link
-                          href="/tours/?location=Jedda"
-                          className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                        >
-                          More <div className="icon-arrow-top-right ml-15" />
-                        </Link>
-                      </div>
-                      {/* End .col */}
+          {/* Show Jeddah section only if current tab is NOT Jeddah */}
+          {currentTab !== "Jeddah" && mobileTourDataAvailable && (
+            <section className="layout-pt-md layout-pb-md">
+              <div className="container">
+                <div className="row y-gap-22 justify-between items-start">
+                  <div className="col-8 col-lg-auto">
+                    <div className="sectionTitle -md">
+                      <h2 className="sectionTitle__title md:text-24">
+                        Book Guided Ziyarat in Jeddah Holy Places
+                      </h2>
+                      <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                        Book a ziyarat in Jeddah's holy places from the Jeddah
+                        gateway. Select $25-$40 packages with or without guides
+                        to Masjid Al-Jinn. Reserve your spiritual pilgrimage at
+                        holy sites in Saudi Arabia now!
+                      </p>
                     </div>
-
-                    {/* End .row */}
-
-                    <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <Tours filterLocation="Jeddah" allTours={allTours} />
-                    </div>
-                    {/* End .row */}
                   </div>
-                  {/* End .container */}
-                </section>
-              )}
-            </>
+                  {/* End .col */}
+
+                  <div className="col-4 col-lg-auto">
+                    <Link
+                      href="/tours/?location=Jedda"
+                      className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                    >
+                      More <div className="icon-arrow-top-right ml-15" />
+                    </Link>
+                  </div>
+                  {/* End .col */}
+                </div>
+
+                {/* End .row */}
+
+                <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                  <Tours filterLocation="Jeddah" allTours={allTours} />
+                </div>
+                {/* End .row */}
+              </div>
+              {/* End .container */}
+            </section>
           )}
-          {/* End Jedda Tours Sections */}
+          {/* End Jeddah Tours Sections */}
 
-          {currentTab == "Taif" ? (
-            ""
-          ) : (
-            <>
-              {mobileTourDataAvailable && (
-                <section className="layout-pt-md layout-pb-md">
-                  <div className="container">
-                    <div className="row y-gap-22 justify-between items-start">
-                      <div className="col-8 col-lg-auto">
-                        <div className="sectionTitle -md">
-                          <h2 className="sectionTitle__title md:text-24">
-                            Ziyarat In Taif
-                          </h2>
-                          <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                            Explore Sacred Ziyarat Places in Taif
-                          </p>
-                        </div>
-                      </div>
-                      {/* End .col */}
-
-                      <div className="col-4 col-lg-auto">
-                        <Link
-                          href="/tours/?location=Taif"
-                          className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                        >
-                          More <div className="icon-arrow-top-right ml-15" />
-                        </Link>
-                      </div>
-                      {/* End .col */}
+          {/* Show Taif section only if current tab is NOT Taif */}
+          {currentTab !== "Taif" && mobileTourDataAvailable && (
+            <section className="layout-pt-md layout-pb-md">
+              <div className="container">
+                <div className="row y-gap-22 justify-between items-start">
+                  <div className="col-8 col-lg-auto">
+                    <div className="sectionTitle -md">
+                      <h2 className="sectionTitle__title md:text-24">
+                        Book Day Trip Taif Ziyarat Places
+                      </h2>
+                      <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                        Explore Taif ziyarat places on a day trip from Makkah.
+                        Enjoy $40-$100 packages with guided transport to the
+                        Abdullah Ibn Abbas Mosque. Book today for sacred
+                        journeys in holy sites in Saudi Arabia!
+                      </p>
                     </div>
-
-                    {/* End .row */}
-
-                    <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                      <Tours filterLocation="Taif" allTours={allTours} />
-                    </div>
-                    {/* End .row */}
                   </div>
-                  {/* End .container */}
-                </section>
-              )}
-            </>
+                  {/* End .col */}
+
+                  <div className="col-4 col-lg-auto">
+                    <Link
+                      href="/tours/?location=Taif"
+                      className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                    >
+                      More <div className="icon-arrow-top-right ml-15" />
+                    </Link>
+                  </div>
+                  {/* End .col */}
+                </div>
+
+                {/* End .row */}
+
+                <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                  <Tours filterLocation="Taif" allTours={allTours} />
+                </div>
+                {/* End .row */}
+              </div>
+              {/* End .container */}
+            </section>
           )}
           {/* End Taif Tours Sections */}
+
+          {/* Show Why Book With Us and Top Destinations sections */}
           {mobileTourDataAvailable && (
             <>
               <section className="layout-pt-md layout-pb-md">
@@ -325,11 +335,13 @@ const MainHome = ({ allTours }) => {
                     <div className="col-auto">
                       <div className="sectionTitle -md">
                         <h2 className="sectionTitle__title md:text-24">
-                          Top Destinations
+                          Explore Ziyarat Tours Makkah, Madinah, and Taif
                         </h2>
                         <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                          Explore Exciting Destinations, Tailored for Every
-                          Explorer
+                          Check ziyarat in Makkah and Madinah, holy sites in
+                          Saudi Arabia, like the Prophet’s Mosque. Enjoy guided
+                          transport to the Jeddah gateway and the Taif ziyarat
+                          places. Book your spiritual pilgrimage spot today!
                         </p>
                       </div>
                     </div>
@@ -343,16 +355,44 @@ const MainHome = ({ allTours }) => {
                 </div>
                 {/* End .container */}
               </section>
+
+              <section className="layout-pt-md layout-pb-md">
+                <div className="container">
+                  <div className="row justify-center text-center">
+                    <div className="col-auto">
+                      <div className="sectionTitle -md">
+                        <h2 className="sectionTitle__title md:text-24">
+                          What Pilgrims Say About Ziyarat Places in Makkah and
+                          Madinah
+                        </h2>
+                        <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                          We have 4.8/5 from over 200 pilgrims! "Ziyarat in
+                          Makkah and Madinah was smooth with English help, love
+                          the list of ziyarat places!" Book Umrah packages with
+                          our holy sites in Saudi Arabia.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* End .row */}
+
+                  <div className="row y-gap-40">
+                    <TestimonialSection />
+                  </div>
+                  {/* End .row */}
+                </div>
+                {/* End .container */}
+              </section>
             </>
           )}
-
           {/* End Top Destinations Section */}
         </>
       ) : null}
 
-      {/* Desktop Hajj/Umrah Section */}
+      {/* Regular Desktop Sections for other tabs */}
       {isMobile && dataAvailable && (
         <>
+          {/* Always show Hajj/Umrah section on desktop */}
           <section className="layout-pt-md layout-pb-md ">
             <div className="container">
               <div className="row y-gap-22 justify-between items-start">
@@ -368,16 +408,6 @@ const MainHome = ({ allTours }) => {
                   </div>
                 </div>
                 {/* End .col */}
-
-                {/* <div className="col-4 col-lg-auto">
-                  <Link
-                    href="/tours/?location=Hajj"
-                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                  >
-                    More <div className="icon-arrow-top-right ml-15" />
-                  </Link>
-                </div> */}
-                {/* End .col */}
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
@@ -389,59 +419,55 @@ const MainHome = ({ allTours }) => {
             </div>
           </section>
           {/* End Hajj/Umrah Tours Sections */}
-        </>
-      )}
 
-      {/* Regular Desktop Sections for other tabs */}
-      {isMobile && dataAvailable && currentTab !== "Hajj" && (
-        <>
-          <section className="layout-pt-md layout-pb-md ">
-            <div className="container">
-              <div className="row y-gap-22 justify-between items-start">
-                <div className="col-8 col-lg-auto">
-                  <div className="sectionTitle -md ">
-                    <h2 className="sectionTitle__title md:text-24">
-                      Ziyarat In {currentTab}
-                    </h2>
-                    <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Explore Sacred Ziyarat Places in {currentTab}
-                    </p>
-                  </div>
-                </div>
-                {/* End .col */}
-
-                <div className="col-4 col-lg-auto">
-                  <Link
-                    href={`/tours/?location=${currentTab}`}
-                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                  >
-                    More <div className="icon-arrow-top-right ml-15" />
-                  </Link>
-                </div>
-                {/* End .col */}
-              </div>
-
-              <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation={currentTab} allTours={allTours} />
-              </div>
-            </div>
-          </section>
-          {/* End Current Tab Tours Sections */}
-        </>
-      )}
-
-      {dataAvailable && isMobile && currentTab !== "Hajj" && (
-        <>
+          {/* Always show Makkah section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row y-gap-22 justify-between items-start">
                 <div className="col-8 col-lg-auto ">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
-                      Ziyarat In Madina
+                      Book Makkah Ziyarat Places List Tour
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Explore Sacred Ziyarat Places in Madina
+                      Reserve the Makkah ziyarat tour at Haram Sharif. Choose
+                      $25-$40 packages with or without guides for the list of
+                      ziyarat places in Makkah. Secure your sacred journey spot
+                      now!
+                    </p>
+                  </div>
+                </div>
+                <div className="col-4 col-lg-auto">
+                  <Link
+                    href="/tours/?location=Makkah"
+                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                  >
+                    More <div className="icon-arrow-top-right ml-15" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                <Tours filterLocation="Makkah" allTours={allTours} />
+              </div>
+            </div>
+          </section>
+          {/* End Makkah Tours Sections */}
+
+          {/* Always show Madina section on desktop */}
+          <section className="layout-pt-md layout-pb-md">
+            <div className="container">
+              <div className="row y-gap-22 justify-between items-start">
+                <div className="col-8 col-lg-auto ">
+                  <div className="sectionTitle -md">
+                    <h2 className="sectionTitle__title md:text-24">
+                      Book Guided Madinah Ziyarat Tour
+                    </h2>
+                    <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                      Plan Madinah ziyarat tour at the Prophet’s Mosque. Enjoy
+                      $25-$40 packages with English guides for the ziyarat
+                      places in Madinah. Limited spots, book now for the holy
+                      sites in Saudi Arabia!
                     </p>
                   </div>
                 </div>
@@ -462,16 +488,20 @@ const MainHome = ({ allTours }) => {
           </section>
           {/* End Madina Tours Sections */}
 
+          {/* Always show Jeddah section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row y-gap-22 justify-between items-start">
                 <div className="col-8 col-lg-auto">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
-                      Ziyarat In Jeddah
+                      Book Guided Ziyarat in Jeddah Holy Places
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Explore Sacred Ziyarat Places in Jeddah
+                      Book a ziyarat in Jeddah's holy places from the Jeddah
+                      gateway. Select $25-$40 packages with or without guides to
+                      Masjid Al-Jinn. Reserve your spiritual pilgrimage at holy
+                      sites in Saudi Arabia now!
                     </p>
                   </div>
                 </div>
@@ -490,18 +520,22 @@ const MainHome = ({ allTours }) => {
               </div>
             </div>
           </section>
-          {/* End Jedda Tours Sections */}
+          {/* End Jeddah Tours Sections */}
 
+          {/* Always show Taif section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row y-gap-22 justify-between items-start">
                 <div className="col-8 col-lg-auto">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
-                      Ziyarat In Taif
+                      Book Day Trip Taif Ziyarat Places
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Explore Sacred Ziyarat Places in Taif
+                      Explore Taif ziyarat places on a day trip from Makkah.
+                      Enjoy $40-$100 packages with guided transport to the
+                      Abdullah Ibn Abbas Mosque. Book today for sacred journeys
+                      in holy sites in Saudi Arabia!
                     </p>
                   </div>
                 </div>
@@ -521,6 +555,8 @@ const MainHome = ({ allTours }) => {
             </div>
           </section>
           {/* End Taif Tours Sections */}
+
+          {/* Always show Why Book With Us section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
@@ -546,16 +582,20 @@ const MainHome = ({ allTours }) => {
           </section>
           {/* End Why choose Section */}
 
+          {/* Always show Top Destinations section on desktop */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
                 <div className="col-auto">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
-                      Top Destinations
+                      Explore Ziyarat Tours Makkah, Madinah, and Taif
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Explore Exciting Destinations, Tailored for Every Explorer
+                      Check ziyarat in Makkah and Madinah, holy sites in Saudi
+                      Arabia, like the Prophet’s Mosque. Enjoy guided transport
+                      to the Jeddah gateway and the Taif ziyarat places. Book
+                      your spiritual pilgrimage spot today!
                     </p>
                   </div>
                 </div>
@@ -569,8 +609,35 @@ const MainHome = ({ allTours }) => {
             </div>
             {/* End .container */}
           </section>
-
           {/* End Top Destinations Section */}
+
+          <section className="layout-pt-md layout-pb-md">
+            <div className="container">
+              <div className="row justify-center text-center">
+                <div className="col-auto">
+                  <div className="sectionTitle -md">
+                    <h2 className="sectionTitle__title md:text-24">
+                      What Pilgrims Say About Ziyarat Places in Makkah and
+                      Madinah
+                    </h2>
+                    <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
+                      We have 4.8/5 from over 200 pilgrims! "Ziyarat in Makkah
+                      and Madinah was smooth with English help, love the list of
+                      ziyarat places!" Book Umrah packages with our holy sites
+                      in Saudi Arabia.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* End .row */}
+
+              <div className="row y-gap-40 ">
+                <TestimonialSection />
+              </div>
+              {/* End .row */}
+            </div>
+            {/* End .container */}
+          </section>
         </>
       )}
     </>

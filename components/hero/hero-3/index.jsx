@@ -114,7 +114,7 @@ const index = ({
                   <div className="col-xl-9 d-lg-flex flex-column justify-content-center align-items-center mt-10">
                     <div className="text-center">
                       <h1
-                        className="text-20 lg:text-20 md:text-20  text-white"
+                        className="text-20 lg:text-20 md:text-14  text-white"
                         // data-aos="fade-up"
                         style={{
                           textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
@@ -124,7 +124,7 @@ const index = ({
                         in Makkah and Umrah tour Packages
                       </h1>
                       <p
-                        className="text-white text-12 mt-5"
+                        className="text-white text-10 mt-5"
                         // data-aos="fade-up"
                         data-aos-delay="100"
                         style={{

@@ -11,7 +11,7 @@ const initialState = {
     // { id: 6, name: "Cruise" },
     // { id: 7, name: "Flights" },
   ],
-  currentTab: "Makkah",
+  currentTab: "Hajj",
 };
 
 export const findPlaceSlice = createSlice({
