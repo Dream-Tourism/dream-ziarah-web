@@ -4,7 +4,6 @@ import useWindowSize from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import TestimonialSection from "../Testimonial/TestimonialSection";
 import { useFaqDescription } from "@/hooks/useFaqDescription";
 import FrequentlyQ from "../faq/FrequentlyQ";
 
@@ -29,7 +28,10 @@ const ToursHajjUmrahForMobile = dynamic(() =>
 );
 const ServicesOverview = dynamic(() =>
   import("@/components/services/ServicesOverview")
-);
+);import TestimonialSection from './../testimonial/TestimonialSection';
+
+
+
 
 const MainHome = ({ allTours }) => {
   // console.log("All Tour Data in MainHome:", allTours);
