@@ -5,7 +5,7 @@ const ImportantInfo = ({ tour }) => {
   return (
     <div className="row x-gap-40 y-gap-40 justify-between pt-20">
       <div className="col-lg-4 col-md-6">
-        <div className="fw-600 mb-10">Inclusions</div>
+        {/* <div className="fw-600 mb-10">Inclusions</div> */}
         <Interweave
           allowAttributes
           allowElements
@@ -15,7 +15,7 @@ const ImportantInfo = ({ tour }) => {
       </div>
 
       <div className="col-lg-4 col-md-6">
-        <div className="fw-600 mb-10">Departure details</div>
+        {/* <div className="fw-600 mb-10">Departure details</div> */}
         <div className="text-15">
           <Interweave
             className="description-content"
@@ -28,7 +28,7 @@ const ImportantInfo = ({ tour }) => {
       </div>
 
       <div className="col-lg-3 col-md-6">
-        <div className="fw-600 mb-10">Know before you go</div>
+        {/* <div className="fw-600 mb-10">Know before you go</div> */}
         <Interweave
           allowAttributes
           allowElements
@@ -38,7 +38,7 @@ const ImportantInfo = ({ tour }) => {
       </div>
 
       <div className="col-lg-4 col-md-6">
-        <div className="fw-600 mb-10">Exclusions</div>
+        {/* <div className="fw-600 mb-10">Exclusions</div> */}
         <Interweave
           allowAttributes
           allowElements
@@ -48,7 +48,7 @@ const ImportantInfo = ({ tour }) => {
       </div>
 
       <div className="col-12">
-        <div className="fw-600 mb-10">Additional information</div>
+        {/* <div className="fw-600 mb-10">Additional information</div> */}
         <Interweave
           allowAttributes
           allowElements

@@ -27,7 +27,7 @@ const Overview = ({ tour }) => {
     <>
       <div className="row x-gap-40 y-gap-40">
         <div className="col-12 text-dark-1 text-15">
-          <h3 className="text-22 fw-600 pb-15">Overview</h3>
+          {/* <h3 className="text-22 fw-600 pb-15">Overview</h3> */}
           {cleanedDescription && (
             <>
               <div className="description-content mobile-optimized">
@@ -52,17 +52,17 @@ const Overview = ({ tour }) => {
             </>
           )}
         </div>
-
+{/* 
         {currentTour?.languages && (
           <div className="col-md-6">
             <h5 className="text-16 fw-600">Available languages</h5>
             <div className="text-15 mt-10">{currentTour.languages}</div>
           </div>
-        )}
+        )} */}
 
         <div className="col-md-6">
-          <h5 className="text-16 fw-600">Cancellation policy</h5>
-          <div className="text-15 mt-10">
+          {/* <h5 className="text-16 fw-600">Cancellation policy</h5> */}
+          
             {currentTour?.cancellation ? (
               <div
                 dangerouslySetInnerHTML={{
@@ -79,7 +79,7 @@ const Overview = ({ tour }) => {
             )}
           </div>
         </div>
-      </div>
+
 
       <style jsx>{`
         /* Only apply gap reduction on mobile devices */
