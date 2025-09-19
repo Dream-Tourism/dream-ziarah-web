@@ -30,6 +30,15 @@
 .description-content span {
   color: #000 !important; /* ensure children are black too */
 }
+.description-content h2 {
+  font-size: 22px;
+}
+.description-content h2 span {
+  font-size: 22px;
+}
+.description-content h3 {
+  font-size: 18px;
+}
 
 /* Mobile Order Cards */
 .mobile-order-card {

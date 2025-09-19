@@ -52,7 +52,7 @@ const Overview = ({ tour }) => {
             </>
           )}
         </div>
-{/* 
+        {/* 
         {currentTour?.languages && (
           <div className="col-md-6">
             <h5 className="text-16 fw-600">Available languages</h5>
@@ -60,26 +60,25 @@ const Overview = ({ tour }) => {
           </div>
         )} */}
 
-        <div className="col-md-6">
+        <div className="col-md-6 description-content">
           {/* <h5 className="text-16 fw-600">Cancellation policy</h5> */}
-          
-            {currentTour?.cancellation ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: currentTour.cancellation,
-                }}
-              />
-            ) : (
-              <ul className="list-disc">
-                <li>
-                  We will charge a cancellation fee of 100% if booking is
-                  cancelled 1 day or less before the event.
-                </li>
-              </ul>
-            )}
-          </div>
-        </div>
 
+          {currentTour?.cancellation ? (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: currentTour.cancellation,
+              }}
+            />
+          ) : (
+            <ul className="list-disc">
+              <li>
+                We will charge a cancellation fee of 100% if booking is
+                cancelled 1 day or less before the event.
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
 
       <style jsx>{`
         /* Only apply gap reduction on mobile devices */

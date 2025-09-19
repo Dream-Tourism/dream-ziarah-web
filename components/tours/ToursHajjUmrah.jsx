@@ -30,6 +30,17 @@ const ToursHajjUmrah = ({ filterLocation, allTours: data }) => {
         return orderA - orderB;
       }) || [];
 
+  // Generate appropriate link based on item name
+  const generateLink = (item) => {
+    const name = item.name?.toLowerCase() || '';
+    if (name.includes('hajj')) {
+      return '/hajj';
+    } else if (name.includes('umrah')) {
+      return '/umrah';
+    }
+    return `/tour/${item.slug}`;
+  };
+
   // Calculate per person price (always defaults to "With Guide")
   const calculatePerPersonPrice = (tour) => {
     const dayTourPriceList = tour.day_tour_price_list;
@@ -127,7 +138,7 @@ const ToursHajjUmrah = ({ filterLocation, allTours: data }) => {
       return (
         <div className="col-lg-3 col-md-3 col-6" key={item.id}>
           <Link
-            href={`/tour/${item.slug}`}
+            href={generateLink(item)}
             className="tourCard -type-1 rounded-4 hover-inside-slider d-block h-100"
           >
             <div className="tourCard__image position-relative">
@@ -220,7 +231,7 @@ const ToursHajjUmrah = ({ filterLocation, allTours: data }) => {
         return (
           <div key={item?.id}>
             <Link
-              href={`/tour/${item?.slug}`}
+              href={generateLink(item)}
               className="tourCard -type-1 rounded-4 hover-inside-slider d-block h-100"
             >
               <div className="tourCard__image position-relative">

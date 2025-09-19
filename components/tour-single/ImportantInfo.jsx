@@ -27,7 +27,7 @@ const ImportantInfo = ({ tour }) => {
         </div>
       </div>
 
-      <div className="col-lg-3 col-md-6">
+      <div className="col-lg-4 col-md-6">
         {/* <div className="fw-600 mb-10">Know before you go</div> */}
         <Interweave
           allowAttributes
@@ -37,23 +37,23 @@ const ImportantInfo = ({ tour }) => {
         />
       </div>
 
-      <div className="col-lg-4 col-md-6">
+      <div className="col-lg-8 col-md-6">
         {/* <div className="fw-600 mb-10">Exclusions</div> */}
         <Interweave
           allowAttributes
           allowElements
           disableLineBreaks={false}
-          content={tour?.exclusion}
+          content={tour?.additional_info}
         />
       </div>
 
-      <div className="col-12">
+      <div className="col-lg-4 col-md-6">
         {/* <div className="fw-600 mb-10">Additional information</div> */}
         <Interweave
           allowAttributes
           allowElements
           disableLineBreaks={false}
-          content={tour?.additional_info}
+          content={tour?.exclusion}
         />
       </div>
     </div>

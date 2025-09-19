@@ -19,7 +19,7 @@ const useMenus = () => {
   filteredMenus.sort((a, b) => a.position - b.position);
 
   const modifiedMenuItems = filteredMenus?.map((item) => {
-    if (item.name === "Ziarah") {
+    if (item.name === "Home") {
       return {
         ...item,
         routePath: "/",
