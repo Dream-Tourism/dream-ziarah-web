@@ -34,12 +34,6 @@ async function getTourData() {
     // Use the first Hajj tour as the base but modify it for the overview page
     const hajjPageTour = {
       ...hajjTours[0], // Use first Hajj tour as base
-      id: "hajj-overview",
-      name: "Hajj Packages Overview",
-      location_type: "Hajj",
-      overview:
-        "Explore our comprehensive Hajj packages designed to provide you with a spiritually enriching pilgrimage experience.",
-      // You can customize other fields as needed for the overview page
     };
 
     return {

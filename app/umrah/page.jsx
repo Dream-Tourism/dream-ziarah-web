@@ -36,12 +36,6 @@ async function getTourData() {
     // Use the first Umrah tour as the base but modify it for the overview page
     const umrahPageTour = {
       ...umrahTours[0], // Use first Umrah tour as base
-      id: "umrah-overview",
-      name: "Umrah Packages Overview",
-      location_type: "Umrah",
-      overview:
-        "Experience spiritual renewal and tranquility with our comprehensive Umrah packages designed to provide you with a meaningful pilgrimage journey.",
-      // You can customize other fields as needed for the overview page
     };
 
     return {

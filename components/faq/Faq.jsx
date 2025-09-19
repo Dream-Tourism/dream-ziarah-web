@@ -1,55 +1,11 @@
-import React from 'react';
+import { slightContent } from "@/data/desinations";
+const Faq = ({slug}) => {
 
-const FrequentlyQ = ({ faqDescription }) => {
-  // Parse the HTML string to extract FAQ items
-  const parseFAQData = (htmlString) => {
-    if (!htmlString) return [];
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    
-    const faqItems = [];
-    const h3Elements = doc.querySelectorAll('h3');
-    
-    h3Elements.forEach((h3, index) => {
-      const question = h3.textContent.trim();
-      let answer = '';
-      let nextElement = h3.nextElementSibling;
-      
-      // Collect all content until the next h3 or end
-      while (nextElement && nextElement.tagName !== 'H3') {
-        if (nextElement.tagName === 'P') {
-          answer += nextElement.innerHTML;
-        } else if (nextElement.tagName === 'UL') {
-          answer += nextElement.outerHTML;
-        }
-        nextElement = nextElement.nextElementSibling;
-      }
-      
-      if (question && answer) {
-        faqItems.push({ 
-          id: index + 1,
-          title: question,
-          content: answer,
-          collapseTarget: `faq${index + 1}`
-        });
-      }
-    });
-    
-    return faqItems;
-  };
-
-  const faqItems = parseFAQData(faqDescription);
-
-  // Split items into two columns
-  const leftColumnItems = faqItems.filter((_, index) => index % 2 === 0);
-  const rightColumnItems = faqItems.filter((_, index) => index % 2 === 1);
-
-  const renderColumn = (items, parentId) => (
-    <div className="col-lg-6">
-      {items.map((item) => (
+  return (
+    <>
+      {slightContent[slug]?.faqContent?.map((item) => (
         <div className="col-12" key={item.id}>
-          <div className="accordion__item px-20 py-20 border-light rounded-4 mb-20">
+          <div className="accordion__item px-20 py-20 border-light rounded-4">
             <div
               className="accordion__button d-flex items-center"
               data-bs-toggle="collapse"
@@ -66,28 +22,18 @@ const FrequentlyQ = ({ faqDescription }) => {
             <div
               className="accordion-collapse collapse"
               id={item.collapseTarget}
-              data-bs-parent={`#${parentId}`}
+              data-bs-parent="#Faq1"
             >
               <div className="pt-15 pl-60">
-                <div 
-                  className="text-15"
-                  dangerouslySetInnerHTML={{ __html: item.content }}
-                />
+                <p className="text-15">{item.content}</p>
               </div>
             </div>
-            {/* End accordion content */}
+            {/* End accordion conent */}
           </div>
         </div>
       ))}
-    </div>
-  );
-
-  return (
-    <>
-      {renderColumn(leftColumnItems, 'FaqLeft')}
-      {renderColumn(rightColumnItems, 'FaqRight')}
     </>
   );
 };
 
-export default FrequentlyQ;
+export default Faq;
