@@ -382,10 +382,10 @@ const ServicesOverview = () => {
           <div className="col-12">
             <div className="sectionTitle -md">
               <h2 className="sectionTitle__title md:text-24">
-                Ziyarat Tours,Umrah & Hajj Packages
+                Find Ziyarat Tours in Makkah, Umrah, and Hajj Packages
               </h2>
               <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                Guided tours with English guides and easy transport
+               Enjoy guided ziyarat tours in Makkah, umrah packages, and cheap hajj deals. See the list of ziyarat places in Makkah and Madinah with easy transport and English guides. Book your spiritual pilgrimage now!
               </p>
             </div>
           </div>

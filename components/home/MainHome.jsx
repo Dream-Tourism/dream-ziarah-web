@@ -1,12 +1,13 @@
 "use client";
 import { useGetSliderImagesQuery } from "@/features/image/imageApi";
-import { useAllTour } from "@/hooks/useAllTour";
 import useWindowSize from "@/hooks/useWindowSize";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import TestimonialSection from "../Testimonial/TestimonialSection";
+import { useFaqDescription } from "@/hooks/useFaqDescription";
+import FrequentlyQ from "../faq/FrequentlyQ";
+
 
 const TopDestinations = dynamic(() =>
   import("@/components/destinations/TopDestinations")
@@ -33,6 +34,8 @@ const ServicesOverview = dynamic(() =>
 const MainHome = ({ allTours }) => {
   // console.log("All Tour Data in MainHome:", allTours);
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
+  const { data: faqDescription } = useFaqDescription();
+  // console.log("FAQ Description:", faqDescription);
 
   const [dataAvailable, setDataAvailable] = useState(false);
   const [mobileDataAvailable, setMobileDataAvailable] = useState(false);
@@ -83,7 +86,7 @@ const MainHome = ({ allTours }) => {
                   <div className="sectionTitle -md d-flex justify-content-between">
                     <h2 className="sectionTitle__title md:text-24">
                       {currentTab === "Hajj"
-                        ? "Book Affordable Umrah and Hajj Deals"
+                        ? "Book Affordable Makkah Ziyarat Package and Hajj Deals"
                         : `Book ${currentTab} Ziyarat Places List Tour`}
                     </h2>
                   </div>
@@ -357,6 +360,28 @@ const MainHome = ({ allTours }) => {
                 </div>
                 {/* End .container */}
               </section>
+
+              {/* review section */}
+                      <section className="layout-pt-md layout-pb-md">
+                <div className="container">
+                  <div className="row justify-center text-center">
+                    <div className="col-12">
+                      <div className="sectionTitle -md">
+                        <h2 className="sectionTitle__title md:text-24">
+                         FAQ
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                  {/* End .row */}
+
+                  <div className="row y-gap-40">
+                     <FrequentlyQ faqDescription={faqDescription} />
+                  </div>
+                  {/* End .row */}
+                </div>
+                {/* End .container */}
+              </section>
             </>
           )}
           {/* End Top Destinations Section */}
@@ -373,11 +398,10 @@ const MainHome = ({ allTours }) => {
                 <div className="col-12">
                   <div className="sectionTitle -md ">
                     <h2 className="sectionTitle__title md:text-24">
-                      Book Affordable Umrah and Hajj Deals
+                      Book Affordable Makkah Ziyarat Package and Hajj Deals
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Get Makkah ziyarat package and luxury umrah packages in
-                      Saudi Arabia.
+                      Get Makkah ziyarat package and luxury umrah packages in Saudi Arabia. Includes flights, hotels near the Two Holy Mosques, and guided ziyarat tours. Book fast to save your spot for ziyarat in Makkah and Madinah!
                     </p>
                   </div>
                 </div>
@@ -505,11 +529,10 @@ const MainHome = ({ allTours }) => {
                 <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
-                      Why Book With Us
+                      Your Trusted Guide for Ziyarat Tours Makkah 
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Experience Quality and Excellence with DreamZiarah
-                    </p>
+Count on us for ziyarat tours, Makkah, and guided ziyarat tours in Saudi Arabia. We help European pilgrims with all ziyarat in Makkah and the holy sites in Saudi Arabia know-how. Book easily for your trip!                    </p>
                   </div>
                 </div>
               </div>
@@ -552,7 +575,7 @@ const MainHome = ({ allTours }) => {
             {/* End .container */}
           </section>
           {/* End Top Destinations Section */}
-
+ {/* Review section */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
@@ -575,6 +598,28 @@ const MainHome = ({ allTours }) => {
 
               <div className="row y-gap-40 ">
                 <TestimonialSection />
+              </div>
+              {/* End .row */}
+            </div>
+            {/* End .container */}
+          </section>
+
+           {/* FAQ */}
+          <section className="layout-pt-md layout-pb-md">
+            <div className="container">
+              <div className="row justify-center text-center">
+                <div className="col-12">
+                  <div className="sectionTitle -md">
+                    <h2 className="sectionTitle__title md:text-24">
+                      FAQ
+                    </h2>
+                  </div>
+                </div>
+              </div>
+              {/* End .row */}
+
+              <div className="row y-gap-40 ">
+           <FrequentlyQ faqDescription={faqDescription} />
               </div>
               {/* End .row */}
             </div>
