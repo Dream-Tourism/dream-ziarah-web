@@ -6,11 +6,22 @@ import Slider from "react-slick";
 import useWindowSize from "@/hooks/useWindowSize";
 import TourSkeleton from "../skeleton/TourSkeleton";
 import convertCurrency from "@/utils/currency";
+import { useAllTour } from "@/hooks/useAllTour";
 
-const ToursHajjUmrah = ({ filterLocation, allTours: data }) => {
+const ToursHajjUmrah = ({ filterLocation }) => {
+  const { data, error, isLoading } = useAllTour();
   const { currentCurrency } = useSelector((state) => state.currency);
   const width = useWindowSize();
   const isMobile = width < 768;
+
+  // Handle loading and error states
+  if (isLoading) {
+    return <TourSkeleton />;
+  }
+
+  if (error || !data) {
+    return <TourSkeleton />;
+  }
 
   // Filter tours for Hajj and Umrah
   const filteredTours =

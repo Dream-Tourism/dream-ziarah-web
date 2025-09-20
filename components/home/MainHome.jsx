@@ -7,12 +7,19 @@ import { useSelector } from "react-redux";
 import { useFaqDescription } from "@/hooks/useFaqDescription";
 import FrequentlyQ from "../faq/FrequentlyQ";
 
+// Critical above-the-fold components (no lazy loading)
+import Hero3 from "@/components/hero/hero-3";
+import ServicesOverview from "@/components/services/ServicesOverview";
+
+// Lazy load below-the-fold components for better performance
 const TopDestinations = dynamic(() =>
-  import("@/components/destinations/TopDestinations")
+  import("@/components/destinations/TopDestinations"),
+  { loading: () => <div className="loading-skeleton">Loading destinations...</div> }
 );
-const Hero3 = dynamic(() => import("@/components/hero/hero-3"));
 const WhyChoose = dynamic(() => import("@/components/home/home-3/WhyChoose"));
-const Tours = dynamic(() => import("@/components/tours/Tours"));
+const Tours = dynamic(() => import("@/components/tours/Tours"),
+  { loading: () => <div className="loading-skeleton">Loading tours...</div> }
+);
 const ToursForMobile = dynamic(() =>
   import("@/components/tours/ToursForMobile")
 );
@@ -22,15 +29,11 @@ const ToursHajjUmrah = dynamic(() =>
 const ToursHajjUmrahForMobile = dynamic(() =>
   import("@/components/tours/ToursHajjUmrahForMobile")
 );
-const ServicesOverview = dynamic(() =>
-  import("@/components/services/ServicesOverview")
-);
 const TestimonialSection = dynamic(() =>
   import("@/components/Testimonial/TestimonialSection")
 );
 
-const MainHome = ({ allTours }) => {
-  // console.log("All Tour Data in MainHome:", allTours);
+const MainHome = () => {
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
   const { data: faqDescription } = useFaqDescription();
   // console.log("FAQ Description:", faqDescription);
@@ -146,7 +149,7 @@ const MainHome = ({ allTours }) => {
                 {/* End .row */}
 
                 <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                  <Tours filterLocation="Makkah" allTours={allTours} />
+                  <Tours filterLocation="Makkah" />
                 </div>
                 {/* End .row */}
               </div>
@@ -181,7 +184,7 @@ const MainHome = ({ allTours }) => {
                 {/* End .row */}
 
                 <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                  <Tours filterLocation="Madina" allTours={allTours} />
+                  <Tours filterLocation="Madina" />
                 </div>
                 {/* End .row */}
               </div>
@@ -224,7 +227,7 @@ const MainHome = ({ allTours }) => {
                 {/* End .row */}
 
                 <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                  <Tours filterLocation="Jeddah" allTours={allTours} />
+                  <Tours filterLocation="Jeddah" />
                 </div>
                 {/* End .row */}
               </div>
@@ -267,7 +270,7 @@ const MainHome = ({ allTours }) => {
                 {/* End .row */}
 
                 <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                  <Tours filterLocation="Taif" allTours={allTours} />
+                  <Tours filterLocation="Taif" />
                 </div>
                 {/* End .row */}
               </div>
@@ -385,7 +388,7 @@ const MainHome = ({ allTours }) => {
       ) : null}
 
       {/* Regular Desktop Sections for other tabs */}
-      {isMobile && dataAvailable && (
+      {isMobile && (
         <>
           {/* Always show Hajj/Umrah section on desktop */}
           <section className="layout-pt-md layout-pb-md ">
@@ -410,7 +413,6 @@ const MainHome = ({ allTours }) => {
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
                 <ToursHajjUmrah
                   filterLocation="HajjUmrah"
-                  allTours={allTours}
                 />
               </div>
             </div>
@@ -437,7 +439,7 @@ const MainHome = ({ allTours }) => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Makkah" allTours={allTours} />
+                <Tours filterLocation="Makkah" />
               </div>
             </div>
           </section>
@@ -463,7 +465,7 @@ const MainHome = ({ allTours }) => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Madina" allTours={allTours} />
+                <Tours filterLocation="Madina" />
               </div>
             </div>
           </section>
@@ -489,7 +491,7 @@ const MainHome = ({ allTours }) => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Jeddah" allTours={allTours} />
+                <Tours filterLocation="Jeddah" />
               </div>
             </div>
           </section>
@@ -515,7 +517,7 @@ const MainHome = ({ allTours }) => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <Tours filterLocation="Taif" allTours={allTours} />
+                <Tours filterLocation="Taif" />
               </div>
             </div>
           </section>
