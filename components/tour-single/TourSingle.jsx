@@ -58,7 +58,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
           locationType.includes("hajj")
       );
       setMadina(
-        locationType.includes("madina") || locationType.includes("medina")
+        locationType.includes("madina") || locationType.includes("madinah")
       );
       setJedda(
         locationType.includes("jeddah") || locationType.includes("jedda")
@@ -360,7 +360,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
 
               <div className="col-auto">
                 <Link
-                  href="/tours/?location=Medina"
+                  href="/tours/?location=Madinah"
                   className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                 >
                   More <div className="icon-arrow-top-right ml-15" />

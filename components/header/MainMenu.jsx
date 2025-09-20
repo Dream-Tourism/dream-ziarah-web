@@ -45,13 +45,7 @@ const MainMenu = ({ style = "" }) => {
                       isActiveLink(item.routePath, pathname) ? "current" : ""
                     } menu-item-has-children fw-500`}
                   >
-                    <Link href={item.routePath}>
-                      {item.name == "Jedda"
-                        ? "Jeddah"
-                        : item.name == "Medina"
-                        ? "Madina"
-                        : item.name}
-                    </Link>
+                    <Link href={item.routePath}>{item.name}</Link>
                   </li>
                 ))}
               </ul>

@@ -3,9 +3,11 @@ import dynamic from "next/dynamic";
 import Brand from "@/components/brand/Brand";
 import Counter from "@/components/counter/Counter";
 import Counter2 from "@/components/counter/Counter2";
-import Testimonial from "@/components/testimonial/Testimonial";
 
 const WhyChoose = dynamic(() => import("@/components/home/home-3/WhyChoose"));
+const Testimonial = dynamic(() =>
+  import("@/components/Testimonial/Testimonial")
+);
 
 export const metadata = {
   title: "About Dream Ziarah | Your Trusted Partner in Spiritual Journeys",

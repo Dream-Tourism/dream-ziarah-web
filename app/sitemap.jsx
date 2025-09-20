@@ -54,13 +54,13 @@ export default async function Sitemap() {
 
     const excludedCountries = [
       "Makkah",
-      "Medina",
+      "Madinah",
       "Jedda",
       "Taif",
       "makkah",
-      "medina",
+      "madinah",
       "taif",
-      "jedda",
+      "jeddah",
     ];
     const contentsXml = contentData
       .filter((item) => !excludedCountries.includes(item.name))

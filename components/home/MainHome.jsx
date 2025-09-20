@@ -7,16 +7,12 @@ import { useSelector } from "react-redux";
 import { useFaqDescription } from "@/hooks/useFaqDescription";
 import FrequentlyQ from "../faq/FrequentlyQ";
 
-
 const TopDestinations = dynamic(() =>
   import("@/components/destinations/TopDestinations")
 );
 const Hero3 = dynamic(() => import("@/components/hero/hero-3"));
 const WhyChoose = dynamic(() => import("@/components/home/home-3/WhyChoose"));
 const Tours = dynamic(() => import("@/components/tours/Tours"));
-const ToursMadina = dynamic(() => import("@/components/tours/ToursMadina"));
-const ToursJedda = dynamic(() => import("@/components/tours/ToursJedda"));
-const ToursTaif = dynamic(() => import("@/components/tours/ToursTaif"));
 const ToursForMobile = dynamic(() =>
   import("@/components/tours/ToursForMobile")
 );
@@ -28,10 +24,10 @@ const ToursHajjUmrahForMobile = dynamic(() =>
 );
 const ServicesOverview = dynamic(() =>
   import("@/components/services/ServicesOverview")
-);import TestimonialSection from './../testimonial/TestimonialSection';
-
-
-
+);
+const TestimonialSection = dynamic(() =>
+  import("@/components/Testimonial/TestimonialSection")
+);
 
 const MainHome = ({ allTours }) => {
   // console.log("All Tour Data in MainHome:", allTours);
@@ -364,21 +360,19 @@ const MainHome = ({ allTours }) => {
               </section>
 
               {/* review section */}
-                      <section className="layout-pt-md layout-pb-md">
+              <section className="layout-pt-md layout-pb-md">
                 <div className="container">
                   <div className="row justify-center text-center">
                     <div className="col-12">
                       <div className="sectionTitle -md">
-                        <h2 className="sectionTitle__title md:text-24">
-                         FAQ
-                        </h2>
+                        <h2 className="sectionTitle__title md:text-24">FAQ</h2>
                       </div>
                     </div>
                   </div>
                   {/* End .row */}
 
                   <div className="row y-gap-40">
-                     <FrequentlyQ faqDescription={faqDescription} />
+                    <FrequentlyQ faqDescription={faqDescription} />
                   </div>
                   {/* End .row */}
                 </div>
@@ -403,7 +397,10 @@ const MainHome = ({ allTours }) => {
                       Book Affordable Makkah Ziyarat Package and Hajj Deals
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-                      Get Makkah ziyarat package and luxury umrah packages in Saudi Arabia. Includes flights, hotels near the Two Holy Mosques, and guided ziyarat tours. Book fast to save your spot for ziyarat in Makkah and Madinah!
+                      Get Makkah ziyarat package and luxury umrah packages in
+                      Saudi Arabia. Includes flights, hotels near the Two Holy
+                      Mosques, and guided ziyarat tours. Book fast to save your
+                      spot for ziyarat in Makkah and Madinah!
                     </p>
                   </div>
                 </div>
@@ -531,10 +528,14 @@ const MainHome = ({ allTours }) => {
                 <div className="col-12">
                   <div className="sectionTitle -md">
                     <h2 className="sectionTitle__title md:text-24">
-                      Your Trusted Guide for Ziyarat Tours Makkah 
+                      Your Trusted Guide for Ziyarat Tours Makkah
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
-Count on us for ziyarat tours, Makkah, and guided ziyarat tours in Saudi Arabia. We help European pilgrims with all ziyarat in Makkah and the holy sites in Saudi Arabia know-how. Book easily for your trip!                    </p>
+                      Count on us for ziyarat tours, Makkah, and guided ziyarat
+                      tours in Saudi Arabia. We help European pilgrims with all
+                      ziyarat in Makkah and the holy sites in Saudi Arabia
+                      know-how. Book easily for your trip!{" "}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -577,7 +578,7 @@ Count on us for ziyarat tours, Makkah, and guided ziyarat tours in Saudi Arabia.
             {/* End .container */}
           </section>
           {/* End Top Destinations Section */}
- {/* Review section */}
+          {/* Review section */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
@@ -606,22 +607,20 @@ Count on us for ziyarat tours, Makkah, and guided ziyarat tours in Saudi Arabia.
             {/* End .container */}
           </section>
 
-           {/* FAQ */}
+          {/* FAQ */}
           <section className="layout-pt-md layout-pb-md">
             <div className="container">
               <div className="row justify-center text-center">
                 <div className="col-12">
                   <div className="sectionTitle -md">
-                    <h2 className="sectionTitle__title md:text-24">
-                      FAQ
-                    </h2>
+                    <h2 className="sectionTitle__title md:text-24">FAQ</h2>
                   </div>
                 </div>
               </div>
               {/* End .row */}
 
               <div className="row y-gap-40 ">
-           <FrequentlyQ faqDescription={faqDescription} />
+                <FrequentlyQ faqDescription={faqDescription} />
               </div>
               {/* End .row */}
             </div>

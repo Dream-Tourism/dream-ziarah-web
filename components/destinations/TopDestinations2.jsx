@@ -7,8 +7,11 @@ import Slider from "react-slick";
 
 const TopDestinations2 = ({ slug }) => {
   const { menuItems } = useSelector((state) => state.menus);
-  const ziarahId = menuItems.find((item) => item.name === "Destinations")?.id;
-  const { isSuccess, data } = useGetImagesByMenuIdQuery(ziarahId);
+  const destinationId = menuItems.find(
+    (item) => item.name === "Destinations"
+  )?.id;
+  const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId);
+  console.log(data, "data in top destination");
 
   let destinations = [];
   if (isSuccess) {
@@ -17,7 +20,7 @@ const TopDestinations2 = ({ slug }) => {
       ?.children?.filter((subItem) => subItem.name.toLowerCase() !== slug)
       ?.map((item) => ({
         id: item.id,
-        img: `${data?.content_images[item?.name?.toLowerCase()]}`,
+        img: `${data?.content_images[item?.name]}`,
         location: item.name,
         properties: "4,090",
         delayAnimation: "0",
@@ -55,6 +58,8 @@ const TopDestinations2 = ({ slug }) => {
       },
     ],
   };
+
+  console.log(destinations, "destinations");
   return (
     <>
       <Slider {...settings}>
@@ -82,11 +87,7 @@ const TopDestinations2 = ({ slug }) => {
               </div>
               <div className="citiesCard__content d-flex justify-content-center align-items-center">
                 <h4 className="text-26 fw-600 text-white text-capitalize">
-                  {item.location == "Medina"
-                    ? "Madina"
-                    : item.location == "Jedda"
-                    ? "Jeddah"
-                    : item.location}
+                  {item.location}
                 </h4>
               </div>
             </Link>

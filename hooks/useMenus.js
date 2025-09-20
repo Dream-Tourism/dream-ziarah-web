@@ -8,8 +8,8 @@ const useMenus = () => {
       item.name === "About" ||
       item.name === "Contact" ||
       item.name === "Tour" ||
-      item.name === "Blog" ||
-      item.name === "Tours"
+      item.name === "Blog"
+      // item.name === "Tours"
     ) {
       return false;
     }

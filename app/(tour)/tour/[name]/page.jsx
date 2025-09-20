@@ -209,7 +209,7 @@ export async function generateStaticParams() {
   const modifiedContents = tourContents?.filter((item) => {
     if (
       item.name === "makkah" ||
-      item.name === "medina" ||
+      item.name === "madinah" ||
       item.name === "jedda" ||
       item.name === "jeddah" ||
       item.name === "tabuk" ||

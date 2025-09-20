@@ -79,7 +79,7 @@ const SearchBar = () => {
                       <div className="text-15 lh-12 fw-500 js-search-option-target">
                         {item.name == "Jedda"
                           ? "Jeddah"
-                          : item.name == "Medina"
+                          : item.name == "Madinah"
                           ? "Madina"
                           : item.name}
                       </div>

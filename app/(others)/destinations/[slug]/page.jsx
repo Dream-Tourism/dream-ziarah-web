@@ -16,7 +16,7 @@ import getAllMenuItem from "@/services/menuService";
 import dynamic from "next/dynamic";
 
 const destinationsMetadatas = {
-  jedda: {
+  jeddah: {
     title: "Jeddah: Gateway to Tranquil Beauty - Dream Ziarah",
     description:
       "Explore the enchanting city of Jeddah with DreamZiarah.com. Immerse yourself in the blend of modernity and tradition, where vibrant culture meets serene coastal beauty. Plan your journey to Jeddah and create unforgettable memories.",
@@ -26,10 +26,10 @@ const destinationsMetadatas = {
     description:
       "Embark on a sacred pilgrimage to Makkah with DreamZiarah.com. Discover the spiritual heartbeat of Islam, where the iconic Kaaba stands as a symbol of devotion. Explore our Makkah packages and embark on a journey of profound spiritual significance.",
   },
-  medina: {
-    title: "Medina: Oasis of Peace and Spirituality - Dream Ziarah",
+  madinah: {
+    title: "Madinah: Oasis of Peace and Spirituality - Dream Ziarah",
     description:
-      "Experience the tranquility of Medina with DreamZiarah.com. Immerse yourself in the peaceful surroundings of the Prophet's Mosque and explore the rich Islamic history. Plan your spiritual journey to Medina with our curated packages.",
+      "Experience the tranquility of Madinah with DreamZiarah.com. Immerse yourself in the peaceful surroundings of the Prophet's Mosque and explore the rich Islamic history. Plan your spiritual journey to Madinah with our curated packages.",
   },
   taif: {
     title: "Taif: Mountain Retreat and Cultural Gem - Dream Ziarah",
@@ -71,7 +71,7 @@ const Destinations = ({ params }) => {
         </div>
         <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
           {location == "Makkah" && <Tours />}
-          {location == "Madina" && <ToursMadina />}
+          {location == "Madinah" && <ToursMadina />}
           {location == "Jeddah" && <ToursJedda />}
           {location == "Taif" && <ToursTaif />}
         </div>
@@ -91,11 +91,7 @@ const Destinations = ({ params }) => {
             <div className="col-auto">
               <h2>
                 What to know before visiting{" "}
-                {slug === "medina"
-                  ? "Madina"
-                  : slug === "jedda"
-                  ? "Jeddah"
-                  : slug.charAt(0).toUpperCase() + slug.slice(1)}
+                {slug.charAt(0).toUpperCase() + slug.slice(1)}
               </h2>
             </div>
             <IntroTown slug={slug} />
@@ -111,8 +107,8 @@ const Destinations = ({ params }) => {
         </div>
       </section>
       {slug === "makkah" && renderToursSection("Makkah")}
-      {slug === "medina" && renderToursSection("Madina")}
-      {slug === "jedda" && renderToursSection("Jeddah")}
+      {slug === "madinah" && renderToursSection("Madinah")}
+      {slug === "jeddah" && renderToursSection("Jeddah")}
       {slug === "taif" && renderToursSection("Taif")}
 
       <section className="layout-pt-md layout-pb-lg">
@@ -121,12 +117,7 @@ const Destinations = ({ params }) => {
             <div className="col-auto">
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
-                  Top sights in{" "}
-                  {slug == "medina"
-                    ? "Madina"
-                    : slug == "jedda"
-                    ? "Jeddah"
-                    : slug.charAt(0).toUpperCase() + slug.slice(1)}
+                  Top sights in {slug.charAt(0).toUpperCase() + slug.slice(1)}
                 </h2>
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   {slightContent[slug]?.title}
@@ -184,7 +175,7 @@ const Destinations = ({ params }) => {
             <div className="col-lg-4">
               <h2 className="text-30 fw-600">
                 FAQs about{" "}
-                {slug === "medina"
+                {slug === "madinah"
                   ? "Madina"
                   : slug === "jedda"
                   ? "Jeddah"
@@ -206,7 +197,7 @@ const Destinations = ({ params }) => {
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
                   Destinations near{" "}
-                  {slug === "medina"
+                  {slug === "madinah"
                     ? "Madina"
                     : slug === "jedda"
                     ? "Jeddah"

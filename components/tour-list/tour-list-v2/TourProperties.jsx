@@ -27,7 +27,7 @@ const TourProperties = ({ searchLocation }) => {
     switch (location) {
       case "Makkah":
         return "Ziyarat In Makkah";
-      case "Medina":
+      case "Madinah":
       case "Madina":
         return "Ziyarat In Madina";
       case "Taif":
@@ -79,7 +79,7 @@ const TourProperties = ({ searchLocation }) => {
   // Normalize location name for display
   const getDisplayLocationName = (location) => {
     switch (location) {
-      case "Medina":
+      case "Madinah":
         return "Madina";
       case "Jedda":
         return "Jeddah";
@@ -182,7 +182,7 @@ const TourProperties = ({ searchLocation }) => {
                           backgroundColor:
                             currentSearchLocation == "Makkah"
                               ? "#353537"
-                              : currentSearchLocation == "Medina" ||
+                              : currentSearchLocation == "Madinah" ||
                                 currentSearchLocation == "Madina"
                               ? "#21b510"
                               : currentSearchLocation == "Taif"
@@ -194,7 +194,7 @@ const TourProperties = ({ searchLocation }) => {
                           backgroundImage:
                             currentSearchLocation == "Makkah"
                               ? "linear-gradient(to right, #353537 , #0d0c0d)"
-                              : currentSearchLocation == "Medina" ||
+                              : currentSearchLocation == "Madinah" ||
                                 currentSearchLocation == "Madina"
                               ? "linear-gradient(to right, #21b510 , #158805)"
                               : currentSearchLocation == "Taif"

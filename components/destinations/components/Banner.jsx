@@ -38,7 +38,7 @@ const Banner = ({ slug }) => {
             }}
           >
             Explore{" "}
-            {slug == "medina"
+            {slug == "madinah"
               ? "Madina"
               : slug == "jedda"
               ? "Jeddah"
@@ -51,7 +51,7 @@ const Banner = ({ slug }) => {
             }}
           >
             Explore deals, travel guides and things to do in{" "}
-            {slug == "medina"
+            {slug == "madinah"
               ? "Madina"
               : slug == "jedda"
               ? "Jeddah"

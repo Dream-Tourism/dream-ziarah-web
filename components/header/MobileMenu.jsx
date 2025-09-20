@@ -112,11 +112,7 @@ const MobileMenu = () => {
                           : "inactive-menu fw-400"
                       }
                     >
-                      {item.name == "Jedda"
-                        ? "Jeddah"
-                        : item.name == "Medina"
-                        ? "Madina"
-                        : item.name}
+                      {item.name}
                     </MenuItem>
                   ))}
                 </SubMenu>
