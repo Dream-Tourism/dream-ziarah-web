@@ -4,12 +4,11 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import Slider from "react-slick";
 import useWindowSize from "@/hooks/useWindowSize";
-import TourSkeleton from "../skeleton/TourSkeleton";
 import { useAllTour } from "@/hooks/useAllTour";
 import convertCurrency from "@/utils/currency";
 
-const Tours = ({ filterLocation, allTours: data }) => {
-  // const { data, error, isLoading } = useAllTour();
+const Tours = ({ filterLocation }) => {
+  const { data, error, isLoading } = useAllTour();
   // console.log("All Tour Data:", data);
 
   const { currentCurrency } = useSelector((state) => state.currency);
@@ -119,8 +118,12 @@ const Tours = ({ filterLocation, allTours: data }) => {
     );
   }
 
-  if (filteredTours.length === 0) {
-    return <TourSkeleton />;
+  if (isLoading) {
+    return " ";
+  }
+
+  if (error || filteredTours.length === 0) {
+    return " ";
   }
 
   //  Bootstrap Grid fallback when < 4 tours

@@ -70,7 +70,7 @@ const Destinations = ({ params }) => {
           </div>
         </div>
         <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-          {location == "Makkah" && <Tours />}
+          {location == "Makkah" && <Tours filterLocation="Makkah" />}
           {location == "Madinah" && <ToursMadina />}
           {location == "Jeddah" && <ToursJedda />}
           {location == "Taif" && <ToursTaif />}
