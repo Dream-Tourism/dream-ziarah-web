@@ -2,18 +2,10 @@ import { GET_ALL_TOUR, GET_TOUR_ENTRYID } from "@/constant/constants";
 
 export async function getAllToursServer() {
   try {
-    // Add timestamp to prevent caching
-    const timestamp = new Date().getTime();
-    const url = `${GET_ALL_TOUR}?t=${timestamp}`;
-
-    const response = await fetch(url, {
-      cache: "no-store", // This tells Next.js not to cache the response
+    const response = await fetch(GET_ALL_TOUR, {
+      next: { revalidate: 300 }, // Cache with 5-minute revalidation
       headers: {
         "Content-Type": "application/json",
-        // Additional headers to prevent caching
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
       },
     });
 
@@ -35,11 +27,31 @@ export async function getAllToursServer() {
 
 export async function getTourBySlugServer(slug) {
   try {
-    const allTours = await getAllToursServer();
+    if (!slug) return null;
 
-    if (!allTours || !slug) return null;
+    // First try to get tour directly by slug if API supports it
+    // For now, we'll still need to fetch all tours, but we'll optimize the request
+    const response = await fetch(GET_ALL_TOUR, {
+      next: { revalidate: 300 }, // Cache with 5-minute revalidation
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    const tour = allTours.find((tour) => tour.slug === slug) || null;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch tours: ${response.status}`);
+    }
+
+    const allTours = await response.json();
+    const filteredTours = allTours?.filter((tour) => tour.published === true) || [];
+
+    const tour = filteredTours.find((tour) => tour.slug === slug) || null;
+
+    // Debug logging to help identify issues
+    if (!tour) {
+      console.log('Tour not found for slug:', slug);
+      console.log('Available tour slugs:', filteredTours.map(t => t.slug).slice(0, 5));
+    }
 
     return {
       tour,

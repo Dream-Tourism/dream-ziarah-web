@@ -1,9 +1,7 @@
 import Wrapper from "@/components/layout/Wrapper";
 import TourHeading from "@/components/tour-single/TourHeading";
 import TourSingle from "@/components/tour-single/TourSingle";
-import getAllContentByMenuId from "@/services/contentService";
-import getAllMenuItem from "@/services/menuService";
-import { getAllToursServer, getTourBySlugServer } from "@/services/tourService";
+import { getTourBySlugServer } from "@/services/tourService";
 import { notFound } from "next/navigation";
 
 function getFullUrl(slug) {
@@ -198,7 +196,7 @@ const tourMetadatas = {
   //end taif
 };
 
-export async function generateMetadata({ params, searchParams }, parent) {
+export async function generateMetadata({ params }) {
   const { name } = params;
 
   return {
@@ -207,33 +205,24 @@ export async function generateMetadata({ params, searchParams }, parent) {
   };
 }
 
-// Server-side data fetching function
+// Optimized server-side data fetching function
 async function getTourData(slug) {
   try {
-    // console.log("Fetching tour data for slug:", slug);
+    console.log('Fetching tour data for slug:', slug);
 
-    // Fetch all data in parallel for better performance
-    const [tourBySlugData, allTours] = await Promise.all([
-      getTourBySlugServer(slug),
-      getAllToursServer(),
-    ]);
+    // Only fetch the specific tour by slug
+    const tourBySlugData = await getTourBySlugServer(slug);
 
-    if (!tourBySlugData || !tourBySlugData.tourIds) {
-      // console.log("Tour not found for slug:", slug);
+    if (!tourBySlugData || !tourBySlugData.tour) {
+      console.log('No tour data found for slug:', slug);
       return null;
     }
 
-    // Get detailed tour data
-    const tourData = tourBySlugData?.tour;
-
-    if (!tourData) {
-      // console.log("Tour data not found for ID:", tourData);
-      return null;
-    }
+    console.log('Successfully found tour:', tourBySlugData.tour.name);
 
     return {
-      tourData,
-      allTours,
+      tourData: tourBySlugData.tour,
+      allTours: [], // We'll fetch this lazily in the component if needed
       tourIds: tourBySlugData.tourIds,
     };
   } catch (error) {
@@ -243,41 +232,48 @@ async function getTourData(slug) {
 }
 
 export default async function Tour({ params }) {
-  const { slug } = await params;
-  // console.log("Tour page params:", params);
+  try {
+    const awaitedParams = await params;
+    const { name: slug } = awaitedParams;
 
-  // Fetch all tour data at the server level
-  const data = await getTourData(params.name);
+    console.log('Tour page accessed with slug:', slug);
 
-  // Handle not found case
-  if (!data || !data.tourData) {
-    // console.log("Tour not found, redirecting to 404");
-    notFound();
-  }
+    if (!slug) {
+      console.log('No slug provided, redirecting to 404');
+      notFound();
+    }
 
-  const { tourData, allTours, tourIds } = data;
+    // Fetch tour data optimized for performance
+    const data = await getTourData(slug);
 
-  // console.log("Tour data not found for ID:", tourData);
+    // Handle not found case
+    if (!data || !data.tourData) {
+      console.log('Tour data not found, redirecting to 404');
+      notFound();
+    }
 
-  // console.log("Successfully fetched tour data:", {
-  //   tourId: tourIds,
-  //   tourName: tourData?.name,
-  //   allToursCount: allTours?.length,
-  // });
-  const fullUrl = getFullUrl(slug);
-  return (
-    <>
+    const { tourData, allTours, tourIds } = data;
+    const fullUrl = getFullUrl(slug);
+
+    return (
       <Wrapper>
         <TourSingle
-          params={params}
+          params={awaitedParams}
           tourData={tourData}
           allTours={allTours}
           tourIds={tourIds}
           fullUrl={fullUrl}
         >
-          <TourHeading params={params} tourData={tourData} />
+          <TourHeading params={awaitedParams} tourData={tourData} />
         </TourSingle>
       </Wrapper>
-    </>
-  );
+    );
+  } catch (error) {
+    // Check if it's a NEXT_NOT_FOUND error and re-throw it
+    if (error.digest === 'NEXT_NOT_FOUND') {
+      throw error;
+    }
+    console.error("Unexpected error rendering tour page:", error);
+    notFound();
+  }
 }
