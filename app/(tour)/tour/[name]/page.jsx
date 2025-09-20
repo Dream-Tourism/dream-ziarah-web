@@ -198,32 +198,6 @@ const tourMetadatas = {
   //end taif
 };
 
-export async function generateStaticParams() {
-  const data = await getAllMenuItem();
-  const ziarahId = data?.menus
-    ?.find((item) => item.name == "Tours")
-    ?.children?.find((child) => child?.name == "Makka Tours")?.id;
-
-  const tourContents = await getAllContentByMenuId(ziarahId);
-
-  const modifiedContents = tourContents?.filter((item) => {
-    if (
-      item.name === "makkah" ||
-      item.name === "madinah" ||
-      item.name === "jedda" ||
-      item.name === "jeddah" ||
-      item.name === "tabuk" ||
-      item.name === "taif"
-    )
-      return false;
-    return true;
-  });
-
-  return modifiedContents?.map((item) => ({
-    name: item?.name?.toLowerCase()?.split(" ")?.join("-"),
-  }));
-}
-
 export async function generateMetadata({ params, searchParams }, parent) {
   const { name } = params;
 
