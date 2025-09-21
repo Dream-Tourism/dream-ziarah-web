@@ -228,7 +228,7 @@ const Calendar = ({
       {isMobile && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
-          style={{ zIndex: 999 }}
+          style={{ zIndex: 700 }}
           onClick={onClose}
         />
       )}
@@ -243,7 +243,7 @@ const Calendar = ({
           left: isMobile ? "50%" : alignRight ? "auto" : "0",
           right: alignRight ? "0" : "auto",
           transform: isMobile ? "translate(-50%, -50%)" : "none",
-          zIndex: 1000,
+          zIndex: 700,
           width: isMobile ? "90vw" : "380px",
           maxWidth: isMobile ? "350px" : "420px",
           marginTop: isMobile ? "0" : flipAbove ? "0" : "8px",

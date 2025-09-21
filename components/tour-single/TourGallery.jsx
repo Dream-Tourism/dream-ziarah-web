@@ -804,7 +804,7 @@ export default function TourGallery({ tour, onDataAvailable }) {
             {/* Main Content on Left */}
             <div className="col-xl-8 order-xl-1">
               <div ref={tourSnapshotRef}>
-                <h3 className="text-22 fw-600">Tour snapshot</h3>
+                <h2 className="text-22 fw-600">Tour snapshot</h2>
                 <TourSnapShot tour={tour} />
               </div>
               {/* End toursnapshot */}

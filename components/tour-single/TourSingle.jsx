@@ -312,28 +312,28 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
       )} */}
 
       {makka && tourData?.name && dataAvailable && (
-        <section className="layout-pt-lg layout-pb-lg mt-50 border-top-light">
+        <section className="layout-pt-md layout-pb-md">
           <div className="container">
-            <div className="row y-gap-20 justify-between items-end">
-              <div className="col-auto">
+            <div className="row justify-center text-center">
+              <div className="col-12">
                 <div className="sectionTitle -md">
-                  <h2 className="sectionTitle__title">
+                  <h2 className="sectionTitle__title md:text-24">
                     Popular Tours In Makkah
                   </h2>
-                  <p className=" sectionTitle__text mt-5 sm:mt-0">
+                  <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                     Find Your Perfect Makkah Tour: Private, Shared, and More
                   </p>
                 </div>
               </div>
 
-              <div className="col-auto">
+              {/* <div className="col-auto">
                 <Link
                   href="/tours/?location=Makkah"
                   className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                 >
                   More <div className="icon-arrow-top-right ml-15" />
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
@@ -344,28 +344,28 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
       )}
 
       {madina && tourData?.name && dataAvailable && (
-        <section className="layout-pt-lg layout-pb-lg mt-50 border-top-light">
+        <section className="layout-pt-md layout-pb-md">
           <div className="container">
-            <div className="row y-gap-20 justify-between items-end">
-              <div className="col-auto">
+            <div className="row justify-center text-center">
+              <div className="col-12">
                 <div className="sectionTitle -md">
-                  <h1 className="sectionTitle__title">
+                  <h2 className="sectionTitle__title md:text-24">
                     Popular Tours In Madina
-                  </h1>
-                  <p className=" sectionTitle__text mt-5 sm:mt-0">
+                  </h2>
+                  <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                     Find Your Perfect Madina Tour: Private, Shared, and More
                   </p>
                 </div>
               </div>
 
-              <div className="col-auto">
+              {/* <div className="col-auto">
                 <Link
                   href="/tours/?location=Madinah"
                   className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                 >
                   More <div className="icon-arrow-top-right ml-15" />
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
@@ -376,28 +376,28 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
       )}
 
       {jedda && tourData?.name && dataAvailable && (
-        <section className="layout-pt-lg layout-pb-lg mt-50 border-top-light">
+        <section className="layout-pt-md layout-pb-md">
           <div className="container">
-            <div className="row y-gap-20 justify-between items-end">
-              <div className="col-auto">
+            <div className="row justify-center text-center">
+              <div className="col-12">
                 <div className="sectionTitle -md">
-                  <h1 className="sectionTitle__title">
+                  <h2 className="sectionTitle__title md:text-24">
                     Popular Tours In Jeddah
-                  </h1>
-                  <p className=" sectionTitle__text mt-5 sm:mt-0">
+                  </h2>
+                  <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                     Find Your Perfect Jeddah Tour: Private, Shared, and More
                   </p>
                 </div>
               </div>
 
-              <div className="col-auto">
+              {/* <div className="col-auto">
                 <Link
                   href="/tours/?location=Jedda"
                   className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                 >
                   More <div className="icon-arrow-top-right ml-15" />
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
@@ -408,26 +408,28 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
       )}
 
       {taif && tourData?.name && dataAvailable && (
-        <section className="layout-pt-lg layout-pb-lg mt-50 border-top-light">
+        <section className="layout-pt-md layout-pb-md">
           <div className="container">
-            <div className="row y-gap-20 justify-between items-end">
-              <div className="col-auto">
+            <div className="row justify-center text-center">
+              <div className="col-12">
                 <div className="sectionTitle -md">
-                  <h1 className="sectionTitle__title">Popular Tours In Taif</h1>
-                  <p className=" sectionTitle__text mt-5 sm:mt-0">
+                  <h2 className="sectionTitle__title md:text-24">
+                    Find Your Perfect Taif Tour: Private, Shared, and More
+                  </h2>
+                  <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                     Find Your Perfect Taif Tour: Private, Shared, and More
                   </p>
                 </div>
               </div>
 
-              <div className="col-auto">
+              {/* <div className="col-auto">
                 <Link
                   href="/tours/?location=Taif"
                   className="button -md -blue-1 bg-blue-1-05 text-blue-1"
                 >
                   More <div className="icon-arrow-top-right ml-15" />
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">

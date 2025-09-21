@@ -8,24 +8,18 @@ const ItineraryContent = ({
 }) => {
   // Maintain state for expanded items
   const [expandedItems, setExpandedItems] = useState({});
-
-  const modifiedItenarayItem = itenarayItems?.map((item, indx) => {
-    // Debug: Log each item to see the actual structure
-    // console.log(`Itinerary item ${indx}:`, item);
-
-    return {
-      id: item.id,
-      targetCollapse: `item_${indx + 1}`,
-      itemNo: indx + 1,
-      title: item.title,
-      lat: item.lat,
-      lng: item.lng || item.longitude || 0, // Handle different property names
-      img: "/img/tours/list.png",
-      content: item.description,
-      classShowHide: "",
-      location: item.location,
-    };
-  });
+  const modifiedItenarayItem = itenarayItems?.map((item, indx) => ({
+    id: item.id,
+    targetCollapse: `item_${indx + 1}`,
+    itemNo: indx + 1,
+    title: item.title,
+    lat: item.lat,
+    long: item?.long,
+    img: "/img/tours/list.png",
+    content: item.description,
+    classShowHide: "",
+    location: item.location,
+  }));
 
   // Function to toggle item expansion
   const toggleItem = (itemId) => {
@@ -43,7 +37,7 @@ const ItineraryContent = ({
 
   return (
     <>
-      {modifiedItenarayItem?.map((item, index) => (
+      {modifiedItenarayItem.map((item, index) => (
         <div
           className="col-12"
           key={item.id}

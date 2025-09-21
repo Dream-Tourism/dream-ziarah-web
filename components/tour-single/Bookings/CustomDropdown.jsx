@@ -85,7 +85,7 @@ const CustomDropdown = ({
               marginTop: "2px",
               listStyle: "none",
               padding: 0,
-              zIndex: 9999,
+              zIndex: 700,
               backgroundColor: "white",
             }}
           >
