@@ -88,12 +88,6 @@ const Destinations = ({ params }) => {
             <Banner slug={slug} />
           </div>
           <div className="row y-gap-20 pt-40">
-            <div className="col-auto">
-              <h2>
-                What to know before visiting{" "}
-                {slug.charAt(0).toUpperCase() + slug.slice(1)}
-              </h2>
-            </div>
             <IntroTown slug={slug} />
           </div>
           <div className="pt-30 mt-30 border-top-light" />

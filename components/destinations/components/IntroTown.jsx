@@ -15,18 +15,18 @@ const IntroTown = ({ slug }) => {
   if (isSuccess) {
     value = data[0]?.value;
   }
-
+  console.log(data, "value in intro town");
   return (
     <>
       <div className="col-xl-8">
-        <p className="text-15 text-dark-1">
+        <div className="description-content">
           <Interweave
             allowAttributes
             allowElements
             disableLineBreaks={false}
             content={value}
           />
-        </p>
+        </div>
       </div>
       {/* End .col */}
 
