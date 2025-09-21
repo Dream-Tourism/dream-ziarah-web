@@ -13,7 +13,7 @@ const IntroTown = ({ slug }) => {
 
   let value = "";
   if (isSuccess) {
-    value = data[0]?.value;
+    value = data[0]?.description;
   }
   console.log(data, "value in intro town");
   return (

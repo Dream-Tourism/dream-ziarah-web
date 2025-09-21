@@ -12,7 +12,8 @@ const Banner = ({ slug }) => {
   const destinationId = menuItems
     ?.find((item) => item.name === "Destinations")
     ?.children?.find((item) => item.name.toLowerCase() === slug)?.id;
-  const { data: data2, isSuccess: isSuccess2 } = useGetAllContentQuery(destinationId);
+  const { data: data2, isSuccess: isSuccess2 } =
+    useGetAllContentQuery(destinationId);
 
   let description = "";
   if (isSuccess2) {
@@ -47,9 +48,10 @@ const Banner = ({ slug }) => {
         {description && (
           <div className="absolute z-2 px-50 py-30 md:py-20 md:px-30 text-white">
             <div
-              className="text-white"
+              className="destination_content "
               style={{
                 textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                color: "white !important",
               }}
               dangerouslySetInnerHTML={{ __html: description }}
             ></div>
