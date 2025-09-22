@@ -1,6 +1,6 @@
 export const slightContent = {
   jedda: {
-    title: `Jeddah, while known for its modernity and cosmopolitan atmosphere, also has sites of significance related to Islamic history. Here are four places in Jeddah with ties to Islamic heritage:`,
+    title: `Check out our Jeddah ziyarat tour options with guided ziyarat tours in Saudi Arabia. Visit the ziyarat places in Jeddah, like Al-Balad and more. Each tour includes English guides, tips, and travel ideas.`,
     items: [
       {
         id: 1,
@@ -67,7 +67,7 @@ export const slightContent = {
     location: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d475325.03137566603!2d38.881491443934955!3d21.44980016391344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c3d01fb1137e59%3A0xe059579737b118db!2sJeddah%20Saudi%20Arabia!5e0!3m2!1sen!2sbd!4v1701336590500!5m2!1sen!2sbd`,
   },
   makkah: {
-    title: `Makkah, the holiest city in Islam, is home to numerous significant sites related to Islamic history. Here are four of the most important:`,
+    title: `Check out our Makkah ziyarat tour options with a guided ziyarat tour in Saudi Arabiaia. Visit ziyarat places iMakkahah like Haram Sharif and more. Each tour includes English-speaking guide tips and travel ideas.`,
     items: [
       {
         id: 1,
@@ -134,7 +134,7 @@ export const slightContent = {
     location: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d237684.58518226293!2d39.681731277513904!3d21.43625437209811!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c21b4ced818775%3A0x98ab2469cf70c9ce!2sMakkah%20Saudi%20Arabia!5e0!3m2!1sen!2sbd!4v1701348201552!5m2!1sen!2sbd`,
   },
   madinah: {
-    title: `Madinah, the second holiest city in Islam, is rich in Islamic history. Here are four significant sights in Madinah related to Islamic history:`,
+    title: `Check out our Madinah ziyarat tour options with guided ziyarat tours in Saudi Arabia. Visit ziyarat places in Madinah like the Prophet’s Mosque and more. Each tour includes English guides, tips and travel ideas.`,
     items: [
       {
         id: 1,
@@ -201,7 +201,7 @@ export const slightContent = {
     location: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d232410.1505581963!2d39.45274259705306!3d24.47129554590948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15bdbe5197d220d5%3A0x2e54514fea3b08d9!2sMadinah%20Saudi%20Arabia!5e0!3m2!1sen!2sbd!4v1701348141987!5m2!1sen!2sbd`,
   },
   taif: {
-    title: `Taif, a city with a rich history, has several places of significance related to Islamic history. Here are four sights in Taif that have ties to Islamic heritage:`,
+    title: `Check out our Taif ziyarat tour options with guided ziyarat tours in Saudi Arabia. Visit ziyarat places in Taif, like Souq Okaz and more. Each tour includes English guides and travel ideas.`,
     items: [
       {
         id: 1,

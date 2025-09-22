@@ -60,14 +60,6 @@ const Destinations = ({ params }) => {
               </p>
             </div>
           </div>
-          {/* <div className="col-auto">
-            <Link
-              href={`/tours/?location=${location}`}
-              className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-            >
-              More <div className="icon-arrow-top-right ml-15" />
-            </Link>
-          </div> */}
         </div>
         <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
           {location == "Makkah" && <Tours filterLocation="Makkah" />}
@@ -123,7 +115,8 @@ const Destinations = ({ params }) => {
             <div className="col-12">
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
-                  Top sights in {slug.charAt(0).toUpperCase() + slug.slice(1)}
+                  Discover {slug.charAt(0).toUpperCase() + slug.slice(1)}{" "}
+                  Ziyarat Tours and Scenic Spots
                 </h2>
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   {slightContent[slug]?.title}
