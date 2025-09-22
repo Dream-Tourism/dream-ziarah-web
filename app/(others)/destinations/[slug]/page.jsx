@@ -94,7 +94,7 @@ const Destinations = ({ params }) => {
           <div className="row y-gap-20">
             <div className="col-12">
               <h2 className="text-22 fw-600">
-                Check {" "}
+                Check{" "}
                 {slug === "makkah"
                   ? "Makkah"
                   : slug === "madinah"
