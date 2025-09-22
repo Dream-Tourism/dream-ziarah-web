@@ -94,7 +94,17 @@ const Destinations = ({ params }) => {
           <div className="row y-gap-20">
             <div className="col-12">
               <h2 className="text-22 fw-600">
-                Check Taif Weather for Your Ziyarat Tour{" "}
+                Check {" "}
+                {slug === "makkah"
+                  ? "Makkah"
+                  : slug === "madinah"
+                  ? "Madinah"
+                  : slug === "jeddah"
+                  ? "Jeddah"
+                  : slug === "taif"
+                  ? "Taif"
+                  : "Your Location"}{" "}
+                Weather for Your Ziyarat Tour Weather for Your Ziyarat Tour{" "}
               </h2>
             </div>
             <Weather slug={slug} />
