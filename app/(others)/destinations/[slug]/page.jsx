@@ -49,8 +49,8 @@ const Destinations = ({ params }) => {
   const renderToursSection = (location) => (
     <section className="layout-pb-lg">
       <div className="container">
-        <div className="row y-gap-20 justify-between items-end">
-          <div className="col-auto">
+        <div className="row justify-center text-center">
+          <div className="col-12">
             <div className="sectionTitle -md">
               <h2 className="sectionTitle__title">
                 Popular Tours In {location}
@@ -60,14 +60,14 @@ const Destinations = ({ params }) => {
               </p>
             </div>
           </div>
-          <div className="col-auto">
+          {/* <div className="col-auto">
             <Link
               href={`/tours/?location=${location}`}
               className="button -md -blue-1 bg-blue-1-05 text-blue-1"
             >
               More <div className="icon-arrow-top-right ml-15" />
             </Link>
-          </div>
+          </div> */}
         </div>
         <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
           {location == "Makkah" && <Tours filterLocation="Makkah" />}
@@ -107,8 +107,8 @@ const Destinations = ({ params }) => {
 
       <section className="layout-pt-md layout-pb-lg">
         <div className="container">
-          <div className="row">
-            <div className="col-auto">
+          <div className="row justify-center text-center">
+            <div className="col-12">
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
                   Top sights in {slug.charAt(0).toUpperCase() + slug.slice(1)}
@@ -126,8 +126,8 @@ const Destinations = ({ params }) => {
           </div>
           {/* End .row */}
 
-          <div className="row">
-            <div className="col-auto">
+          <div className="row justify-center text-center">
+            <div className="col-12">
               <div className="mt-20 sectionTitle -md">
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   {slightContent[slug]?.footerContent}
@@ -186,16 +186,17 @@ const Destinations = ({ params }) => {
       </section>
       <section className="layout-pt-md layout-pb-lg">
         <div className="container">
-          <div className="row y-gap-20">
-            <div className="col-auto">
+          <div className="row justify-center text-center">
+            <div className="col-12">
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
-                  Destinations near{" "}
+                  Explore Near{" "}
                   {slug === "madinah"
                     ? "Madina"
                     : slug === "jedda"
                     ? "Jeddah"
-                    : slug.charAt(0).toUpperCase() + slug.slice(1)}
+                    : slug.charAt(0).toUpperCase() + slug.slice(1)}{" "}
+                  Ziyarat Places{" "}
                 </h2>
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   These popular destinations have a lot to offer
@@ -203,7 +204,10 @@ const Destinations = ({ params }) => {
               </div>
             </div>
           </div>
-          <div className="pt-40 relative" style={{ width: "700px" }}>
+          <div
+            className="pt-5 position-relative mx-auto "
+            style={{ width: "700px" }}
+          >
             <TopDestinations2 slug={slug} />
           </div>
         </div>
