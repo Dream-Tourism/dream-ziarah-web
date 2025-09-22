@@ -93,7 +93,9 @@ const Destinations = ({ params }) => {
           <div className="pt-30 mt-30 border-top-light" />
           <div className="row y-gap-20">
             <div className="col-12">
-              <h2 className="text-22 fw-600">Local weather</h2>
+              <h2 className="text-22 fw-600">
+                Check Taif Weather for Your Ziyarat Tour{" "}
+              </h2>
             </div>
             <Weather slug={slug} />
           </div>
