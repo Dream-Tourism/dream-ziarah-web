@@ -126,15 +126,15 @@ export const slightContent = {
       {
         id: 5,
         collapseTarget: "Five",
-        title: "How far is Makkah from Medina?",
-        content: `Makkah is approximately 450 kilometers (280 miles) from Medina, making it a significant distance covered by pilgrims during the Hajj pilgrimage.`,
+        title: "How far is Makkah from Madinah?",
+        content: `Makkah is approximately 450 kilometers (280 miles) from Madinah, making it a significant distance covered by pilgrims during the Hajj pilgrimage.`,
       },
     ],
     footerContent: `These sights in Makkah are integral to Islamic history, representing the core of the faith and serving as focal points for millions of Muslims around the world.`,
     location: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d237684.58518226293!2d39.681731277513904!3d21.43625437209811!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c21b4ced818775%3A0x98ab2469cf70c9ce!2sMakkah%20Saudi%20Arabia!5e0!3m2!1sen!2sbd!4v1701348201552!5m2!1sen!2sbd`,
   },
-  medina: {
-    title: `Medina, the second holiest city in Islam, is rich in Islamic history. Here are four significant sights in Medina related to Islamic history:`,
+  madinah: {
+    title: `Madinah, the second holiest city in Islam, is rich in Islamic history. Here are four significant sights in Madinah related to Islamic history:`,
     items: [
       {
         id: 1,
@@ -147,7 +147,7 @@ export const slightContent = {
         id: 2,
         img: "https://imagedelivery.net/dIKhvGtesTiRSxhQ2oKWkA/81c48aaf-002b-4091-a1d3-bf21022d6c00/public",
         title: "Quba Mosque",
-        text: `Quba Mosque is the first mosque built by Prophet Muhammad upon his arrival in Medina. It holds immense historical significance as a place where the Prophet laid the foundation for Islamic worship.`,
+        text: `Quba Mosque is the first mosque built by Prophet Muhammad upon his arrival in Madinah. It holds immense historical significance as a place where the Prophet laid the foundation for Islamic worship.`,
         delayAnimation: "200",
       },
       {
@@ -169,35 +169,35 @@ export const slightContent = {
       {
         id: 1,
         collapseTarget: "One",
-        title: "What is the significance of the Prophet's Mosque in Medina?",
+        title: "What is the significance of the Prophet's Mosque in Madinah?",
         content: `The Prophet's Mosque houses the tomb of Prophet Muhammad and is the second holiest site in Islam. It holds immense religious and historical importance.`,
       },
       {
         id: 2,
         collapseTarget: "Two",
-        title: "Can non-Muslims visit Medina?",
-        content: `Similar to Makkah, non-Muslims are not allowed to enter the city of Medina, as it is considered sacred and exclusive to followers of Islam.`,
+        title: "Can non-Muslims visit Madinah?",
+        content: `Similar to Makkah, non-Muslims are not allowed to enter the city of Madinah, as it is considered sacred and exclusive to followers of Islam.`,
       },
       {
         id: 3,
         collapseTarget: "Three",
-        title: "What is the historical significance of Quba Mosque in Medina?",
+        title: "What is the historical significance of Quba Mosque in Madinah?",
         content: `Quba Mosque is the first mosque built by Prophet Muhammad in Islam, making it a vital historical and religious landmark.`,
       },
       {
         id: 4,
         collapseTarget: "Four",
-        title: "Are there other important mosques in Medina?",
-        content: `Yes, besides the Prophet's Mosque, Medina is home to numerous significant mosques, including Qiblatain Mosque and Quba Mosque, each with its historical importance.`,
+        title: "Are there other important mosques in Madinah?",
+        content: `Yes, besides the Prophet's Mosque, Madinah is home to numerous significant mosques, including Qiblatain Mosque and Quba Mosque, each with its historical importance.`,
       },
       {
         id: 5,
         collapseTarget: "Five",
-        title: "What is the significance of Uhud Mountain in Medina?",
+        title: "What is the significance of Uhud Mountain in Madinah?",
         content: `Uhud Mountain and its battlefield are associated with the Battle of Uhud, a crucial event in Islamic history. The mountain serves as a reminder of early Muslim struggles.`,
       },
     ],
-    footerContent: `These sights in Medina are integral to Islamic history and offer visitors a profound connection to the foundations of the Islamic faith.`,
+    footerContent: `These sights in Madinah are integral to Islamic history and offer visitors a profound connection to the foundations of the Islamic faith.`,
     location: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d232410.1505581963!2d39.45274259705306!3d24.47129554590948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15bdbe5197d220d5%3A0x2e54514fea3b08d9!2sMadinah%20Saudi%20Arabia!5e0!3m2!1sen!2sbd!4v1701348141987!5m2!1sen!2sbd`,
   },
   taif: {
@@ -221,7 +221,7 @@ export const slightContent = {
         id: 3,
         img: "https://imagedelivery.net/dIKhvGtesTiRSxhQ2oKWkA/5437d7a7-c5da-485b-10b0-4df982c36a00/public",
         title: "Quba Mosque in Taif",
-        text: `Quba Mosque in Taif, like its namesake in Medina, holds significance in Islamic history. It is a place for prayer and reflection, contributing to the religious and cultural fabric of the city.`,
+        text: `Quba Mosque in Taif, like its namesake in Madinah, holds significance in Islamic history. It is a place for prayer and reflection, contributing to the religious and cultural fabric of the city.`,
         delayAnimation: "300",
       },
       {
@@ -254,8 +254,8 @@ export const slightContent = {
       {
         id: 4,
         collapseTarget: "Four",
-        title: "Is Taif close to Mecca and Medina?",
-        content: `Yes, Taif is approximately a 3-hour drive from Mecca and around 5 hours from Medina, making it accessible for those on a pilgrimage.`,
+        title: "Is Taif close to Mecca and Madinah?",
+        content: `Yes, Taif is approximately a 3-hour drive from Mecca and around 5 hours from Madinah, making it accessible for those on a pilgrimage.`,
       },
       {
         id: 5,
@@ -288,7 +288,7 @@ export const slightContent = {
         id: 3,
         img: "/img/destinations/tabuk/qubaMosqueInTabuk.webp",
         title: "Quba Mosque in Tabuk",
-        text: `Quba Mosque in Tabuk, while not as famous as the Quba Mosque in Medina, holds religious significance. Visitors can engage in prayers and contemplation in this mosque, fostering a connection with Islamic heritage.`,
+        text: `Quba Mosque in Tabuk, while not as famous as the Quba Mosque in Madinah, holds religious significance. Visitors can engage in prayers and contemplation in this mosque, fostering a connection with Islamic heritage.`,
         delayAnimation: "300",
       },
       {
@@ -328,7 +328,7 @@ export const slightContent = {
         id: 5,
         collapseTarget: "Five",
         title: "Is Tabuk close to other major cities in Saudi Arabia?",
-        content: `Yes, Tabuk is well-connected, with a proximity of about 5 hours to Medina and a 10-hour drive to Riyadh, making it accessible for travelers exploring the region.`,
+        content: `Yes, Tabuk is well-connected, with a proximity of about 5 hours to Madinah and a 10-hour drive to Riyadh, making it accessible for travelers exploring the region.`,
       },
     ],
     footerContent: `Please note that the prominence of Islamic historical sites in Tabuk may not be as pronounced as in other cities, but these locations provide some connection to Islamic history and culture in the region.`,

@@ -7,13 +7,22 @@ import useMenus from "@/hooks/useMenus";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { isActiveLink } from "../../utils/linkActiveChecker";
+import { logoutUserThunk } from "@/features/auth/authSlice";
 import Social from "../common/social/Social";
 import ContactInfo from "./ContactInfo";
+import { useDispatch, useSelector } from "react-redux";
 
 const MobileMenu = () => {
+  const dispatch = useDispatch();
   const pathname = usePathname();
   const router = useRouter();
   const menuItems = useMenus();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  const handleLogout = async () => {
+    await dispatch(logoutUserThunk());
+    router.push("/login");
+  };
 
   const { data, isSuccess, isLoading } = useGetLogoUrlQuery(null);
 
@@ -103,11 +112,7 @@ const MobileMenu = () => {
                           : "inactive-menu fw-400"
                       }
                     >
-                      {item.name == "Jedda"
-                        ? "Jeddah"
-                        : item.name == "Medina"
-                        ? "Madina"
-                        : item.name}
+                      {item.name}
                     </MenuItem>
                   ))}
                 </SubMenu>
@@ -124,7 +129,53 @@ const MobileMenu = () => {
           >
             Contact
           </MenuItem>
-          {/* End Contact  Menu */}
+          {/* End Contact Menu */}
+
+          {/* ✅ Mobile Login Section as Menu Item */}
+          {isAuthenticated ? (
+            <SubMenu
+              label={
+                <div className="d-flex items-center gap-1">
+                  <i className="icon-user text-16"></i>
+                  <span className="fw-500">{user?.first_name}</span>
+                </div>
+              }
+              className="fw-500"
+            >
+              <MenuItem
+                data-bs-dismiss="offcanvas"
+                onClick={() => router.push("/dashboard")}
+                className="fw-400"
+              >
+                <div className="d-flex align-items-center gap-2">
+                  <i className="icon-route text-14"></i>
+                  <span>Dashboard</span>
+                </div>
+              </MenuItem>
+              <MenuItem
+                data-bs-dismiss="offcanvas"
+                onClick={handleLogout}
+                className="fw-400"
+              >
+                <div className="d-flex align-items-center gap-2">
+                  <i className="icon-route text-14"></i>
+                  <span>Logout</span>
+                </div>
+              </MenuItem>
+            </SubMenu>
+          ) : (
+            <MenuItem
+              data-bs-dismiss="offcanvas"
+              onClick={() => router.push("/login")}
+              className="fw-500"
+            >
+              <div className="d-flex items-center gap-1">
+                <i className="icon-login text-16"></i>
+                <span className="fw-500">Login</span>
+              </div>
+            </MenuItem>
+          )}
+          {/* End Mobile Login Section */}
         </Menu>
       </Sidebar>
 

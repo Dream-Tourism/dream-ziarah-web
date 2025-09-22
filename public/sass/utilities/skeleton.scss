@@ -16,49 +16,117 @@
   animation: skeleton 1s infinite reverse;
 }
 
-/* coockie start */
+/* Cookie Consent Styles */
 
 .cookieConsent {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  text-align: center;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #333;
   padding: 20px;
   z-index: 1000;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .cookieContent {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  gap: 20px;
 }
 
-.cookieContent p {
+.cookieText {
+  flex: 1;
+}
+
+.cookieText h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.cookieText p {
   margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #555;
 }
 
-.cookieContent a {
-  color: #00bfff;
+.privacyLink {
+  color: #0066cc;
   text-decoration: underline;
-  margin-left: 5px;
+}
+
+.privacyLink:hover {
+  color: #004499;
+}
+
+.cookieButtons {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.rejectButton,
+.acceptButton {
+  padding: 12px 24px;
+  border: 2px solid #0066cc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rejectButton {
+  background-color: transparent;
+  color: #0066cc;
+}
+
+.rejectButton:hover {
+  background-color: #f0f7ff;
 }
 
 .acceptButton {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #0066cc;
   color: white;
-  border: none;
-  cursor: pointer;
 }
 
 .acceptButton:hover {
-  background-color: #0056b3;
+  background-color: #004499;
 }
 
-/* coockie start end */
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .cookieContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .cookieText {
+    text-align: center;
+  }
+
+  .cookieButtons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .rejectButton,
+  .acceptButton {
+    flex: 1;
+    min-width: 120px;
+  }
+}
 
 // for list item
 .interweave-content ul {

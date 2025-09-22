@@ -1,0 +1,91 @@
+// reviews-data.js
+
+export const reviewsSchema = {
+  "@context": "https://schema.org",
+  "@type": "Review",
+  name: "Dream Tourism IT",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5",
+    reviewCount: "16",
+  },
+  review: [
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "ManonHoope" },
+      datePublished: "2024-02-10",
+      reviewBody: "Great customer service!",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Ginna L" },
+      datePublished: "2024-02-09",
+      reviewBody: "It was all great, contact was good.",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "4fiona69" },
+      datePublished: "2024-02-08",
+      reviewBody: "Great and easy experience!",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Abdul Rahman" },
+      datePublished: "2024-02-07",
+      reviewBody: "Very smooth booking process for Umrah. Highly recommended.",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Sadia Khan" },
+      datePublished: "2024-02-06",
+      reviewBody: "Excellent customer support and quick response time.",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Mohammed Ali" },
+      datePublished: "2024-02-05",
+      reviewBody: "Best Hajj package providers. Hassle-free arrangements!",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Fatima Zohra" },
+      datePublished: "2024-02-04",
+      reviewBody: "Ziarat trip was perfectly organized. Thank you!",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Rashidul Hasan" },
+      datePublished: "2024-02-03",
+      reviewBody: "Everything was well managed from flights to hotels.",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Nusrat Jahan" },
+      datePublished: "2024-02-02",
+      reviewBody: "Very trustworthy agency. My family had a great experience.",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Khalid Mahmood" },
+      datePublished: "2024-02-01",
+      reviewBody: "Professional and reliable service. Highly satisfied!",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Person", name: "Shamima Akter" },
+      datePublished: "2024-01-30",
+      reviewBody: "User-friendly website and quick booking confirmation.",
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    },
+  ],
+};

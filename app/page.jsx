@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
+import Wrapper from "@/components/layout/Wrapper";
 
 const MainHome = dynamic(() => import("@/components/home/MainHome"));
-const Wrapper = dynamic(() => import("@/components/layout/Wrapper"));
 
 export const metadata = {
   title:
@@ -10,12 +10,13 @@ export const metadata = {
     "Dream Ziarah specializes in providing spiritual journeys with exclusive Ziyarat tours in Makkah & Madina, alongside comprehensive Umrah and Hajj packages. Explore sacred sites with us and embark on a journey of faith and discovery.",
 };
 
+// Cache for 5 minutes to improve performance
+export const revalidate = 300;
+
 export default function Home() {
   return (
-    <>
-      <Wrapper>
-        <MainHome />
-      </Wrapper>
-    </>
+    <Wrapper>
+      <MainHome />
+    </Wrapper>
   );
 }

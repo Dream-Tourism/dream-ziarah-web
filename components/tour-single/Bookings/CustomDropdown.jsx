@@ -3,7 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 
 // A small reusable dropdown component
-const CustomDropdown = ({ label, icon, value, options, onChange }) => {
+const CustomDropdown = ({
+  label,
+  icon,
+  value,
+  options,
+  onChange,
+  hasError = false,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -36,11 +43,12 @@ const CustomDropdown = ({ label, icon, value, options, onChange }) => {
     >
       <div className="mb-3">
         <div
-          className="form-control d-flex align-items-center justify-content-between bg-white border-0 rounded"
+          className="form-control d-flex align-items-center justify-content-between bg-white rounded"
           style={{
             padding: "12px 16px",
             height: "48px",
-            borderTop: "1px solid #e9ecef",
+            border: hasError ? "2px solid #ff4d4f" : "1px solid #e9ecef",
+            boxShadow: hasError ? "0 0 6px rgba(255, 77, 79, 0.8)" : "none",
             cursor: "pointer",
           }}
           onClick={() => setIsOpen(!isOpen)}
@@ -68,7 +76,7 @@ const CustomDropdown = ({ label, icon, value, options, onChange }) => {
 
         {isOpen && (
           <ul
-            className=" shadow-lg border rounded"
+            className="shadow-lg border rounded"
             style={{
               position: "absolute",
               top: "100%",
@@ -77,7 +85,8 @@ const CustomDropdown = ({ label, icon, value, options, onChange }) => {
               marginTop: "2px",
               listStyle: "none",
               padding: 0,
-              zIndex: 9999,
+              zIndex: 700,
+              backgroundColor: "white",
             }}
           >
             {options.map((opt, idx) => (
@@ -107,4 +116,5 @@ const CustomDropdown = ({ label, icon, value, options, onChange }) => {
     </div>
   );
 };
+
 export default CustomDropdown;

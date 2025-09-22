@@ -1,18 +1,65 @@
-import { getAllTourBookingByTravellerID } from "@/constant/constants";
+import {
+  GET_BOOKINGS_BY_ID,
+  GET_BOOKINGS_BY_UUID,
+  getAllTourBookingByTravellerID,
+} from "@/constant/constants";
 
-export const fetchTourBookings = async (travellerId) => {
+export const fetchBookingByID = async (bookingId) => {
   try {
-    const response = await fetch(
-      `${getAllTourBookingByTravellerID}${travellerId}/`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // Add authorization header if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${GET_BOOKINGS_BY_ID}${bookingId}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Authorization': `Bearer ${token}`, // Uncomment if auth needed
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching booking by ID:", error);
+    throw error;
+  }
+};
+
+export const fetchBookingByUUID = async (bookingId) => {
+  try {
+    const response = await fetch(`${GET_BOOKINGS_BY_UUID}${bookingId}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Authorization': `Bearer ${token}`, // Uncomment if auth needed
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching booking by ID:", error);
+    throw error;
+  }
+};
+
+export const fetchTourBookings = async (travellerId, page = 1, size = 5) => {
+  try {
+    const url = `${getAllTourBookingByTravellerID}${travellerId}/?page=${page}&size=${size}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Add authorization header if needed
+        // 'Authorization': `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,19 +73,27 @@ export const fetchTourBookings = async (travellerId) => {
   }
 };
 
-// Transform API data to match our component structure
+// Transform API data to match our component structure with pagination support
 export const transformBookingData = (apiResponse) => {
   const bookings = apiResponse.tour_bookings || [];
 
-  // Calculate summary statistics
+  // Extract pagination info from API response
+  const paginationData = {
+    page: apiResponse.page || 1,
+    size: apiResponse.size || 10,
+    totalPages: apiResponse.total_pages || 0,
+    totalElements: apiResponse.total_elements || 0,
+    paidOrders: apiResponse.paid || 0,
+    pendingPayment: apiResponse.pending || 0,
+    cancelledOrders: apiResponse.cancelled || 0,
+  };
+
+  // Calculate summary statistics for all data (not just current page)
   const summary = {
-    totalOrders: bookings.length,
-    paidOrders: bookings.filter((booking) => booking.status === "paid").length,
-    pendingPayment: bookings.filter((booking) => booking.status === "pending")
-      .length,
-    cancelledOrders: bookings.filter(
-      (booking) => booking.status === "cancelled"
-    ).length,
+    totalOrders: paginationData.totalElements,
+    paidOrders: paginationData?.paidOrders,
+    pendingPayment: paginationData?.pendingPayment,
+    cancelledOrders: paginationData?.cancelledOrders,
   };
 
   // Transform bookings to match component structure
@@ -66,11 +121,28 @@ export const transformBookingData = (apiResponse) => {
     travellerId: booking.traveller,
     userId: booking.user,
     payment: booking.payment,
+    tour_id: booking.tour_id,
+    previous_selected_date: booking.previous_selected_date,
+    date_change_request: booking.date_change_request,
+    requested_selected_date: booking.requested_selected_date,
+    date_request_approved: booking.date_request_approved,
+    date_change_request_status: booking.date_change_request_status,
+    cancellation_request: booking.cancellation_request,
+    cancellation_reason: booking.cancellation_reason,
+    cancellation_status: booking.cancellation_status,
+    booking_id: booking.booking_id,
+    booking_ticket: booking.booking_ticket,
+    payment_invoice: booking.payment_invoice,
   }));
 
   return {
     summary,
     orders: transformedBookings,
+    // ADD THESE PAGINATION FIELDS
+    page: paginationData.page,
+    size: paginationData.size,
+    totalPages: paginationData.totalPages,
+    totalElements: paginationData.totalElements,
   };
 };
 

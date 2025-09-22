@@ -17,6 +17,11 @@ const CookieConsent = () => {
     setShowPopup(false);
   };
 
+  const handleReject = () => {
+    Cookies.set("cookieConsent", "rejected", { expires: 365 });
+    setShowPopup(false);
+  };
+
   if (!showPopup) {
     return null;
   }
@@ -24,18 +29,25 @@ const CookieConsent = () => {
   return (
     <div className="cookieConsent">
       <div className="cookieContent">
-        <p>
-          We use cookies to personalize content and ads, to provide social media
-          features and to analyze our traffic. By continuing to use our site,
-          you consent to our use of cookies. For more details, please read our
-          <a href="/terms?type=privacy_policy" className="privacyLink">
-            Privacy Policy
-          </a>
-          .
-        </p>
-        <button onClick={handleAccept} className="acceptButton">
-          Accept Cookies
-        </button>
+        <div className="cookieText">
+          <h3>We value your privacy</h3>
+          <p>
+            We use cookies to enhance your browsing experience, serve
+            personalised ads or content, and analyse our traffic. By clicking
+            "Accept All", you consent to our use of cookies.{" "}
+            <a href="/terms?type=privacy_policy" className="privacyLink">
+              Cookie Policy
+            </a>
+          </p>
+        </div>
+        <div className="cookieButtons">
+          <button onClick={handleReject} className="rejectButton">
+            Reject All
+          </button>
+          <button onClick={handleAccept} className="acceptButton">
+            Accept All
+          </button>
+        </div>
       </div>
     </div>
   );

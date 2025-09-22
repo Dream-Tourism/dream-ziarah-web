@@ -10,7 +10,7 @@ const index = ({}) => {
   const [selectedLocation, setSelectedLocation] = useState(itenarayItems[0]);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [zoom, setZoom] = useState(12);
-  // console.log("rakib", itenarayItems);
+  console.log("rakib", itenarayItems);
   const handleLocationSelect = (location, zoomTrue) => {
     if (zoomTrue) {
       setZoom(12); // Change the zoom level as per your requirement

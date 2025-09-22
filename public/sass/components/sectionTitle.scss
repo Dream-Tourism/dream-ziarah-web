@@ -1,11 +1,20 @@
 .sectionTitle {
-  // &__title {
-  // }
+  width: 100%;
+  max-width: 740px;
+  margin: 0 auto;
+  text-align: center;
+  &__title {
+  }
 
-  // &__text {}
+  &__text {
+  }
 
   &.-md {
     .sectionTitle {
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+      text-align: center;
       &__title {
         font-size: var(--text-30);
 
@@ -18,9 +27,19 @@
 
   &.-lg {
     .sectionTitle {
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+      text-align: center;
       &__title {
         font-size: var(--text-40);
       }
     }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .text-mobile-11 {
+    font-size: 11px;
   }
 }

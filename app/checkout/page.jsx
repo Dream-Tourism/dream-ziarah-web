@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useGetLogoUrlQuery } from "@/features/site-setting/siteSettingApi";
 import { useSelector } from "react-redux";
+import convertCurrency from "@/utils/currency";
+import Loading from "../loading";
+import Link from "next/link";
 
 const CheckoutPage = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -15,13 +18,16 @@ const CheckoutPage = () => {
     email: "",
     acceptOffers: false,
   });
+
+  // console.log("Authenticated:", bookingData);
+  //currency
+  const { currentCurrency } = useSelector((state) => state.currency);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  // console.log("User:", user, "Authenticated:", isAuthenticated)
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -179,12 +185,72 @@ const CheckoutPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const getTimeRange = () => {
-    if (!bookingData) return "";
-    const startTime = bookingData.selectedTime;
-    const endTime = "12:30 pm";
-    return `${startTime} - ${endTime}`;
-  };
+const getTimeRange = () => {
+  if (!bookingData) return "";
+
+  const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
+  const durationStr = bookingData.duration; // e.g. "4 hours"
+
+  // Handle cases where selectedTime is null, undefined, or empty
+  if (!startTimeStr || typeof startTimeStr !== 'string' || startTimeStr.trim() === '') {
+    return "Time not selected";
+  }
+
+  // Handle cases where duration is null, undefined, or empty
+  if (!durationStr || typeof durationStr !== 'string' || durationStr.trim() === '') {
+    return startTimeStr; // Just return the start time if no duration
+  }
+
+  try {
+    // Parse duration number
+    const durationMatch = durationStr.match(/(\d+)/);
+    if (!durationMatch) {
+      return startTimeStr; // Just return start time if duration can't be parsed
+    }
+    const hoursToAdd = parseInt(durationMatch[1]);
+
+    // Parse start time
+    const timeParts = startTimeStr.split(" ");
+    if (timeParts.length < 2) {
+      return startTimeStr; // Return as-is if format is unexpected
+    }
+
+    const [time, modifier] = timeParts; // ["08:30", "am"]
+    const timeSplit = time.split(":");
+    if (timeSplit.length < 2) {
+      return startTimeStr; // Return as-is if time format is unexpected
+    }
+
+    let [hours, minutes] = timeSplit.map(Number);
+
+    // Validate parsed numbers
+    if (isNaN(hours) || isNaN(minutes)) {
+      return startTimeStr; // Return as-is if parsing failed
+    }
+
+    if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
+    if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+
+    const startDate = new Date();
+    startDate.setHours(hours, minutes);
+
+    // Add duration
+    const endDate = new Date(startDate.getTime() + hoursToAdd * 60 * 60 * 1000);
+
+    // Format back to hh:mm am/pm
+    const endHours = endDate.getHours();
+    const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
+    const endModifier = endHours >= 12 ? "pm" : "am";
+    const formattedEndHours = endHours % 12 === 0 ? 12 : endHours % 12;
+
+    const endTimeStr = `${formattedEndHours}:${endMinutes} ${endModifier}`;
+
+    return `${startTimeStr} - ${endTimeStr}`;
+  } catch (error) {
+    console.error("Error calculating time range:", error);
+    return startTimeStr || "Time not available"; // Fallback
+  }
+};
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -274,6 +340,8 @@ const CheckoutPage = () => {
           selected_time: bookingData.selectedTime,
           total_participants: bookingData.participantCount,
           total_price: bookingData.totalPrice,
+          guide: bookingData.selectedTourType?.guide,
+          cancel_url: bookingData?.url,
         },
       };
 
@@ -287,7 +355,7 @@ const CheckoutPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Booking processed successfully:", result);
+        // console.log("Booking processed successfully:", result);
 
         // Check if there's a checkout_url in the response
         if (result.checkout_url) {
@@ -440,15 +508,19 @@ const CheckoutPage = () => {
       >
         <div className="container d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center gap-2">
-            {!logoLoading && logoUrl && (
-              <Image
-                src={logoUrl || "/placeholder.svg"}
-                alt="Logo"
-                width={120}
-                height={120}
-                style={{ objectFit: "contain" }}
-              />
-            )}
+            <Link href="/">
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <Image
+                  style={{ width: "60px", height: "60px" }}
+                  src={logoUrl}
+                  width={128}
+                  height={128}
+                  alt="Hajj, Umrah and Ziarah"
+                />
+              )}
+            </Link>
             <h4 className="mb-0 text-black">Secure Checkout</h4>
           </div>
 
@@ -662,12 +734,6 @@ const CheckoutPage = () => {
                             {bookingData.tourName}
                           </h6>
                           <div className="d-flex align-items-center mb-2">
-                            <span
-                              className="me-1 fw-bold"
-                              style={{ fontSize: "12px" }}
-                            >
-                              {bookingData.rating}
-                            </span>
                             <div className="me-2">
                               {renderStars(bookingData.rating)}
                             </div>
@@ -687,9 +753,12 @@ const CheckoutPage = () => {
                         style={{ fontSize: "14px" }}
                       ></i>
                       <span style={{ fontSize: "14px" }}>
-                        {formatDate(bookingData.selectedDate)} at{" "}
-                        {getTimeRange()}
-                      </span>
+    {formatDate(bookingData.selectedDate)}
+    {bookingData.selectedTime && getTimeRange() !== "No Time For this Selection" 
+      ? ` at ${getTimeRange()}` 
+      : ""
+    }
+  </span>
                     </div>
                     <div className="d-flex align-items-center mb-2">
                       <i
@@ -724,10 +793,15 @@ const CheckoutPage = () => {
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <span></span>
                     <h5 className="mb-0">
-                      US${bookingData.totalPrice.toFixed(2)}
+                      {/* ${bookingData.totalPrice.toFixed(2)} */}
+                      {`${currentCurrency?.symbol}${convertCurrency(
+                        parseFloat(bookingData.totalPrice),
+                        "USD",
+                        currentCurrency?.currency
+                      )}`}
                     </h5>
                   </div>
-
+                  {/* 
                   <div className="mb-3">
                     <a
                       href="#"
@@ -736,13 +810,17 @@ const CheckoutPage = () => {
                     >
                       Enter gift or promo code
                     </a>
-                  </div>
+                  </div> */}
 
                   <div className="border-top pt-3">
                     <div className="d-flex justify-content-between align-items-center">
                       <h5 className="mb-0">Total</h5>
                       <h4 className="mb-0">
-                        US${bookingData.totalPrice.toFixed(2)}
+                        {`${currentCurrency?.symbol}${convertCurrency(
+                          parseFloat(bookingData.totalPrice),
+                          "USD",
+                          currentCurrency?.currency
+                        )}`}
                       </h4>
                     </div>
                     <small className="text-success">

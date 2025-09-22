@@ -8,8 +8,8 @@ const useMenus = () => {
       item.name === "About" ||
       item.name === "Contact" ||
       item.name === "Tour" ||
-      item.name === "Blog" ||
-      item.name === "Tours"
+      item.name === "Blog"
+      // item.name === "Tours"
     ) {
       return false;
     }
@@ -19,7 +19,7 @@ const useMenus = () => {
   filteredMenus.sort((a, b) => a.position - b.position);
 
   const modifiedMenuItems = filteredMenus?.map((item) => {
-    if (item.name === "Ziarah") {
+    if (item.name === "Home") {
       return {
         ...item,
         routePath: "/",

@@ -1,20 +1,39 @@
 "use client";
 
-// import useTours from "@/hooks/useTours";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import Slider from "react-slick";
-import isTextMatched from "../../utils/isTextMatched";
-import useToursMadina from "@/hooks/useToursMadina";
 import useWindowSize from "@/hooks/useWindowSize";
 import TourSkeleton from "../skeleton/TourSkeleton";
+import { useAllTour } from "@/hooks/useAllTour";
 
 const ToursMadina = ({ filterTour }) => {
-  const tourItems = useToursMadina(filterTour);
+  const { data, error, isLoading } = useAllTour();
   const { currentCurrency } = useSelector((state) => state.currency);
   const width = useWindowSize();
   const isMobile = width < 768;
+
+  // Filter tours for Madina location
+  const filteredTours =
+    data?.filter((tour) => {
+      const isPublished = tour.published === true;
+      const isMadinaLocation = tour.location_type
+        ?.toLowerCase()
+        .includes("madina");
+      return isPublished && isMadinaLocation;
+    }) || [];
+
+  // Calculate per person price
+  const calculatePerPersonPrice = (tour) => {
+    const dayTourPriceList = tour.day_tour_price_list;
+    if (dayTourPriceList && dayTourPriceList.length > 0) {
+      const groupPrice = parseFloat(dayTourPriceList[0].group_price || 0);
+      const groupSize = parseInt(tour.group_size || 1);
+      return (groupPrice / groupSize).toFixed(2);
+    }
+    return "0.00";
+  };
 
   const settings = {
     dots: true,
@@ -44,7 +63,6 @@ const ToursMadina = ({ filterTour }) => {
           slidesToScroll: 2,
         },
       },
-
       {
         breakpoint: 300,
         settings: {
@@ -89,72 +107,49 @@ const ToursMadina = ({ filterTour }) => {
     );
   }
 
-  return tourItems?.length === 0 ? (
-    <TourSkeleton />
-  ) : (
-    <>
-      <Slider
-        {...settings}
-        arrows={true}
-        nextArrow={<Arrow type="next" />}
-        prevArrow={<Arrow type="prev" />}
-      >
-        {tourItems?.map((item) => (
-          <div
-            key={item?.id}
-            // data-aos="fade"
-            // data-aos-delay={item?.delayAnimation}
-          >
+  if (isLoading) {
+    return <TourSkeleton />;
+  }
+
+  if (error || filteredTours.length === 0) {
+    return <TourSkeleton />;
+  }
+
+  return (
+    <Slider
+      {...settings}
+      arrows={true}
+      nextArrow={<Arrow type="next" />}
+      prevArrow={<Arrow type="prev" />}
+    >
+      {filteredTours?.map((item) => {
+        const perPersonPrice = calculatePerPersonPrice(item);
+
+        return (
+          <div key={item?.id}>
             <Link
-              href={`/tour/${item?.title
-                ?.toLowerCase()
-                ?.split(" ")
-                ?.join("-")}`}
+              href={`/tour/${item?.slug}`}
               style={{ cursor: "pointer" }}
               className="tourCard -type-1 rounded-4 hover-inside-slider"
             >
               <div className="tourCard__image position-relative">
                 <div className="inside-slider">
-                  <Slider
-                    {...itemSettings}
-                    arrows={true}
-                    nextArrow={<Arrow type="next" />}
-                    prevArrow={<Arrow type="prev" />}
-                  >
-                    {item?.slideImg?.map((slide, i) => (
-                      <div className="cardImage ratio ratio-1:1" key={i}>
-                        <div className="cardImage__content ">
-                          <Image
-                            width={300}
-                            height={300}
-                            priority
-                            className="col-12 js-lazy"
-                            src={slide}
-                            alt={item?.title}
-                          />
-                        </div>
+                  {item?.cloudflare_thumbnail_image_url && (
+                    <div className="cardImage ratio ratio-1:1">
+                      <div className="cardImage__content ">
+                        <Image
+                          width={300}
+                          height={300}
+                          priority
+                          className="col-12 js-lazy"
+                          src={item?.cloudflare_thumbnail_image_url}
+                          alt={item?.name}
+                        />
                       </div>
-                    ))}
-                  </Slider>
+                    </div>
+                  )}
 
                   <div className="cardImage__leftBadge sm:d-none">
-                    {/* <div
-                    className={`py-5  rounded-right-4 text-12 lh-16 fw-600 uppercase ${
-                      isTextMatched(item?.tag, "likely to sell out*")
-                        ? "bg-dark-1 text-white"
-                        : ""
-                    } ${
-                      isTextMatched(item?.tag, "best seller")
-                        ? "bg-blue-1 text-white"
-                        : ""
-                    }  ${
-                      isTextMatched(item?.tag, "top rated")
-                        ? "bg-yellow-1 text-dark-1"
-                        : ""
-                    }`}
-                  >
-                    Item
-                  </div> */}
                     <div className="buttons">
                       <button
                         style={{
@@ -163,7 +158,7 @@ const ToursMadina = ({ filterTour }) => {
                             "linear-gradient(to right, #353537 , #0d0c0d)",
                         }}
                       >
-                        {`${currentCurrency?.symbol} ${item.price}`}{" "}
+                        {`${currentCurrency?.symbol} ${perPersonPrice}`}{" "}
                         <span> PER PERSON</span>
                       </button>
                       <button>No</button>
@@ -176,8 +171,8 @@ const ToursMadina = ({ filterTour }) => {
                 <div className="d-flex justify-content-between lh-14 mb-5">
                   <div className="text-14 md:text-12 text-light-1">
                     {isMobile
-                      ? `${item?.duration}+ hrs`
-                      : `${item?.duration}+ hours`}
+                      ? `${item?.duration || "Full Day"}`
+                      : `${item?.duration || "Full Day Tour"}`}
                   </div>
                   <div className="ml-10 mr-10" />
                   <div className="col-auto">
@@ -185,16 +180,16 @@ const ToursMadina = ({ filterTour }) => {
                       From {currentCurrency?.symbol}
                       <span className="text-16 md:text-13 fw-600 text-blue-1 fw-bold">
                         {" "}
-                        {item.price}
+                        {perPersonPrice}
                       </span>
                     </div>
                   </div>
                 </div>
                 <h4 className="tourCard__title text-dark-5 text-18 md:text-13 lh-16 fw-600">
-                  <span>{item?.title}</span>
+                  <span>{item?.name}</span>
                 </h4>
                 <p className="text-light-1 lh-14 text-14 md:text-12 mt-5">
-                  {item?.location}
+                  {item?.location_type}
                 </p>
 
                 <div className="row justify-between items-center pt-15">
@@ -209,7 +204,7 @@ const ToursMadina = ({ filterTour }) => {
                         ))}
                       </div>
                       <div className="text-14 md:text-12 text-light-1 ml-10">
-                        {item?.numberOfReviews} reviews
+                        {item?.group_size} max group size
                       </div>
                     </div>
                   </div>
@@ -217,9 +212,9 @@ const ToursMadina = ({ filterTour }) => {
               </div>
             </Link>
           </div>
-        ))}
-      </Slider>
-    </>
+        );
+      })}
+    </Slider>
   );
 };
 

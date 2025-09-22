@@ -16,7 +16,7 @@ import getAllMenuItem from "@/services/menuService";
 import dynamic from "next/dynamic";
 
 const destinationsMetadatas = {
-  jedda: {
+  jeddah: {
     title: "Jeddah: Gateway to Tranquil Beauty - Dream Ziarah",
     description:
       "Explore the enchanting city of Jeddah with DreamZiarah.com. Immerse yourself in the blend of modernity and tradition, where vibrant culture meets serene coastal beauty. Plan your journey to Jeddah and create unforgettable memories.",
@@ -26,10 +26,10 @@ const destinationsMetadatas = {
     description:
       "Embark on a sacred pilgrimage to Makkah with DreamZiarah.com. Discover the spiritual heartbeat of Islam, where the iconic Kaaba stands as a symbol of devotion. Explore our Makkah packages and embark on a journey of profound spiritual significance.",
   },
-  medina: {
-    title: "Medina: Oasis of Peace and Spirituality - Dream Ziarah",
+  madinah: {
+    title: "Madinah: Oasis of Peace and Spirituality - Dream Ziarah",
     description:
-      "Experience the tranquility of Medina with DreamZiarah.com. Immerse yourself in the peaceful surroundings of the Prophet's Mosque and explore the rich Islamic history. Plan your spiritual journey to Medina with our curated packages.",
+      "Experience the tranquility of Madinah with DreamZiarah.com. Immerse yourself in the peaceful surroundings of the Prophet's Mosque and explore the rich Islamic history. Plan your spiritual journey to Madinah with our curated packages.",
   },
   taif: {
     title: "Taif: Mountain Retreat and Cultural Gem - Dream Ziarah",
@@ -49,8 +49,8 @@ const Destinations = ({ params }) => {
   const renderToursSection = (location) => (
     <section className="layout-pb-lg">
       <div className="container">
-        <div className="row y-gap-20 justify-between items-end">
-          <div className="col-auto">
+        <div className="row justify-center text-center">
+          <div className="col-12">
             <div className="sectionTitle -md">
               <h2 className="sectionTitle__title">
                 Popular Tours In {location}
@@ -60,18 +60,18 @@ const Destinations = ({ params }) => {
               </p>
             </div>
           </div>
-          <div className="col-auto">
+          {/* <div className="col-auto">
             <Link
               href={`/tours/?location=${location}`}
               className="button -md -blue-1 bg-blue-1-05 text-blue-1"
             >
               More <div className="icon-arrow-top-right ml-15" />
             </Link>
-          </div>
+          </div> */}
         </div>
         <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-          {location == "Makkah" && <Tours />}
-          {location == "Madina" && <ToursMadina />}
+          {location == "Makkah" && <Tours filterLocation="Makkah" />}
+          {location == "Madinah" && <ToursMadina />}
           {location == "Jeddah" && <ToursJedda />}
           {location == "Taif" && <ToursTaif />}
         </div>
@@ -88,16 +88,6 @@ const Destinations = ({ params }) => {
             <Banner slug={slug} />
           </div>
           <div className="row y-gap-20 pt-40">
-            <div className="col-auto">
-              <h2>
-                What to know before visiting{" "}
-                {slug === "medina"
-                  ? "Madina"
-                  : slug === "jedda"
-                  ? "Jeddah"
-                  : slug.charAt(0).toUpperCase() + slug.slice(1)}
-              </h2>
-            </div>
             <IntroTown slug={slug} />
           </div>
           <div className="pt-30 mt-30 border-top-light" />
@@ -111,22 +101,17 @@ const Destinations = ({ params }) => {
         </div>
       </section>
       {slug === "makkah" && renderToursSection("Makkah")}
-      {slug === "medina" && renderToursSection("Madina")}
-      {slug === "jedda" && renderToursSection("Jeddah")}
+      {slug === "madinah" && renderToursSection("Madinah")}
+      {slug === "jeddah" && renderToursSection("Jeddah")}
       {slug === "taif" && renderToursSection("Taif")}
 
       <section className="layout-pt-md layout-pb-lg">
         <div className="container">
-          <div className="row">
-            <div className="col-auto">
+          <div className="row justify-center text-center">
+            <div className="col-12">
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
-                  Top sights in{" "}
-                  {slug == "medina"
-                    ? "Madina"
-                    : slug == "jedda"
-                    ? "Jeddah"
-                    : slug.charAt(0).toUpperCase() + slug.slice(1)}
+                  Top sights in {slug.charAt(0).toUpperCase() + slug.slice(1)}
                 </h2>
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   {slightContent[slug]?.title}
@@ -141,8 +126,8 @@ const Destinations = ({ params }) => {
           </div>
           {/* End .row */}
 
-          <div className="row">
-            <div className="col-auto">
+          <div className="row justify-center text-center">
+            <div className="col-12">
               <div className="mt-20 sectionTitle -md">
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   {slightContent[slug]?.footerContent}
@@ -184,7 +169,7 @@ const Destinations = ({ params }) => {
             <div className="col-lg-4">
               <h2 className="text-30 fw-600">
                 FAQs about{" "}
-                {slug === "medina"
+                {slug === "madinah"
                   ? "Madina"
                   : slug === "jedda"
                   ? "Jeddah"
@@ -201,16 +186,17 @@ const Destinations = ({ params }) => {
       </section>
       <section className="layout-pt-md layout-pb-lg">
         <div className="container">
-          <div className="row y-gap-20">
-            <div className="col-auto">
+          <div className="row justify-center text-center">
+            <div className="col-12">
               <div className="sectionTitle -md">
                 <h2 className="sectionTitle__title">
-                  Destinations near{" "}
-                  {slug === "medina"
+                  Explore Near{" "}
+                  {slug === "madinah"
                     ? "Madina"
                     : slug === "jedda"
                     ? "Jeddah"
-                    : slug.charAt(0).toUpperCase() + slug.slice(1)}
+                    : slug.charAt(0).toUpperCase() + slug.slice(1)}{" "}
+                  Ziyarat Places{" "}
                 </h2>
                 <p className=" sectionTitle__text mt-5 sm:mt-0">
                   These popular destinations have a lot to offer
@@ -218,7 +204,10 @@ const Destinations = ({ params }) => {
               </div>
             </div>
           </div>
-          <div className="pt-40 relative" style={{ width: "700px" }}>
+          <div
+            className="pt-5 position-relative mx-auto "
+            style={{ width: "700px" }}
+          >
             <TopDestinations2 slug={slug} />
           </div>
         </div>

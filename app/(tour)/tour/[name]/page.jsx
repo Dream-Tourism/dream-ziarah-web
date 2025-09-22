@@ -1,8 +1,17 @@
 import Wrapper from "@/components/layout/Wrapper";
 import TourHeading from "@/components/tour-single/TourHeading";
 import TourSingle from "@/components/tour-single/TourSingle";
-import getAllContentByMenuId from "@/services/contentService";
-import getAllMenuItem from "@/services/menuService";
+import { getTourBySlugServer } from "@/services/tourService";
+import { notFound } from "next/navigation";
+
+function getFullUrl(slug) {
+  const baseUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "https://dreamziarah.com/";
+  const fullPath = `${baseUrl}/tour/${slug}`;
+  return fullPath;
+}
 
 const tourMetadatas = {
   //makka
@@ -187,33 +196,7 @@ const tourMetadatas = {
   //end taif
 };
 
-export async function generateStaticParams() {
-  const data = await getAllMenuItem();
-  const ziarahId = data?.menus
-    ?.find((item) => item.name == "Tours")
-    ?.children?.find((child) => child?.name == "Makka Tours")?.id;
-
-  const tourContents = await getAllContentByMenuId(ziarahId);
-
-  const modifiedContents = tourContents?.filter((item) => {
-    if (
-      item.name === "makkah" ||
-      item.name === "medina" ||
-      item.name === "jedda" ||
-      item.name === "jeddah" ||
-      item.name === "tabuk" ||
-      item.name === "taif"
-    )
-      return false;
-    return true;
-  });
-
-  return modifiedContents?.map((item) => ({
-    name: item?.name?.toLowerCase()?.split(" ")?.join("-"),
-  }));
-}
-
-export async function generateMetadata({ params, searchParams }, parent) {
+export async function generateMetadata({ params }) {
   const { name } = params;
 
   return {
@@ -222,14 +205,75 @@ export async function generateMetadata({ params, searchParams }, parent) {
   };
 }
 
-export default function Tour({ params }) {
-  return (
-    <>
+// Optimized server-side data fetching function
+async function getTourData(slug) {
+  try {
+    console.log('Fetching tour data for slug:', slug);
+
+    // Only fetch the specific tour by slug
+    const tourBySlugData = await getTourBySlugServer(slug);
+
+    if (!tourBySlugData || !tourBySlugData.tour) {
+      console.log('No tour data found for slug:', slug);
+      return null;
+    }
+
+    console.log('Successfully found tour:', tourBySlugData.tour.name);
+
+    return {
+      tourData: tourBySlugData.tour,
+      allTours: [], // We'll fetch this lazily in the component if needed
+      tourIds: tourBySlugData.tourIds,
+    };
+  } catch (error) {
+    console.error("Error fetching tour data:", error);
+    return null;
+  }
+}
+
+export default async function Tour({ params }) {
+  try {
+    const awaitedParams = await params;
+    const { name: slug } = awaitedParams;
+
+    console.log('Tour page accessed with slug:', slug);
+
+    if (!slug) {
+      console.log('No slug provided, redirecting to 404');
+      notFound();
+    }
+
+    // Fetch tour data optimized for performance
+    const data = await getTourData(slug);
+
+    // Handle not found case
+    if (!data || !data.tourData) {
+      console.log('Tour data not found, redirecting to 404');
+      notFound();
+    }
+
+    const { tourData, allTours, tourIds } = data;
+    const fullUrl = getFullUrl(slug);
+
+    return (
       <Wrapper>
-        <TourSingle params={params}>
-          <TourHeading params={params} />
+        <TourSingle
+          params={awaitedParams}
+          tourData={tourData}
+          allTours={allTours}
+          tourIds={tourIds}
+          fullUrl={fullUrl}
+        >
+          <TourHeading params={awaitedParams} tourData={tourData} />
         </TourSingle>
       </Wrapper>
-    </>
-  );
+    );
+  } catch (error) {
+    // Check if it's a NEXT_NOT_FOUND error and re-throw it
+    if (error.digest === 'NEXT_NOT_FOUND') {
+      throw error;
+    }
+    console.error("Unexpected error rendering tour page:", error);
+    notFound();
+  }
 }

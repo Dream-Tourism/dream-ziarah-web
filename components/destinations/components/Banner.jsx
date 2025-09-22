@@ -1,11 +1,26 @@
 "use client";
 import DestinationSkeleton from "@/components/skeleton/DestinationSkeleton";
+import { useGetAllContentQuery } from "@/features/content/contentApi";
 import { useGetImagesByMenuNameQuery } from "@/features/image/imageApi";
 import Image from "next/image";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { Interweave } from "interweave";
 
 const Banner = ({ slug }) => {
   const { isSuccess, data, isLoading } = useGetImagesByMenuNameQuery(slug);
+  const { menuItems } = useSelector((state) => state.menus);
+  const destinationId = menuItems
+    ?.find((item) => item.name === "Destinations")
+    ?.children?.find((item) => item.name.toLowerCase() === slug)?.id;
+  const { data: data2, isSuccess: isSuccess2 } =
+    useGetAllContentQuery(destinationId);
+
+  let description = "";
+  if (isSuccess2) {
+    description = data2[0]?.value;
+  }
+
+  console.log(data2, "description in banner");
 
   let bannerUrl = "";
   if (isSuccess) {
@@ -30,34 +45,18 @@ const Banner = ({ slug }) => {
           priority={true}
           style={{ maxHeight: "448px" }}
         />
-        <div className="absolute z-2 px-50 py-30 md:py-20 md:px-30">
-          <h1
-            className="text-50 fw-600 text-white lg:text-40 md:text-30"
-            style={{
-              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-            }}
-          >
-            Explore{" "}
-            {slug == "medina"
-              ? "Madina"
-              : slug == "jedda"
-              ? "Jeddah"
-              : slug.charAt(0).toUpperCase() + slug.slice(1)}
-          </h1>
-          <div
-            className="text-white"
-            style={{
-              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-            }}
-          >
-            Explore deals, travel guides and things to do in{" "}
-            {slug == "medina"
-              ? "Madina"
-              : slug == "jedda"
-              ? "Jeddah"
-              : slug.charAt(0).toUpperCase() + slug.slice(1)}
+        {description && (
+          <div className="absolute z-2 px-50 py-30 md:py-20 md:px-30 text-white">
+            <div
+              className="destination_content "
+              style={{
+                textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                color: "white !important",
+              }}
+              dangerouslySetInnerHTML={{ __html: description }}
+            ></div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

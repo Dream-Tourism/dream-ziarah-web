@@ -1,7 +1,9 @@
 "use client";
 
+import convertCurrency from "@/utils/currency";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const BookingPreview = ({
   tourId,
@@ -14,6 +16,9 @@ const BookingPreview = ({
   priceOption,
   tourName,
   duration,
+  reviews,
+  thumbnailImage,
+  url,
 }) => {
   const [isBooking, setIsBooking] = useState(false);
   // console.log("selectedTime", selectedTime);
@@ -27,6 +32,9 @@ const BookingPreview = ({
     };
     return date.toLocaleDateString("en-US", options);
   };
+
+  //currency
+  const { currentCurrency } = useSelector((state) => state.currency);
 
   const setCookie = (name, value, days = 1) => {
     const expires = new Date();
@@ -52,10 +60,11 @@ const BookingPreview = ({
         priceOption,
         duration,
         bookingData,
-        tourImage: "/tour.png?height=120&width=180", // Add tour image
+        tourImage: thumbnailImage,
         rating: 4.2,
-        reviewCount: 814,
+        reviewCount: reviews,
         timestamp: new Date().toISOString(),
+        url,
       };
 
       // Set cookies with booking information
@@ -161,7 +170,11 @@ const BookingPreview = ({
               className="fw-bold"
               style={{ color: "#333", fontSize: "16px" }}
             >
-              ${totalPrice.toFixed(2)}
+              {`${currentCurrency?.symbol}${convertCurrency(
+                parseFloat(totalPrice),
+                "USD",
+                currentCurrency?.currency
+              )}`}
             </span>
           </div>
         </div>
@@ -182,7 +195,11 @@ const BookingPreview = ({
               Total Price
             </p>
             <h4 className="mb-0 fw-bold" style={{ color: "#333" }}>
-              ${totalPrice.toFixed(2)}
+              {`${currentCurrency?.symbol}${convertCurrency(
+                parseFloat(totalPrice),
+                "USD",
+                currentCurrency?.currency
+              )}`}
             </h4>
             <small className="text-muted" style={{ fontSize: "12px" }}>
               All taxes and fees included

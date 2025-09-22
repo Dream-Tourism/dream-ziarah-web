@@ -1,21 +1,21 @@
-version: "3.8"
 services:
-  dreamziarah:
-    build: .
-    image: dreamziarahcom-dreamziarah
-    container_name: ziarahapp
+  lubdok:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ziarahtestapp
     restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+
     ports:
-      - 3003:3000
-    # env_file:
-    #   - .env.local
+      - 3013:3000
     networks:
-      - ziarahnet
-    volumes:
-      - ziarahapp_data:/usr/share/ziarahapp/data
+      - ziarahtestnet
+    # volumes:
+    #   - dreamtourismit:/usr/share/dreamtourismit/data
 
 networks:
-  ziarahnet:
+  ziarahtestnet:
     driver: bridge
-volumes:
-  ziarahapp_data:

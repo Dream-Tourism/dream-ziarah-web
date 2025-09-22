@@ -59,9 +59,9 @@ export default function LeafletMap({
   // State to manage the selected marker ID
   const [selectedMarkerId, setSelectedMarkerId] = useState(selectedLocation.id);
   const [newMapZoom, setNewMapZoom] = useState(zoom);
-  const [newLatLng, setNewLatLng] = useState([
+  const [newLatlong, setNewLatlong] = useState([
     selectedLocation?.lat,
-    selectedLocation?.lng,
+    selectedLocation?.long,
   ]);
 
   // Handler for marker click
@@ -69,7 +69,7 @@ export default function LeafletMap({
     setSelectedMarkerId(location.id);
     markerClick(location.id);
     setNewMapZoom(16);
-    setNewLatLng([location?.lat, location?.lng]);
+    setNewLatlong([location?.lat, location?.long]);
     // Add any other logic you need when a marker is clicked
   };
 
@@ -77,7 +77,7 @@ export default function LeafletMap({
     if (selectedLocation.id) {
       setSelectedMarkerId(selectedLocation.id);
       setNewMapZoom(zoom);
-      setNewLatLng([selectedLocation?.lat, selectedLocation?.lng]);
+      setNewLatlong([selectedLocation?.lat, selectedLocation?.long]);
     }
   }, [selectedLocation]);
 
@@ -85,7 +85,7 @@ export default function LeafletMap({
     <div className="map-container">
       {selectedLocation?.lat ? (
         <MapContainer
-          center={[selectedLocation?.lat, selectedLocation?.lng]}
+          center={[selectedLocation?.lat, selectedLocation?.long]}
           zoom={20}
           scrollWheelZoom={true}
           className="leaflet-map"
@@ -99,7 +99,7 @@ export default function LeafletMap({
             return (
               <Marker
                 key={location?.id}
-                position={[location?.lat, location?.lng]}
+                position={[location?.lat, location?.long]}
                 icon={createIcon(idx + 1, isSelected)}
                 eventHandlers={{
                   click: () => handleMarkerClick(location),
@@ -109,7 +109,7 @@ export default function LeafletMap({
               </Marker>
             );
           })}
-          <ChangeMapView coords={newLatLng} zoom={newMapZoom} />
+          <ChangeMapView coords={newLatlong} zoom={newMapZoom} />
         </MapContainer>
       ) : (
         ""

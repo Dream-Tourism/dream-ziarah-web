@@ -14,7 +14,7 @@ const ItineraryContent = ({
     itemNo: indx + 1,
     title: item.title,
     lat: item.lat,
-    lng: item.lng,
+    long: item?.long,
     img: "/img/tours/list.png",
     content: item.description,
     classShowHide: "",

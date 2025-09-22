@@ -76,9 +76,126 @@
   }
 }
 
-/* === Mobile Styles === */
+.fixed-scroll-menus {
+  background-color: var(--color-blue-6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.tour-header-menu {
+  padding: 15px 20px; // combines padding top/bottom + left/right
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  max-width: 1345px;
+  margin: 0 auto;
+}
+
+.tab-navigation-menu {
+  width: 100%; /* full width background */
+  background-color: var(--color-white);
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tab-navigation-inner {
+  max-width: 1345px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+}
+
+.menuCheckAvailabilityButton {
+  background-color: var(--color-yellow-4);
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-yellow-1);
+  }
+}
+
+.mobile-top-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: var(--color-blue-6);
+  padding: 22px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === Mobile Styles - Fixed === */
 .mobile-slider-container {
-  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  // Remove the problematic negative margin
+  margin-bottom: 20px; // Changed from -71px to positive margin
+}
+
+.mobile-slider-wrapper {
+  width: 100%;
+  position: relative;
+  height: 165px; // Increased height from 400px to 450px
+  overflow: hidden;
+  border-radius: 8px;
+
+  .slick-slider {
+    height: 100%;
+
+    .slick-list {
+      height: 100%;
+
+      .slick-track {
+        height: 100%;
+
+        .slick-slide {
+          height: 100%;
+
+          > div {
+            height: 100%;
+
+            .mobile-slide-wrapper {
+              height: 100%;
+
+              .mobile-slide-single {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                cursor: pointer;
+                border-radius: 8px;
+                overflow: hidden;
+
+                img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .mobile-single-image {
@@ -92,7 +209,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  height: 400px;
+  height: 450px; // Increased height
 }
 
 .mobile-grid-large {
@@ -148,7 +265,6 @@
 
 .lightbox-image-container {
   position: relative;
-  width: 100%;
   height: 100%;
 }
 
@@ -265,16 +381,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  height: 400px;
+  // Remove fixed height to match the updated mobile grid
 }
 
+/* === Responsive Styles === */
 @media (max-width: 768px) {
-  .mobile-grid-slide,
-  .mobile-grid-slide-skeleton {
-    height: 350px;
-  }
+  // .mobile-grid-slide,
+  // .mobile-grid-slide-skeleton {
+  //   // Remove fixed height - let content determine height naturally
+  // }
 
-  .row.y-gap-30.mt-40 {
+  .row.y-gap-30.mt-xl-40.mt-20 {
     flex-direction: column;
 
     .col-xl-4,
@@ -298,9 +415,22 @@
   }
 }
 
-@media (max-width: 480px) {
-  .mobile-grid-slide,
-  .mobile-grid-slide-skeleton {
-    height: 300px;
+// @media (max-width: 480px) {
+//   .mobile-grid-slide,
+//   .mobile-grid-slide-skeleton {
+//     // Remove fixed height
+//   }
+// }
+
+/* === Additional Mobile Slider Fixes === */
+@media (max-width: 768px) {
+  // Ensure proper spacing after mobile slider
+  .mobile-slider-container + .row {
+    margin-top: 20px !important;
+  }
+
+  // Fix any layout issues with the content below
+  .container .row.y-gap-30 {
+    margin-top: 20px;
   }
 }

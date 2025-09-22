@@ -7,8 +7,12 @@ import Participants from "./Participants";
 import BookingPreview from "./BookingPreview";
 import CustomDropdown from "./CustomDropdown";
 import { checkAvailability } from "@/constant/constants";
+import { useSelector } from "react-redux";
+import convertCurrency from "@/utils/currency";
+import { useSearchParams } from "next/navigation";
 
-const AgentCalendar = ({ tourData = null }) => {
+const AgentCalendar = ({ tourData = null, refFunction }) => {
+  const searchParams = useSearchParams();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [dropDownTime, setDropDownTime] = useState("00:00");
@@ -25,10 +29,22 @@ const AgentCalendar = ({ tourData = null }) => {
     useState("Check Availability");
   const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState({}); // Added error state
+  const [errorMessage, setErrorMessage] = useState(""); // Added global error message
+
+  // Construct full URL
+  const currentUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}${
+          window.location.pathname
+        }${searchParams.toString()}`
+      : "";
+
+  //currency
+  const { currentCurrency } = useSelector((state) => state.currency);
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  console.log("tour", tourData);
+  // console.log("refFunction", refFunction);
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -51,7 +67,88 @@ const AgentCalendar = ({ tourData = null }) => {
     return `${year}-${month}-${day}`;
   };
 
-  // console.log("selectedTime", availableTimes);
+  // Helper function to convert 12-hour time to 24-hour time for comparison
+  const convertTo24Hour = (time12h) => {
+    const [time, modifier] = time12h.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (hours === "12") {
+      hours = "00";
+    }
+
+    if (modifier === "PM" && hours !== "12") {
+      hours = String(parseInt(hours, 10) + 12); // convert back to string
+    }
+
+    // Ensure hours is a string before using padStart
+    hours = hours.toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  };
+
+  // Helper function to get current time plus 4 hours
+  const getCurrentTimePlus4Hours = () => {
+    const now = new Date();
+    const plus4Hours = new Date(now.getTime() + 4 * 60 * 60 * 1000);
+    return plus4Hours.getHours() * 100 + plus4Hours.getMinutes();
+  };
+
+  // Helper function to convert time string to minutes for comparison
+  const timeToMinutes = (timeStr) => {
+    const time24 = convertTo24Hour(timeStr);
+    const [hours, minutes] = time24.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  // Helper function to filter times based on 4-hour advance requirement
+  const filterAvailableTimes = (times, selectedDate) => {
+    if (!times || times.length === 0) return [];
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const compareDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate()
+    );
+
+    // If selected date is not today, return all times
+    if (compareDate.getTime() !== today.getTime()) {
+      return times;
+    }
+
+    // If selected date is today, filter times that are at least 4 hours from now
+    const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+    const minRequiredTime = currentTimeMinutes + 4 * 60; // Add 4 hours
+
+    return times.filter((timeStr) => {
+      const timeMinutes = timeToMinutes(timeStr);
+      return timeMinutes >= minRequiredTime;
+    });
+  };
+
+  // Helper function to check if a date should be disabled
+  const isDateDisabled = (date, availableTimes) => {
+    // If there are no times at all in the tour data, don't disable any dates
+    if (!availableTimes || availableTimes.length === 0) return false;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const compareDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+
+    // If it's not today, don't disable
+    if (compareDate.getTime() !== today.getTime()) {
+      return false;
+    }
+
+    // If it's today, check if any times are available after 4 hours from now
+    const filteredTimes = filterAvailableTimes(availableTimes, date);
+    return filteredTimes.length === 0;
+  };
 
   // Get unique tour types
   const getUniqueTourTypes = () => {
@@ -95,10 +192,19 @@ const AgentCalendar = ({ tourData = null }) => {
       );
 
       if (matchingOption) {
-        setAvailableTimes(matchingOption.available_times);
-        setAvailableDates(
-          matchingOption.available_dates.map((date) => new Date(date))
-        );
+        const rawTimes = matchingOption.available_times || [];
+        const rawDates =
+          matchingOption.available_dates?.map((date) => new Date(date)) || [];
+
+        // Filter out dates that have no available times after 4-hour rule
+        // Only if there are times in the data
+        const validDates =
+          rawTimes.length > 0
+            ? rawDates.filter((date) => !isDateDisabled(date, rawTimes))
+            : rawDates;
+
+        setAvailableTimes(rawTimes);
+        setAvailableDates(validDates);
       } else {
         setAvailableTimes([]);
         setAvailableDates([]);
@@ -111,6 +217,22 @@ const AgentCalendar = ({ tourData = null }) => {
       setBookingData(null);
     }
   }, [selectedTourType, participantCount, priceList]);
+
+  // Update filtered times when selected date changes
+  const getFilteredTimesForSelectedDate = () => {
+    if (!selectedDate || !availableTimes) return [];
+    return filterAvailableTimes(availableTimes, selectedDate);
+  };
+
+  // Check if tour has time slots configured
+  const hasTimeSlots = () => {
+    const currentOption = getCurrentPriceOption();
+    return (
+      currentOption &&
+      currentOption.available_times &&
+      currentOption.available_times.length > 0
+    );
+  };
 
   // Scroll when calendar opens on desktop
   useEffect(() => {
@@ -165,12 +287,14 @@ const AgentCalendar = ({ tourData = null }) => {
     setSelectedTourType(tourType);
     // Clear tour type error when tour type is selected
     setErrors((prev) => ({ ...prev, tourType: false }));
+    setErrorMessage("");
   };
 
   const handleParticipantChange = (newCount) => {
     setParticipantCount(newCount);
     // Clear participant error when participant count is changed
     setErrors((prev) => ({ ...prev, participants: false }));
+    setErrorMessage("");
   };
 
   const handleDateSelect = (date) => {
@@ -179,9 +303,13 @@ const AgentCalendar = ({ tourData = null }) => {
       setShowCalendar(false);
       // Clear date error when date is selected
       setErrors((prev) => ({ ...prev, date: false }));
+      setErrorMessage("");
       // Reset booking availability when date changes
       setBookingAvailable(false);
       setBookingData(null);
+      // Reset selected time when date changes since available times might change
+      setSelectedTime("");
+      setDropDownTime("00:00");
     }
   };
 
@@ -190,6 +318,7 @@ const AgentCalendar = ({ tourData = null }) => {
     setDropDownTime(time);
     // Clear time error when time is selected
     setErrors((prev) => ({ ...prev, time: false }));
+    setErrorMessage("");
     // Reset booking availability when time changes
     setBookingAvailable(false);
     setBookingData(null);
@@ -252,33 +381,29 @@ const AgentCalendar = ({ tourData = null }) => {
   const handleCheckAvailability = async () => {
     // Clear previous errors
     setErrors({});
+    setErrorMessage("");
     const newErrors = {};
+    let errorMsg = "";
 
     if (!selectedTourType) {
       newErrors.tourType = true;
-      setAvailabilityMessage("Please select a tour type");
-      setErrors(newErrors);
-      return;
-    }
-
-    if (!participantCount) {
+      errorMsg = "Please select a tour type";
+    } else if (!participantCount) {
       newErrors.participants = true;
-      setAvailabilityMessage("Please select number of participants");
-      setErrors(newErrors);
-      return;
-    }
-
-    if (!selectedDate) {
-      newErrors.date = true; // mark error for styling
-      setErrors(newErrors);
-      setAvailabilityMessage("Please select a date"); // show message
-      return;
-    }
-
-    if (!selectedTime) {
+      errorMsg = "Please select number of participants";
+    } else if (!selectedDate) {
+      newErrors.date = true;
+      errorMsg = "Please select a date";
+    } else if (hasTimeSlots() && !selectedTime) {
+      // Only require time selection if tour has time slots
       newErrors.time = true;
-      setAvailabilityMessage("Please select a time");
+      errorMsg = "Please select a time";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setErrorMessage(errorMsg);
+      setAvailabilityMessage("Check Availability");
       return;
     }
 
@@ -291,7 +416,7 @@ const AgentCalendar = ({ tourData = null }) => {
       tour_details: {
         tour_id: tourData?.id,
         selected_date: formatDateToYYYYMMDD(selectedDate),
-        selected_time: selectedTime,
+        selected_time: hasTimeSlots() ? selectedTime : null, // Only include time if tour has time slots
         total_participants: participantCount,
         total_price: totalPrice,
         guide: selectedTourType?.guide,
@@ -310,7 +435,8 @@ const AgentCalendar = ({ tourData = null }) => {
           " "
         );
         setBookingAvailable(false);
-        setAvailabilityMessage(errorMessages);
+        setAvailabilityMessage("Check Availability");
+        setErrorMessage(errorMessages);
         return;
       }
 
@@ -329,17 +455,22 @@ const AgentCalendar = ({ tourData = null }) => {
         }, 100);
       } else {
         setBookingAvailable(false);
-        setAvailabilityMessage("Not available");
+        setAvailabilityMessage("Check Availability");
+        setErrorMessage("Not available");
       }
     } catch (error) {
       console.error("Error:", error);
-      setAvailabilityMessage("Error, try again");
+      setAvailabilityMessage("Check Availability");
+      setErrorMessage(
+        "Error occurred while checking availability. Please try again."
+      );
     } finally {
       setIsCheckingAvailability(false);
     }
   };
 
-  console.log("bookingdetails", booking);
+  // Get filtered times for the selected date
+  const filteredTimes = getFilteredTimesForSelectedDate();
 
   const currentPriceOption = getCurrentPriceOption();
   const totalPrice = calculateTotalPrice();
@@ -358,19 +489,23 @@ const AgentCalendar = ({ tourData = null }) => {
       >
         <small className="text-muted">From</small>
         <h4 className="mb-0 fw-bold">
-          $
-          {currentPriceOption && tourData
-            ? tourData.price_by_vehicle
-              ? (
-                  Number.parseFloat(currentPriceOption.group_price) /
-                  Number.parseInt(tourData.group_size)
-                ).toFixed(2)
-              : tourData.price_by_passenger
-              ? Number.parseFloat(currentPriceOption.price_per_person).toFixed(
-                  2
-                )
-              : "0.00"
-            : "0.00"}
+          {currentCurrency?.symbol}
+          {currentPriceOption && tourData ? (
+            <>
+              {`${convertCurrency(
+                tourData.price_by_vehicle
+                  ? Number.parseFloat(currentPriceOption.group_price) /
+                      Number.parseInt(tourData.group_size)
+                  : tourData.price_by_passenger
+                  ? Number.parseFloat(currentPriceOption.price_per_person)
+                  : 0,
+                "USD",
+                currentCurrency?.currency
+              )}`}
+            </>
+          ) : (
+            "0.00"
+          )}
         </h4>
         {currentPriceOption && tourData && (
           <small className="text-muted">
@@ -384,7 +519,7 @@ const AgentCalendar = ({ tourData = null }) => {
       </div>
 
       {/* Booking Form */}
-      <div className="p-3 bg-blue-5">
+      <div className="p-3 bg-blue-6">
         <h5 className="text-white mb-3 fw-bold">Select date & participants</h5>
 
         {/* Tour Type Selection */}
@@ -407,61 +542,107 @@ const AgentCalendar = ({ tourData = null }) => {
           style={{ overflow: "visible" }}
           ref={dateButtonRef}
         >
-          <div
-            className="form-control d-flex align-items-center bg-white rounded"
-            style={{
-              cursor: "pointer",
-              padding: "12px 16px",
-              height: "48px",
-              width: "100%",
-              minWidth: isMobile ? "auto" : "280px",
-              border: errors.date ? "2px solid #ff4d4f" : "none",
-              boxShadow: errors.date
-                ? "0 0 6px rgba(255, 77, 79, 0.8)"
-                : "none",
-            }}
-            onClick={() => setShowCalendar(!showCalendar)}
-          >
-            <i className={`icon-twitter text-14 me-2`} />
-            <span
-              className="flex-grow-1"
-              style={{ fontSize: isMobile ? "14px" : "16px" }}
-            >
-              {selectedDate ? formatDate(selectedDate) : "Select Date"}
-            </span>
-            <i
-              className={`icon-chevron-${
-                showCalendar ? "up" : "down"
-              } text-muted ms-2`}
-            ></i>
-          </div>
-          {errors.date && (
+          {availableDates.length === 0 ? (
+            // Show message when no dates are available
             <div
-              style={{ color: "#ff4d4f", fontSize: "13px", marginTop: "4px" }}
+              className="form-control d-flex align-items-center bg-light rounded"
+              style={{
+                padding: "12px 16px",
+                height: "48px",
+                width: "100%",
+                minWidth: isMobile ? "auto" : "280px",
+                border: "1px solid #e0e0e0",
+                color: "#6c757d",
+                cursor: "not-allowed",
+              }}
             >
-              Please select a date
+              <i className="icon-twitter text-14 me-2" />
+              <span
+                className="flex-grow-1"
+                style={{ fontSize: isMobile ? "14px" : "16px" }}
+              >
+                No dates available for this tour
+              </span>
             </div>
-          )}
+          ) : (
+            <>
+              <div
+                className="form-control d-flex align-items-center bg-white rounded"
+                style={{
+                  cursor: "pointer",
+                  padding: "12px 16px",
+                  height: "48px",
+                  width: "100%",
+                  minWidth: isMobile ? "auto" : "280px",
+                  border: errors.date ? "2px solid #ff4d4f" : "none",
+                  boxShadow: errors.date
+                    ? "0 0 6px rgba(255, 77, 79, 0.8)"
+                    : "none",
+                }}
+                onClick={() => setShowCalendar(!showCalendar)}
+              >
+                <i className={`icon-twitter text-14 me-2`} />
+                <span
+                  className="flex-grow-1"
+                  style={{ fontSize: isMobile ? "14px" : "16px" }}
+                >
+                  {selectedDate ? formatDate(selectedDate) : "Select Date"}
+                </span>
+                <i
+                  className={`icon-chevron-${
+                    showCalendar ? "up" : "down"
+                  } text-muted ms-2`}
+                ></i>
+              </div>
 
-          <Calendar
-            selectedDate={selectedDate}
-            onDateSelect={handleDateSelect}
-            onClose={() => setShowCalendar(false)}
-            isVisible={showCalendar}
-            availableDates={availableDates}
-            isDateAvailable={isDateAvailable}
-          />
+              <Calendar
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+                onClose={() => setShowCalendar(false)}
+                isVisible={showCalendar}
+                availableDates={availableDates}
+                isDateAvailable={isDateAvailable}
+              />
+            </>
+          )}
         </div>
 
-        {/* Time Selection */}
-        <CustomDropdown
-          label="Select Time"
-          icon="icon-twitter"
-          value={dropDownTime}
-          options={availableTimes}
-          onChange={handleTimeChange}
-          hasError={errors.time}
-        />
+        {/* Time Selection - Only show if tour has time slots AND there are available times for selected date */}
+        {hasTimeSlots() && selectedDate && filteredTimes.length > 0 && (
+          <CustomDropdown
+            label="Select Time"
+            icon="icon-twitter"
+            value={dropDownTime}
+            options={filteredTimes}
+            onChange={handleTimeChange}
+            hasError={errors.time}
+          />
+        )}
+
+        {/* Show message if tour has time slots but no times available for selected date */}
+        {hasTimeSlots() && selectedDate && filteredTimes.length === 0 && (
+          <div className="mb-3">
+            <div
+              className="form-control d-flex align-items-center bg-light rounded"
+              style={{
+                padding: "12px 16px",
+                height: "48px",
+                width: "100%",
+                border: "1px solid #e0e0e0",
+                color: "#6c757d",
+                cursor: "not-allowed",
+              }}
+            >
+              <i className="icon-twitter text-14 me-2" />
+              <span
+                className="flex-grow-1"
+                style={{ fontSize: isMobile ? "14px" : "16px" }}
+              >
+                No times available for selected date (4hr advance required)
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Price Display */}
         {currentPriceOption && participantCount && tourData && (
@@ -470,11 +651,21 @@ const AgentCalendar = ({ tourData = null }) => {
               <span>
                 {tourData.price_by_vehicle
                   ? `Group Price (${participantCount} participants)`
-                  : `${participantCount} × $${Number.parseFloat(
-                      currentPriceOption.price_per_person
-                    ).toFixed(2)}`}
+                  : `${participantCount} ×  ${
+                      currentCurrency?.symbol
+                    }${convertCurrency(
+                      Number.parseFloat(currentPriceOption.price_per_person),
+                      "USD",
+                      currentCurrency?.currency
+                    )}`}
               </span>
-              <span className="fw-bold">${totalPrice.toFixed(2)}</span>
+              <span className="fw-bold">{`${
+                currentCurrency?.symbol
+              }${convertCurrency(
+                parseFloat(totalPrice),
+                "USD",
+                currentCurrency?.currency
+              )}`}</span>
             </div>
             <small className="text-black-50">{currentPriceOption.guide}</small>
           </div>
@@ -482,19 +673,40 @@ const AgentCalendar = ({ tourData = null }) => {
 
         {/* Check Availability Button */}
         <button
-          className="btn w-100 fw-bold text-dark border-0 rounded"
+          ref={refFunction}
+          className="button-booking w-100 fw-bold text-dark border-0 rounded bg-yellow-4"
           style={{
-            backgroundColor: "#ffa500",
             padding: "12px 16px",
             fontSize: isMobile ? "14px" : "16px",
             height: "48px",
           }}
           onClick={handleCheckAvailability}
-          disabled={isCheckingAvailability || !currentPriceOption}
+          disabled={
+            isCheckingAvailability ||
+            !currentPriceOption ||
+            availableDates.length === 0 ||
+            (hasTimeSlots() && selectedDate && filteredTimes.length === 0)
+          }
         >
           {availabilityMessage}
         </button>
       </div>
+
+      {/* Error Message Section - Shows under main border */}
+      {errorMessage && (
+        <div
+          className="p-2 mb-3 rounded"
+          style={{
+            backgroundColor: "#ffebee",
+            border: "1px solid #ffcdd2",
+            color: "#c62828",
+            fontSize: "14px",
+          }}
+        >
+          <i className="fas fa-exclamation-triangle me-2"></i>
+          {errorMessage}
+        </div>
+      )}
 
       {/* Booking Preview Section */}
       {bookingAvailable && bookingData && (
@@ -503,13 +715,16 @@ const AgentCalendar = ({ tourData = null }) => {
             tourId={tourData?.id}
             bookingData={bookingData}
             selectedDate={selectedDate}
-            selectedTime={selectedTime}
+            selectedTime={hasTimeSlots() ? selectedTime : null}
             selectedTourType={selectedTourType}
             participantCount={participantCount}
             totalPrice={totalPrice}
             priceOption={currentPriceOption}
             tourName={tourData?.name}
             duration={tourData?.duration}
+            reviews={tourData?.reviews}
+            thumbnailImage={tourData?.cloudflare_thumbnail_image_url}
+            url={currentUrl}
           />
         </div>
       )}
