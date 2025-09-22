@@ -6,7 +6,7 @@ import Counter2 from "@/components/counter/Counter2";
 
 const WhyChoose = dynamic(() => import("@/components/home/home-3/WhyChoose"));
 const Testimonial = dynamic(() =>
-  import("@/components/Testimonial/Testimonial")
+  import("@/components/Testimonial/Testimonials")
 );
 
 export const metadata = {
