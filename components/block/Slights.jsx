@@ -25,7 +25,7 @@ const Slights = ({ slug }) => {
     spots = data2[0]?.exclusion;
   }
 
-  console.log(spots, "description in spots");
+  // console.log(spots, "description in spots");
 
   // Check for mobile view
   useEffect(() => {

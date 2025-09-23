@@ -1,5 +1,5 @@
 export const slightContent = {
-  jedda: {
+  jeddah: {
     title: `Check out our Jeddah ziyarat tour options with guided ziyarat tours in Saudi Arabia. Visit the ziyarat places in Jeddah, like Al-Balad and more. Each tour includes English guides, tips, and travel ideas.`,
     items: [
       {
