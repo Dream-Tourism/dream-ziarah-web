@@ -133,6 +133,8 @@ export const transformBookingData = (apiResponse) => {
     booking_id: booking.booking_id,
     booking_ticket: booking.booking_ticket,
     payment_invoice: booking.payment_invoice,
+    cancellation_denied_count: booking.cancellation_denied_count,
+    cancellation_eligible: booking.cancellation_eligible,
   }));
 
   return {

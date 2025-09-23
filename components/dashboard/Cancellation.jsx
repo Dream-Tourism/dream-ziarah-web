@@ -13,6 +13,8 @@ export default function CancellationModal({ order, onClose }) {
   const [policiesError, setPoliciesError] = useState("");
   const [showFullPolicies, setShowFullPolicies] = useState(false);
 
+  console.log("order", order);
+
   // Fetch refund policies when modal opens
   useEffect(() => {
     const fetchRefundPolicies = async () => {
@@ -160,10 +162,113 @@ export default function CancellationModal({ order, onClose }) {
     };
   }, []);
 
-  // Check if user is eligible for cancellation
-  const isEligibleForCancellation =
-    refundPolicies?.refund_eligible !== false &&
-    refundPolicies?.original_remaining_times?.original_remaining_days > 0;
+  // Enhanced eligibility check based on order data
+  const getCancellationEligibility = () => {
+    // Check if too many cancellation requests (more than 3)
+    if (order?.cancellation_denied_count > 3) {
+      return {
+        canCancel: false,
+        reason: "too_many_requests",
+        message:
+          "You have made too many cancellation requests and cannot proceed with further cancellations.",
+      };
+    }
+
+    // Check cancellation status
+    if (order?.cancellation_status === "approved") {
+      return {
+        canCancel: false,
+        reason: "already_approved",
+        message: "Your cancellation request has already been approved.",
+      };
+    }
+
+    if (order?.cancellation_status === "reviewing") {
+      return {
+        canCancel: false,
+        reason: "under_review",
+        message: "Your cancellation request is currently under review.",
+      };
+    }
+
+    if (order?.cancellation_status === "denied") {
+      return {
+        canCancel: false,
+        reason: "denied",
+        message:
+          "According to our policies, you cannot cancel this booking as your previous request was denied.",
+      };
+    }
+
+    // Check if cancellation_eligible is false from order data
+    if (order?.cancellation_eligible === false) {
+      return {
+        canCancel: false,
+        reason: "not_eligible",
+        message:
+          "This booking is not eligible for cancellation according to our policies.",
+      };
+    }
+
+    // Check refund policy eligibility (existing logic)
+    const isPolicyEligible =
+      refundPolicies?.refund_eligible !== false &&
+      refundPolicies?.original_remaining_times?.original_remaining_days > 0;
+
+    if (!isPolicyEligible && refundPolicies) {
+      return {
+        canCancel: false,
+        reason: "policy_restriction",
+        message:
+          refundPolicies?.original_remaining_times?.original_remaining_days ===
+          0
+            ? "Unfortunately, you cannot cancel this tour booking as the tour is scheduled for today or has already passed."
+            : "Unfortunately, you cannot cancel this tour booking as it falls outside our cancellation policy timeframe.",
+      };
+    }
+
+    // If all checks pass, user can cancel
+    return {
+      canCancel: true,
+      reason: "eligible",
+      message: "",
+    };
+  };
+
+  const eligibility = getCancellationEligibility();
+  const isEligibleForCancellation = order?.cancellation_eligible === true;
+
+  // Helper function to get status display info
+  const getStatusDisplay = () => {
+    switch (order?.cancellation_status) {
+      case "approved":
+        return {
+          type: "success",
+          icon: "check-circle",
+          title: "Cancellation Approved",
+          message: "Your cancellation request has been approved.",
+        };
+      case "reviewing":
+        return {
+          type: "warning",
+          icon: "clock",
+          title: "Under Review",
+          message:
+            "Your cancellation request is currently being reviewed by our team.",
+        };
+      case "denied":
+        return {
+          type: "danger",
+          icon: "x-circle",
+          title: "Cancellation Denied",
+          message: "According to our policies, you cannot cancel this booking.",
+        };
+      default:
+        return null;
+    }
+  };
+
+  const statusDisplay = getStatusDisplay();
 
   return (
     <div
@@ -185,6 +290,38 @@ export default function CancellationModal({ order, onClose }) {
 
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
+              {/* Cancellation Status Display */}
+              {statusDisplay && (
+                <div
+                  className={`mb-4 p-3 bg-${statusDisplay.type} bg-opacity-10 rounded border border-${statusDisplay.type} border-opacity-25`}
+                >
+                  <div className="d-flex align-items-center mb-2">
+                    <i
+                      className={`icon-${statusDisplay.icon} text-${statusDisplay.type} me-2`}
+                    ></i>
+                    <span className={`fw-semibold text-${statusDisplay.type}`}>
+                      {statusDisplay.title}
+                    </span>
+                  </div>
+                  <p className="mb-0 small">{statusDisplay.message}</p>
+                </div>
+              )}
+
+              {/* Too Many Requests Warning */}
+              {eligibility.reason === "too_many_requests" && (
+                <div className="mb-4 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
+                  <div className="d-flex align-items-center mb-2">
+                    <i className="icon-alert-triangle text-danger me-2"></i>
+                    <span className="fw-semibold text-danger">
+                      Too Many Cancellation Requests
+                    </span>
+                  </div>
+                  <p className="mb-0 small text-danger">
+                    {eligibility.message}
+                  </p>
+                </div>
+              )}
+
               {/* Tour Item Display */}
               <div className="mb-4">
                 <label className="form-label">
@@ -315,31 +452,27 @@ export default function CancellationModal({ order, onClose }) {
                       </div>
                     ) : refundPolicies ? (
                       <div>
-                        {/* Cancellation Not Eligible Warning */}
-                        {!isEligibleForCancellation && (
-                          <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
-                            <div className="d-flex align-items-center mb-2">
-                              <i className="icon-x-circle text-danger me-2"></i>
-                              <span className="fw-semibold text-danger">
-                                Cancellation Not Available
-                              </span>
+                        {/* General Cancellation Not Eligible Warning */}
+                        {!isEligibleForCancellation &&
+                          eligibility.reason !== "too_many_requests" &&
+                          !statusDisplay && (
+                            <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
+                              <div className="d-flex align-items-center mb-2">
+                                <i className="icon-x-circle text-danger me-2"></i>
+                                <span className="fw-semibold text-danger">
+                                  Cancellation Not Available
+                                </span>
+                              </div>
+                              <p className="mb-2 small text-danger">
+                                {eligibility.message}
+                              </p>
+                              <p className="mb-0 small text-muted">
+                                Please contact our customer service team if you
+                                have any questions or need assistance with your
+                                booking.
+                              </p>
                             </div>
-                            <p className="mb-2 small text-danger">
-                              Unfortunately, you cannot cancel this tour booking
-                              {refundPolicies?.original_remaining_times
-                                ?.original_remaining_days === 0
-                                ? " as the tour is scheduled for today or has already passed"
-                                : " as it falls outside our cancellation policy timeframe"}
-                              . According to our policies, no refund is
-                              available for cancellations made at this time.
-                            </p>
-                            <p className="mb-0 small text-muted">
-                              Please contact our customer service team if you
-                              have any questions or need assistance with your
-                              booking.
-                            </p>
-                          </div>
-                        )}
+                          )}
 
                         {/* Current Refund Information - Only show if eligible */}
                         {isEligibleForCancellation ? (
@@ -364,7 +497,8 @@ export default function CancellationModal({ order, onClose }) {
                           </div>
                         ) : (
                           refundPolicies?.original_remaining_times
-                            ?.original_remaining_days > 0 && (
+                            ?.original_remaining_days > 0 &&
+                          eligibility.reason === "policy_restriction" && (
                             <div className="mb-3 p-3 bg-danger bg-opacity-10 rounded border border-danger border-opacity-25">
                               <div className="d-flex align-items-center mb-2">
                                 <i className="icon-x-circle text-danger me-2"></i>
@@ -538,7 +672,6 @@ export default function CancellationModal({ order, onClose }) {
                   {error}
                 </div>
               )}
-
               {/* Submit Button - Only show if eligible for cancellation */}
               <div className="d-flex justify-content-end sticky-bottom bg-white pt-3 mt-4 border-top">
                 <button
