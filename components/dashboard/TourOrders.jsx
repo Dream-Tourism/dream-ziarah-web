@@ -181,6 +181,14 @@ export default function TourOrders({
   };
 
   const canCancelOrder = (order) => {
+    // Don't show cancel button if date change was approved
+    if (
+      order.date_change_request === false &&
+      order.date_change_request_status &&
+      order.date_change_request_status.toLowerCase() === "approved"
+    ) {
+      return false;
+    }
     return order.status === "paid" || order.status === "pending";
   };
 
@@ -220,6 +228,7 @@ export default function TourOrders({
         status: order.date_change_request_status || "reviewing",
         badgeColor: "info",
         text: "Date Change Request",
+        showButton: false,
       };
     }
 
@@ -228,6 +237,18 @@ export default function TourOrders({
       order.date_change_request_status
     ) {
       const status = order.date_change_request_status.toLowerCase();
+
+      if (status === "denied") {
+        return {
+          showStatus: true,
+          status: "denied",
+          badgeColor: "danger",
+          text: "Date Change Denied",
+          showButton: true, // Show button for denied requests
+          tooltip: "Your date change request has been denied by admin",
+        };
+      }
+
       return {
         showStatus: true,
         status: order.date_change_request_status,
@@ -243,10 +264,11 @@ export default function TourOrders({
             : status === "cancelled"
             ? "Date Change Rejected"
             : "Date Change Request",
+        showButton: false,
       };
     }
 
-    return { showStatus: false };
+    return { showStatus: false, showButton: true };
   };
 
   const getCancellationRequestStatus = (order) => {
@@ -318,6 +340,26 @@ export default function TourOrders({
   const CancelButtonOrStatus = ({ order, isDesktop = false }) => {
     const statusInfo = getCancellationRequestStatus(order);
 
+    // Check if date change was approved - show replacement text instead
+    if (
+      order.date_change_request === false &&
+      order.date_change_request_status &&
+      order.date_change_request_status.toLowerCase() === "approved"
+    ) {
+      return (
+        <div className="text-center">
+          <span
+            className="text-success fw-semibold"
+            style={{ fontSize: "11px", cursor: "help" }}
+            title="Your tour date has been successfully changed. The new date is now confirmed and cancellation is no longer available for this booking."
+          >
+            <i className="icon-check-circle me-1"></i>
+            Date Updated
+          </span>
+        </div>
+      );
+    }
+
     if (statusInfo.showStatus) {
       return (
         <div
@@ -367,11 +409,7 @@ export default function TourOrders({
 
     if (statusInfo.showStatus) {
       return (
-        <div
-          className={`text-center ${
-            isDesktop ? "" : "d-flex align-items-center justify-content-center"
-          }`}
-        >
+        <div className="text-center">
           <div className="d-flex flex-column align-items-center">
             <span
               className={`badge bg-${statusInfo.badgeColor} text-dark px-2 py-1 mb-1`}
@@ -391,6 +429,25 @@ export default function TourOrders({
             <small className="text-muted" style={{ fontSize: "9px" }}>
               {statusInfo.text}
             </small>
+
+            {/* Show button for denied requests */}
+            {statusInfo.showButton &&
+              statusInfo.status === "denied" &&
+              canChangeDate(order) &&
+              !isOrderDisabled(order) && (
+                <button
+                  className="btn btn-outline-primary btn-sm bg-yellow-4 mt-1"
+                  onClick={(e) => handleDateChangeClick(order, e)}
+                  title={statusInfo.tooltip}
+                  style={{
+                    fontSize: "10px",
+                    padding: "2px 6px",
+                  }}
+                >
+                  <i className="icon-calendar me-1"></i>
+                  Try Again
+                </button>
+              )}
           </div>
         </div>
       );
