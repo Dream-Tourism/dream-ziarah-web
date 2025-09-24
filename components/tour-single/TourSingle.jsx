@@ -4,20 +4,16 @@ import "photoswipe/dist/photoswipe.css";
 
 import TourGallery from "@/components/tour-single/TourGallery";
 import Tours from "@/components/tours/Tours";
-import ToursMadina from "@/components/tours/ToursMadina";
-import ToursJedda from "@/components/tours/ToursJedda";
-import ToursTaif from "@/components/tours/ToursTaif";
+
 import { addItenarayItems, addtourItem } from "@/features/tour/tourSlice";
 import { singleTourInfo } from "@/hooks/useTours";
 import Loading from "@/app/loading";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import Itinerary from "./itinerary/index";
-import { useTourBySlug } from "@/hooks/useTourBySlug";
-import { useSingleTour } from "@/hooks/useSingleTour";
+
 import {
   EmailIcon,
   EmailShareButton,

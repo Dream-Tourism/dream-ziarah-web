@@ -18,7 +18,6 @@ const ImportantInfo = ({ tour }) => {
         {/* <div className="fw-600 mb-10">Departure details</div> */}
         <div className="text-15 description-content">
           <Interweave
-            className="description-content"
             allowAttributes
             allowElements
             disableLineBreaks={false}
