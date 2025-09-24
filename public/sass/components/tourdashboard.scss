@@ -39,20 +39,24 @@
 .description-content h3 {
   font-size: 18px;
 }
-.description-content ul {
-  list-style-type: disc !important;
-  list-style-position: inside; // margin-left: 20px; /* optional, to add some spacing */
-  margin-left: 10px;
+body .description-content ul,
+body .description-content ol {
+  list-style: disc !important; /* Force dots */
+  list-style-type: disc !important; /* Force dots */
+  list-style-position: inside !important; /* Dots inside container */
+  margin-left: 20px !important; /* Add spacing for bullets */
+  padding-left: 0 !important; /* Reset padding if needed */
 }
-// .description-content li {
-//   margin-bottom: 0.5rem; /* optional spacing between items */
-// }
-.description-content ol {
-  list-style-type: disc !important;
-  list-style-position: inside; // margin-left: 20px; /* optional, to add some spacing */
 
-  margin-left: 10px;
-  padding: 0 !important;
+body .description-content ul li,
+body .description-content ol li {
+  list-style: disc !important; /* Force bullet points on li */
+  display: list-item !important; /* Make sure it displays as list item */
+  margin-bottom: 0.5rem; /* Optional spacing between items */
+}
+
+body .description-content ol li {
+  list-style: disc !important; /* Force numbers for ordered lists */
 }
 
 /* Mobile Order Cards */

@@ -24,7 +24,7 @@ const Tours = ({ filterLocation }) => {
             ?.toLowerCase()
             .includes(filterLocation.toLowerCase());
         }
-        return false;
+        return true;
       })
       .sort((a, b) => {
         const orderA = a.order !== undefined ? a.order : Infinity;

@@ -314,7 +314,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
               <div className="col-12">
                 <div className="sectionTitle -md">
                   <h2 className="sectionTitle__title md:text-24">
-                    Popular Tours In Makkah
+                    Discover Our Best Makkah Ziyarat and Umrah Tours for
                   </h2>
                   <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                     Find Your Perfect Makkah Tour: Private, Shared, and More
