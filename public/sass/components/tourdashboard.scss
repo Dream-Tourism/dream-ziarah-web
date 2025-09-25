@@ -22,16 +22,22 @@
 }
 
 //Single TOur Description
-.description-content {
-  color: #000 !important; /* force black */
-}
+// .description-content {
+//   color: #000 !important; /* force black */
+// }
 .description-content p,
-.description-content strong,
-.description-content span {
+.description-content strong:not(a strong),
+.description-content span:not(a span) {
   color: #000 !important; /* ensure children are black too */
 }
 .description-content a {
-  color: #3300ff;
+  color: #3300ff !important;
+}
+.description-content a strong {
+  color: #3300ff !important;
+}
+.description-content a span {
+  color: #3300ff !important;
 }
 .description-content h2 {
   font-size: 22px;
