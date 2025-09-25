@@ -1,13 +1,19 @@
 import { GET_ALL_TOUR, GET_TOUR_ENTRYID } from "@/constant/constants";
 
-export async function getAllToursServer() {
+// Helper function to get cache configuration
+const getCacheConfig = (forceRefresh = false) => {
+  if (forceRefresh) {
+    return { cache: 'no-store' }; // Force fresh data
+  }
+  return {
+    next: { revalidate: process.env.NODE_ENV === 'development' ? 10 : 60 }, // 10s in dev, 1min in prod
+    headers: { "Content-Type": "application/json" }
+  };
+};
+
+export async function getAllToursServer(forceRefresh = false) {
   try {
-    const response = await fetch(GET_ALL_TOUR, {
-      next: { revalidate: 300 }, // Cache with 5-minute revalidation
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(GET_ALL_TOUR, getCacheConfig(forceRefresh));
 
     if (!response.ok) {
       throw new Error(`Failed to fetch tours: ${response.status}`);
@@ -25,18 +31,13 @@ export async function getAllToursServer() {
   }
 }
 
-export async function getTourBySlugServer(slug) {
+export async function getTourBySlugServer(slug, forceRefresh = false) {
   try {
     if (!slug) return null;
 
     // First try to get tour directly by slug if API supports it
     // For now, we'll still need to fetch all tours, but we'll optimize the request
-    const response = await fetch(GET_ALL_TOUR, {
-      next: { revalidate: 300 }, // Cache with 5-minute revalidation
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(GET_ALL_TOUR, getCacheConfig(forceRefresh));
 
     if (!response.ok) {
       throw new Error(`Failed to fetch tours: ${response.status}`);

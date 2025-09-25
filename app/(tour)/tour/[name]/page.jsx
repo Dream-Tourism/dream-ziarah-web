@@ -206,12 +206,12 @@ export async function generateMetadata({ params }) {
 }
 
 // Optimized server-side data fetching function
-async function getTourData(slug) {
+async function getTourData(slug, forceRefresh = false) {
   try {
-    console.log('Fetching tour data for slug:', slug);
+    console.log('Fetching tour data for slug:', slug, 'forceRefresh:', forceRefresh);
 
     // Only fetch the specific tour by slug
-    const tourBySlugData = await getTourBySlugServer(slug);
+    const tourBySlugData = await getTourBySlugServer(slug, forceRefresh);
 
     if (!tourBySlugData || !tourBySlugData.tour) {
       console.log('No tour data found for slug:', slug);
@@ -231,12 +231,14 @@ async function getTourData(slug) {
   }
 }
 
-export default async function Tour({ params }) {
+export default async function Tour({ params, searchParams }) {
   try {
     const awaitedParams = await params;
+    const awaitedSearchParams = await searchParams;
     const { name: slug } = awaitedParams;
+    const forceRefresh = awaitedSearchParams?.refresh === 'true';
 
-    console.log('Tour page accessed with slug:', slug);
+    console.log('Tour page accessed with slug:', slug, 'forceRefresh:', forceRefresh);
 
     if (!slug) {
       console.log('No slug provided, redirecting to 404');
@@ -244,7 +246,7 @@ export default async function Tour({ params }) {
     }
 
     // Fetch tour data optimized for performance
-    const data = await getTourData(slug);
+    const data = await getTourData(slug, forceRefresh);
 
     // Handle not found case
     if (!data || !data.tourData) {
