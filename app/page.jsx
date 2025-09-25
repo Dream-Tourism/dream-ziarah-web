@@ -4,10 +4,9 @@ import Wrapper from "@/components/layout/Wrapper";
 const MainHome = dynamic(() => import("@/components/home/MainHome"));
 
 export const metadata = {
-  title:
-    "Dream Ziarah - Luxury Ziyarat Tours in Makkah & Madina | Umrah and Hajj Packages",
+  title: "Ziyarat Tours in Makkah & Madinah with Umrah and Hajj Packages",
   description:
-    "Dream Ziarah specializes in providing spiritual journeys with exclusive Ziyarat tours in Makkah & Madina, alongside comprehensive Umrah and Hajj packages. Explore sacred sites with us and embark on a journey of faith and discovery.",
+    "Guided Ziyarat with English-speaking hosts, hotel pickup, and flexible timing. Browse Umrah and Hajj packages, see live availability and prices, and reserve securely.",
 };
 
 // Cache for 5 minutes to improve performance

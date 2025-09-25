@@ -17,29 +17,24 @@ import dynamic from "next/dynamic";
 
 const destinationsMetadatas = {
   jeddah: {
-    title: "Jeddah: Gateway to Tranquil Beauty - Dream Ziarah",
+    title: "Jeddah city and Ziyarat tour packages with private transport",
     description:
-      "Explore the enchanting city of Jeddah with DreamZiarah.com. Immerse yourself in the blend of modernity and tradition, where vibrant culture meets serene coastal beauty. Plan your journey to Jeddah and create unforgettable memories.",
+      "Explore Al-Balad and seaside highlights with guided Ziyarat and city tours. Private cars or vans, hotel pickup and flexible hours. See tour options and prices.",
   },
   makkah: {
-    title: "Makkah: The Spiritual Heartbeat - Dream Ziarah",
+    title: "Book Makkah Ziyarat tours and packages with private cars",
     description:
-      "Embark on a sacred pilgrimage to Makkah with DreamZiarah.com. Discover the spiritual heartbeat of Islam, where the iconic Kaaba stands as a symbol of devotion. Explore our Makkah packages and embark on a journey of profound spiritual significance.",
+      "Reserve Makkah Ziyarat packages with guided visits, hotel pickup and flexible timing. Private car or minibus for families and groups. See itineraries and pricing.",
   },
   madinah: {
-    title: "Madinah: Oasis of Peace and Spirituality - Dream Ziarah",
+    title: "Book Madinah Ziyarat tours with private or group transport",
     description:
-      "Experience the tranquility of Madinah with DreamZiarah.com. Immerse yourself in the peaceful surroundings of the Prophet's Mosque and explore the rich Islamic history. Plan your spiritual journey to Madinah with our curated packages.",
+      "Plan serene Ziyarat in Madinah with guided visits, hotel pickup and flexible schedules. Family-friendly cars and vans available. Check live dates and costs.",
   },
   taif: {
-    title: "Taif: Mountain Retreat and Cultural Gem - Dream Ziarah",
+    title: "Book Taif tours from Makkah with private or group vehicles",
     description:
-      "Discover the scenic beauty and cultural richness of Taif with DreamZiarah.com. Nestled in the mountains, Taif offers a refreshing escape with its lush landscapes and historical charm. Explore our Taif packages for a unique cultural experience.",
-  },
-  tabuk: {
-    title: "Tabuk: Unveiling Historical Treasures - Dream Ziarah",
-    description:
-      "Uncover the historical treasures of Tabuk with DreamZiarah.com. Immerse yourself in the rich heritage of this ancient city, known for its archaeological wonders and unique landscapes. Explore Tabuk with our thoughtfully designed travel packages.",
+      "Plan a Taif escape with guided Ziyarat, Al-Hada viewpoints and rose gardens in season. Hotel pickup and flexible timing. Check availability and tour prices.",
   },
 };
 

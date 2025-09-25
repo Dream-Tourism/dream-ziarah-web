@@ -4,9 +4,9 @@ import TourSingle from "@/components/tour-single/TourSingle";
 import { getAllToursServer } from "@/services/tourService";
 
 export const metadata = {
-  title: "Umrah Packages | Spiritual Umrah Journeys with Dream Ziarah",
+  title: "Affordable Umrah packages with guided Ziyarat tours",
   description:
-    "Experience spiritual renewal and tranquility with Dream Ziarah's Umrah packages. Our carefully curated services provide a meaningful pilgrimage, designed for your peace and spiritual deepening.",
+    "Book affordable Umrah packages with guided Ziyarat in Makkah and Madinah. Flexible dates, hotel options, airport pickup, and friendly support. See prices and availability.",
 };
 
 // Server-side data fetching function

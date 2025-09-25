@@ -4,9 +4,9 @@ import TourSingle from "@/components/tour-single/TourSingle";
 import { getAllToursServer } from "@/services/tourService";
 
 export const metadata = {
-  title: "Hajj Packages | Complete Your Hajj Pilgrimage with Dream Ziarah",
+  title: "Book Hajj packages with trusted guides and clear plans",
   description:
-    "Achieve a profound spiritual journey with Dream Ziarah's Hajj packages. We offer full support for your pilgrim, ensuring a deeply enriching and smooth experience.",
+    "Book Hajj packages with guided tours, hotel options, and organized transport between Makkah and Madinah. Get step-by-step support. View current prices and dates.",
 };
 
 // Server-side data fetching function
