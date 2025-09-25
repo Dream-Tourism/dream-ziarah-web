@@ -40,20 +40,64 @@ const TourProperties = ({ searchLocation }) => {
     }
   };
 
-  // Filter tours based on location_type and published status
+  // Filter and sort tours: show all Ziyarat tours in order (Makkah, Madinah, Jeddah, Taif), exclude Hajj/Umrah
   const filteredTours =
-    data?.filter((tour) => {
-      const isPublished = tour.published === true;
-      const locationTypeFilter = getLocationTypeFilter(currentSearchLocation);
+    data
+      ?.filter((tour) => {
+        const isPublished = tour.published === true;
+        const locationType = tour.location_type?.toLowerCase() || "";
 
-      if (locationTypeFilter) {
-        const locationMatch = tour.location_type
-          ?.toLowerCase()
-          .includes(locationTypeFilter.toLowerCase());
-        return isPublished && locationMatch;
-      }
-      return isPublished;
-    }) || [];
+        // Exclude Hajj and Umrah tours
+        if (locationType.includes("hajj") || locationType.includes("umrah")) {
+          return false;
+        }
+
+        // If there's a specific location search, filter by it
+        if (currentSearchLocation) {
+          const locationTypeFilter = getLocationTypeFilter(
+            currentSearchLocation
+          );
+          if (locationTypeFilter) {
+            const locationMatch = locationType.includes(
+              locationTypeFilter.toLowerCase()
+            );
+            return isPublished && locationMatch;
+          }
+        }
+
+        // Otherwise show all Ziyarat tours (Makkah, Madinah, Jeddah, Taif)
+        const isZiyaratTour =
+          locationType.includes("ziyarat") ||
+          locationType.includes("makkah") ||
+          locationType.includes("madina") ||
+          locationType.includes("jeddah") ||
+          locationType.includes("taif");
+
+        return isPublished && isZiyaratTour;
+      })
+      ?.sort((a, b) => {
+        // Sort by location priority: Makkah -> Madinah -> Jeddah -> Taif
+        const getLocationPriority = (tour) => {
+          const locationType = tour.location_type?.toLowerCase() || "";
+          if (locationType.includes("makkah")) return 1;
+          if (locationType.includes("madina")) return 2;
+          if (locationType.includes("jeddah")) return 3;
+          if (locationType.includes("taif")) return 4;
+          return 5; // Other locations last
+        };
+
+        const priorityA = getLocationPriority(a);
+        const priorityB = getLocationPriority(b);
+
+        if (priorityA !== priorityB) {
+          return priorityA - priorityB;
+        }
+
+        // Within same location, sort by order field if exists
+        const orderA = a.order !== undefined ? a.order : Infinity;
+        const orderB = b.order !== undefined ? b.order : Infinity;
+        return orderA - orderB;
+      }) || [];
 
   // Calculate per person price
   const calculatePerPersonPrice = (tour) => {
@@ -142,6 +186,8 @@ const TourProperties = ({ searchLocation }) => {
       </div>
     );
   }
+
+  console.log("filteredTours", filteredTours);
 
   return (
     <div

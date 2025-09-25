@@ -53,6 +53,16 @@ const ToursHajjUmrahForMobile = ({
     return "0.00";
   };
 
+  const generateLink = (item) => {
+    const name = item.name?.toLowerCase() || "";
+    if (name.includes("hajj")) {
+      return "/hajj";
+    } else if (name.includes("umrah")) {
+      return "/umrah";
+    }
+    return `/tour/${item.slug}`;
+  };
+
   useEffect(() => {
     dispatch(
       addItemsCount(
@@ -79,7 +89,7 @@ const ToursHajjUmrahForMobile = ({
     return (
       <div className="col-lg-3 col-md-4 col-6" key={item?.id}>
         <Link
-          href={`/tour/${item?.slug}`}
+          href={generateLink(item)}
           style={{ cursor: "pointer" }}
           className="tourCard -type-1 rounded-4 hover-inside-slider"
         >

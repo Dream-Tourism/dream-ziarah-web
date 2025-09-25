@@ -1,6 +1,6 @@
 import {
   // GET_CMS_BLOGS,
-  GET_CONTENTS_WITH_URL_BY_MENU_ID,
+  GET_ALL_TOUR,
   GET_MENUS_ALL_NESTED,
 } from "@/constant/constants";
 import { slugify } from "@/utils/sluglify";
@@ -11,31 +11,31 @@ export default async function Sitemap() {
   try {
     // Perform all fetch requests in parallel
     const [
-      contentRes,
+      toursRes,
       //  blogRes,
       desRes,
     ] = await Promise.all([
-      fetch(`${GET_CONTENTS_WITH_URL_BY_MENU_ID}/1`),
+      fetch(`${GET_ALL_TOUR}`),
       // fetch(`${GET_CMS_BLOGS}`),
       fetch(`${GET_MENUS_ALL_NESTED}`),
     ]);
 
     // Check if all fetch requests were successful
-    if (!contentRes.ok || !desRes.ok) {
+    if (!toursRes.ok || !desRes.ok) {
       throw new Error(
-        `Failed to fetch data: ${contentRes.status} ${contentRes.statusText}, ${desRes.status} ${desRes.statusText}`
+        `Failed to fetch data: ${toursRes.status} ${toursRes.statusText}, ${desRes.status} ${desRes.statusText}`
       );
     }
 
-    const [contentData, destinationData] = await Promise.all([
-      contentRes.json(),
+    const [toursData, destinationData] = await Promise.all([
+      toursRes.json(),
       // blogRes.json(),
       desRes.json(),
     ]);
 
     // Validate the fetched data
-    if (!Array.isArray(contentData)) {
-      throw new TypeError("Content data is not an array");
+    if (!Array.isArray(toursData)) {
+      throw new TypeError("Tours data is not an array");
     }
     // if (!Array.isArray(blogsData.blogs)) {
     //   throw new TypeError("Blogs data is not an array");
@@ -52,24 +52,40 @@ export default async function Sitemap() {
     //   priority: 1,
     // }));
 
-    const excludedCountries = [
-      "Makkah",
-      "Madinah",
-      "Jedda",
-      "Taif",
-      "makkah",
-      "madinah",
-      "taif",
-      "jeddah",
-    ];
-    const contentsXml = contentData
-      .filter((item) => !excludedCountries.includes(item.name))
-      .map((item) => ({
-        url: `${BASE_URL}/tour/${encodeURIComponent(slugify(item.name))}`,
-        lastModified: new Date(item.updated_at).toISOString(),
-        changeFrequency: "yearly",
-        priority: 1,
-      }));
+    // Generate tour URLs based on published tours
+    const toursXml = toursData
+      .filter((tour) => tour.published === true) // Only published tours
+      .map((tour) => {
+        const locationType = tour.location_type?.toLowerCase() || '';
+        const tourName = tour.name?.toLowerCase() || '';
+
+        // Check if it's a Hajj or Umrah tour
+        if (locationType.includes('hajj') || tourName.includes('hajj')) {
+          return {
+            url: `${BASE_URL}/hajj`,
+            lastModified: new Date(tour.updated_at || Date.now()).toISOString(),
+            changeFrequency: "yearly",
+            priority: 1,
+          };
+        }
+
+        if (locationType.includes('umrah') || tourName.includes('umrah')) {
+          return {
+            url: `${BASE_URL}/umrah`,
+            lastModified: new Date(tour.updated_at || Date.now()).toISOString(),
+            changeFrequency: "yearly",
+            priority: 1,
+          };
+        }
+
+        // For all other tours (Ziyarat tours), use tour/slug format
+        return {
+          url: `${BASE_URL}/tour/${encodeURIComponent(tour.slug)}`,
+          lastModified: new Date(tour.updated_at || Date.now()).toISOString(),
+          changeFrequency: "yearly",
+          priority: 1,
+        };
+      });
 
     const destinationsXml = destinationData.menus
       .filter((item) => item.name === "Destinations")
@@ -106,13 +122,13 @@ export default async function Sitemap() {
       //   priority: 1,
       // },
       {
-        url: `${BASE_URL}/terms?type=privacy_policy`,
+        url: `${BASE_URL}/privacy-policy`,
         lastModified: new Date().toISOString(),
         changeFrequency: "yearly",
         priority: 1,
       },
       {
-        url: `${BASE_URL}/terms?type=general_terms_of_use`,
+        url: `${BASE_URL}/terms-and-conditions`,
         lastModified: new Date().toISOString(),
         changeFrequency: "yearly",
         priority: 1,
@@ -120,13 +136,18 @@ export default async function Sitemap() {
     ];
 
     const combinedXml = [
-      ...contentsXml,
+      ...toursXml,
       // ...blogsXml,
       ...destinationsXml,
       ...otherXml,
     ];
 
-    return combinedXml;
+    // Remove duplicate URLs (e.g., multiple Hajj or Umrah tours generating same URL)
+    const uniqueXml = combinedXml.filter((item, index, array) =>
+      index === array.findIndex(t => t.url === item.url)
+    );
+
+    return uniqueXml;
   } catch (error) {
     throw error;
   }

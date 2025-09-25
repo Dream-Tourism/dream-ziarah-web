@@ -13,93 +13,6 @@ const TopDestinations2 = ({ slug }) => {
   const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId);
   console.log(data, "data in top destination");
 
-  // Function to get nearby destinations based on current location
-  const getNearbyDestinations = (location) => {
-    const locationName = location.toLowerCase();
-
-    switch (locationName) {
-      case "makkah":
-        return [
-          {
-            name: "Madinah",
-            distance: "400km",
-            description:
-              "visit the Prophet's Mosque with a guided ziyarat tour in Saudi Arabia",
-          },
-          {
-            name: "Taif",
-            distance: "150km",
-            description:
-              "see Taif ziyarat places like Abdullah Ibn Abbas Mosque",
-          },
-          {
-            name: "Jeddah",
-            distance: "70km",
-            description: "check ziyarat in the holy places",
-          },
-        ];
-      case "madinah":
-        return [
-          {
-            name: "Makkah",
-            distance: "400km",
-            description:
-              "visit the Makkah Haram Sharif with guided ziyarat tours in Saudi Arabia",
-          },
-          {
-            name: "Taif",
-            distance: "600km",
-            description:
-              "see Taif ziyarat places like the Abdullah Ibn Abbas Mosque",
-          },
-          {
-            name: "Jeddah",
-            distance: "330km",
-            description: "check Ziyarat in Jeddah holy places",
-          },
-        ];
-      case "jeddah":
-        return [
-          {
-            name: "Makkah",
-            distance: "70km",
-            description:
-              "visit the Makkah Haram Sharif with guided ziyarat tours in Saudi Arabia",
-          },
-          {
-            name: "Madinah",
-            distance: "330km",
-            description: "see the Prophet's Mosque",
-          },
-          {
-            name: "Taif",
-            distance: "150km",
-            description: "check Taif ziyarat places",
-          },
-        ];
-      case "taif":
-        return [
-          {
-            name: "Makkah",
-            distance: "150km",
-            description:
-              "visit the Makkah Haram Sharif with guided ziyarat tours in Saudi Arabia",
-          },
-          {
-            name: "Madinah",
-            distance: "600km",
-            description: "see the Prophet's Mosque",
-          },
-          {
-            name: "Jeddah",
-            distance: "150km",
-            description: "check ziyarat in Jeddah's holy places",
-          },
-        ];
-      default:
-        return [];
-    }
-  };
 
   let destinations = [];
   if (isSuccess) {
@@ -112,7 +25,6 @@ const TopDestinations2 = ({ slug }) => {
         location: item.name,
         properties: "4,090",
         delayAnimation: "0",
-        nearbyDestinations: getNearbyDestinations(item.name),
       }));
   }
 
@@ -174,30 +86,16 @@ const TopDestinations2 = ({ slug }) => {
                   alt={item?.name}
                 />
               </div>
-              <div className="citiesCard__content d-flex flex-column justify-content-center align-items-center p-3">
-                <h4 className="text-26 fw-600 text-white text-capitalize mb-2">
-                  {item.location}
-                </h4>
-
-                {/* Nearby Destinations */}
-                {item.nearbyDestinations &&
-                  item.nearbyDestinations.length > 0 && (
-                    <div
-                      className="nearby-destinations text-center"
-                      style={{ fontSize: "9px" }}
-                    >
-                      {item.nearbyDestinations.map((nearby, index) => (
-                        <div
-                          key={index}
-                          className="text-white mb-1"
-                          style={{ lineHeight: "1.3" }}
-                        >
-                          <strong>{nearby.name}</strong>: {nearby.distance}{" "}
-                          away, {nearby.description}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+              <div className="citiesCard__content d-flex justify-content-center align-items-center">
+                <div className="citiesCard__bg"></div>
+                <div className="text-center">
+                  <h4 className="text-26 fw-600 text-white text-capitalize">
+                    {item.location}
+                  </h4>
+                  <div className="text-15 text-white mt-5 opacity-90">
+                    Explore Sacred Places
+                  </div>
+                </div>
               </div>
             </Link>
           </div>
