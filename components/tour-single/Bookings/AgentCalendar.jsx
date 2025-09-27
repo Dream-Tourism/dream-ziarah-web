@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import convertCurrency from "@/utils/currency";
 import { useSearchParams } from "next/navigation";
 
-const AgentCalendar = ({ tourData = null, refFunction }) => {
+const AgentCalendar = ({ tourData = null, refFunction, umrah }) => {
   const searchParams = useSearchParams();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
@@ -31,6 +31,7 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
   const [errors, setErrors] = useState({}); // Added error state
   const [errorMessage, setErrorMessage] = useState(""); // Added global error message
 
+  console.log("umrah", umrah);
   // Construct full URL
   const currentUrl =
     typeof window !== "undefined"
@@ -388,6 +389,9 @@ const AgentCalendar = ({ tourData = null, refFunction }) => {
     if (!selectedTourType) {
       newErrors.tourType = true;
       errorMsg = "Please select a tour type";
+    } else if (umrah && participantCount < 2) {
+      newErrors.participants = true;
+      errorMsg = "Please select minmun 2 participants";
     } else if (!participantCount) {
       newErrors.participants = true;
       errorMsg = "Please select number of participants";

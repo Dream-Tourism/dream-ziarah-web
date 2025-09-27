@@ -13,7 +13,7 @@ import SidebarRight2 from "./SidebarRight2";
 import Itinerary from "./itinerary/index";
 import ImportantInfo from "@/components/tour-single/ImportantInfo";
 
-export default function TourGallery({ tour, onDataAvailable }) {
+export default function TourGallery({ tour, onDataAvailable, isUmrahPage }) {
   // console.log("tourgallery", tour);
   const [dataAvailable, setDataAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -798,7 +798,11 @@ export default function TourGallery({ tour, onDataAvailable }) {
           <div className="row y-gap-30 mt-xl-40 mt-0">
             {/* Sidebar on Right */}
             <div className="col-xl-4 order-xl-2" ref={sidebarRef}>
-              <SidebarRight2 refFunction={sidebarMobileRef} tour={tour} />
+              <SidebarRight2
+                refFunction={sidebarMobileRef}
+                tour={tour}
+                umrah={isUmrahPage}
+              />
             </div>
 
             {/* Main Content on Left */}

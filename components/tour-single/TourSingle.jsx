@@ -26,7 +26,13 @@ import {
 } from "react-share";
 import Image from "next/image";
 
-const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
+const TourSingleV1Dynamic = ({
+  children,
+  tourData,
+  allTours,
+  fullUrl,
+  isUmrahPage,
+}) => {
   const dispatch = useDispatch();
   const [makka, setMakka] = useState(false);
   const [jedda, setJedda] = useState(false);
@@ -276,7 +282,7 @@ const TourSingleV1Dynamic = ({ children, tourData, allTours, fullUrl }) => {
         </div>
       </section>
 
-      <TourGallery tour={tourData} />
+      <TourGallery tour={tourData} isUmrahPage={isUmrahPage} />
       {/* 
       {dataAvailable && (
         <>
