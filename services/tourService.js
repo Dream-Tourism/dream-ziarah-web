@@ -3,11 +3,11 @@ import { GET_ALL_TOUR, GET_TOUR_ENTRYID } from "@/constant/constants";
 // Helper function to get cache configuration
 const getCacheConfig = (forceRefresh = false) => {
   if (forceRefresh) {
-    return { cache: 'no-store' }; // Force fresh data
+    return { cache: "no-store" }; // Force fresh data
   }
   return {
-    next: { revalidate: process.env.NODE_ENV === 'development' ? 10 : 60 }, // 10s in dev, 1min in prod
-    headers: { "Content-Type": "application/json" }
+    next: { revalidate: process.env.NODE_ENV === "development" ? 10 : 60 }, // 10s in dev, 1min in prod
+    headers: { "Content-Type": "application/json" },
   };
 };
 
@@ -44,14 +44,18 @@ export async function getTourBySlugServer(slug, forceRefresh = false) {
     }
 
     const allTours = await response.json();
-    const filteredTours = allTours?.filter((tour) => tour.published === true) || [];
+    const filteredTours =
+      allTours?.filter((tour) => tour.published === true) || [];
 
     const tour = filteredTours.find((tour) => tour.slug === slug) || null;
 
     // Debug logging to help identify issues
     if (!tour) {
-      
-      .slice(0, 5));
+      console.log("Tour not found for slug:", slug);
+      console.log(
+        "Available tour slugs:",
+        filteredTours.map((t) => t.slug).slice(0, 5)
+      );
     }
 
     return {
