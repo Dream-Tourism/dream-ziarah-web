@@ -278,7 +278,7 @@ const Umrah = ({ children }) => {
               <div className="pt-40 border-top-light">
                 <div className="row x-gap-40 y-gap-40">
                   <div className="col-auto">
-                    <h3 className="text-22 fw-600">Important information</h3>
+                    <h2 className="text-22 fw-600">Important information</h2>
                   </div>
                 </div>
                 {/* End row */}

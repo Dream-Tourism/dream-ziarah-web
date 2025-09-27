@@ -27,6 +27,16 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   output: "standalone",
+  async rewrites() {
+    return {
+      fallback: [
+        {
+          source: "/:path*",
+          destination: "/api/gone",
+        },
+      ],
+    };
+  },
 };
 
 module.exports = nextConfig;
