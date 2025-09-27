@@ -14,7 +14,6 @@ import Itinerary from "./itinerary/index";
 import ImportantInfo from "@/components/tour-single/ImportantInfo";
 
 export default function TourGallery({ tour, onDataAvailable, isUmrahPage }) {
-  // console.log("tourgallery", tour);
   const [dataAvailable, setDataAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);

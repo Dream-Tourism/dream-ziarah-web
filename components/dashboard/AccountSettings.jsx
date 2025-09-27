@@ -75,7 +75,6 @@ export default function AccountSettings() {
 
     try {
       const uploadUrl = `${BASE_URL}/user/api/v1/user/uploadimage/${user?.user_id}/`;
-      console.log("Upload URL:", uploadUrl);
 
       const response = await fetch(uploadUrl, {
         method: "POST",
@@ -86,11 +85,9 @@ export default function AccountSettings() {
         // },
       });
 
-      console.log("Upload response status:", response.status);
-
       if (response.ok) {
         const result = await response.json();
-        console.log("Image uploaded successfully:", result);
+
         showMessage("success", "Profile image updated successfully!");
         // Reset the file input
         setImageFile(null);
@@ -110,8 +107,6 @@ export default function AccountSettings() {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-
-    console.log("Password form submitted");
 
     if (!user?.user_id) {
       console.error("User ID not found");
@@ -140,12 +135,10 @@ export default function AccountSettings() {
       return;
     }
 
-    console.log("Starting password change...", { userId: user.id });
     setPasswordChanging(true);
 
     try {
       const passwordUrl = `${BASE_URL}/user/api/v1/user/passwordchange/${user?.user_id}/`;
-      console.log("Password change URL:", passwordUrl);
 
       const response = await fetch(passwordUrl, {
         method: "POST",
@@ -161,11 +154,9 @@ export default function AccountSettings() {
         }),
       });
 
-      console.log("Password change response status:", response.status);
-
       if (response.ok) {
         const result = await response.json();
-        console.log("Password changed successfully:", result);
+
         showMessage("success", "Password changed successfully!");
         // Reset form
         setPasswordData({

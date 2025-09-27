@@ -12,14 +12,18 @@ import Hero3 from "@/components/hero/hero-3";
 import ServicesOverview from "@/components/services/ServicesOverview";
 
 // Lazy load below-the-fold components for better performance
-const TopDestinations = dynamic(() =>
-  import("@/components/destinations/TopDestinations"),
-  { loading: () => <div className="loading-skeleton">Loading destinations...</div> }
+const TopDestinations = dynamic(
+  () => import("@/components/destinations/TopDestinations"),
+  {
+    loading: () => (
+      <div className="loading-skeleton">Loading destinations...</div>
+    ),
+  }
 );
 const WhyChoose = dynamic(() => import("@/components/home/home-3/WhyChoose"));
-const Tours = dynamic(() => import("@/components/tours/Tours"),
-  { loading: () => <div className="loading-skeleton">Loading tours...</div> }
-);
+const Tours = dynamic(() => import("@/components/tours/Tours"), {
+  loading: () => <div className="loading-skeleton">Loading tours...</div>,
+});
 const ToursForMobile = dynamic(() =>
   import("@/components/tours/ToursForMobile")
 );
@@ -36,7 +40,6 @@ const TestimonialSection = dynamic(() =>
 const MainHome = () => {
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
   const { data: faqDescription } = useFaqDescription();
-  // console.log("FAQ Description:", faqDescription);
 
   const [dataAvailable, setDataAvailable] = useState(false);
   const [mobileDataAvailable, setMobileDataAvailable] = useState(false);
@@ -411,9 +414,7 @@ const MainHome = () => {
               </div>
 
               <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                <ToursHajjUmrah
-                  filterLocation="HajjUmrah"
-                />
+                <ToursHajjUmrah filterLocation="HajjUmrah" />
               </div>
             </div>
           </section>

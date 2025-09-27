@@ -187,8 +187,6 @@ const TourProperties = ({ searchLocation }) => {
     );
   }
 
-  console.log("filteredTours", filteredTours);
-
   return (
     <div
       className="row row-cols-1 row-cols-md-3 g-3 "

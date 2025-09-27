@@ -11,8 +11,6 @@ const TopDestinations2 = ({ slug }) => {
     (item) => item.name === "Destinations"
   )?.id;
   const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId);
-  console.log(data, "data in top destination");
-
 
   let destinations = [];
   if (isSuccess) {
@@ -60,7 +58,7 @@ const TopDestinations2 = ({ slug }) => {
     ],
   };
   const placeholderImg = "/images/placeholder.jpg";
-  console.log(destinations, "destinations");
+
   return (
     <>
       <Slider {...settings}>

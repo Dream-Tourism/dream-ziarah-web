@@ -31,7 +31,6 @@ const AgentCalendar = ({ tourData = null, refFunction, umrah }) => {
   const [errors, setErrors] = useState({}); // Added error state
   const [errorMessage, setErrorMessage] = useState(""); // Added global error message
 
-  console.log("umrah", umrah);
   // Construct full URL
   const currentUrl =
     typeof window !== "undefined"
@@ -45,7 +44,7 @@ const AgentCalendar = ({ tourData = null, refFunction, umrah }) => {
 
   const bookingPreviewRef = useRef(null);
   const dateButtonRef = useRef(null);
-  // console.log("refFunction", refFunction);
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);

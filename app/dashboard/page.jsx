@@ -143,8 +143,6 @@ function Dashboard() {
     changePageSize,
   } = useTourBookings(user?.traveller_id);
 
-  // console.log("bookingData", bookingData);
-
   // Memoized auth check
   useEffect(() => {
     if (!isAuthenticated && !authLoading) {
@@ -190,8 +188,6 @@ function Dashboard() {
   const handlePayment = useCallback(
     async (orderId) => {
       try {
-        // console.log("Processing payment for order:", orderId);
-
         const order = bookingData.orders.find((o) => o.id === orderId);
 
         if (order && order.paymentUrl) {
@@ -216,12 +212,9 @@ function Dashboard() {
               setTimeout(() => refreshBookings(), 2000);
             }
           }, 1000);
-
-          // console.log("Payment window opened successfully!");
         } else {
           updateBookingStatus(orderId, "paid");
           setSelectedOrder(null);
-          // console.log("Payment processed successfully!");
         }
       } catch (error) {
         console.error("Payment processing failed:", error);

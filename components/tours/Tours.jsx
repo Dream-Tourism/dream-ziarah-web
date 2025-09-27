@@ -9,7 +9,6 @@ import convertCurrency from "@/utils/currency";
 
 const Tours = ({ filterLocation }) => {
   const { data, error, isLoading } = useAllTour();
-  // console.log("All Tour Data:", data);
 
   const { currentCurrency } = useSelector((state) => state.currency);
   const width = useWindowSize();
@@ -326,7 +325,6 @@ export default Tours;
 
 // const Tours = ({ filterLocation, allTours: data }) => {
 //   // const { data, error, isLoading } = useAllTour();
-//   console.log("All Tour Data:", data);
 
 //   const { currentCurrency } = useSelector((state) => state.currency);
 //   const width = useWindowSize();

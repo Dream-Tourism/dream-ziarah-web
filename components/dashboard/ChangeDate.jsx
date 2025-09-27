@@ -11,7 +11,7 @@ const ChangeDate = ({ isOpen, onClose, order, onDateChange }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [errors, setErrors] = useState({});
-  //   console.log("order in change date modal", order);
+
   const tourId = order?.tour_id;
   const { data: tourData, error } = useSingleTour(tourId);
 

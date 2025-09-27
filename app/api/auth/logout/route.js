@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  console.log("Logout API route hit. Attempting to clear cookies."); // Added log
+  // Added log
   const response = NextResponse.json({ message: "Logged out successfully" });
 
   // Clear both accessToken and refreshToken cookies by setting their maxAge to 0

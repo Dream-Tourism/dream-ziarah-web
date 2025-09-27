@@ -21,7 +21,7 @@ const BookingPreview = ({
   url,
 }) => {
   const [isBooking, setIsBooking] = useState(false);
-  // console.log("selectedTime", selectedTime);
+
   const router = useRouter();
   const formatDate = (date) => {
     const options = {

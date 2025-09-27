@@ -50,10 +50,7 @@ const useCurrency = () => {
       };
 
       if (window.navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          successfulLookup,
-          console.log()
-        );
+        navigator.geolocation.getCurrentPosition(successfulLookup);
       }
     }
   }, []);

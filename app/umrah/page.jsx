@@ -12,13 +12,10 @@ export const metadata = {
 // Server-side data fetching function
 async function getTourData() {
   try {
-    console.log("Fetching all tours...");
-
     // Fetch all tours
     const allTours = await getAllToursServer();
 
     if (!allTours || allTours.length === 0) {
-      console.log("No tours found");
       return null;
     }
 
@@ -28,7 +25,6 @@ async function getTourData() {
     );
 
     if (umrahTours.length === 0) {
-      console.log("No Umrah tours found");
       return null;
     }
 
@@ -54,7 +50,6 @@ export default async function UmrahPage() {
   const data = await getTourData();
 
   if (!data || !data.umrahTours) {
-    console.log("No Umrah tours found");
     return (
       <Wrapper>
         <div className="container mx-auto px-4 py-8">

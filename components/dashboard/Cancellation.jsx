@@ -13,8 +13,6 @@ export default function CancellationModal({ order, onClose }) {
   const [policiesError, setPoliciesError] = useState("");
   const [showFullPolicies, setShowFullPolicies] = useState(false);
 
-  console.log("order", order);
-
   // Fetch refund policies when modal opens
   useEffect(() => {
     const fetchRefundPolicies = async () => {

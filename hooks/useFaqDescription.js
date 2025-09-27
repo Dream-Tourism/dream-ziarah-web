@@ -2,7 +2,6 @@ import { useGetAllTourQuery } from "@/features/content/newContentApi";
 
 export const useFaqDescription = () => {
   const result = useGetAllTourQuery();
-//   console.log("All Tours Data:", result.data);
 
   // Find the first tour that matches published === true and name === "FAQ"
   const faqItem = result.data?.find(

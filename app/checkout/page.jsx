@@ -19,7 +19,6 @@ const CheckoutPage = () => {
     acceptOffers: false,
   });
 
-  // console.log("Authenticated:", bookingData);
   //currency
   const { currentCurrency } = useSelector((state) => state.currency);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -185,72 +184,82 @@ const CheckoutPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-const getTimeRange = () => {
-  if (!bookingData) return "";
+  const getTimeRange = () => {
+    if (!bookingData) return "";
 
-  const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
-  const durationStr = bookingData.duration; // e.g. "4 hours"
+    const startTimeStr = bookingData.selectedTime; // e.g. "08:30 am"
+    const durationStr = bookingData.duration; // e.g. "4 hours"
 
-  // Handle cases where selectedTime is null, undefined, or empty
-  if (!startTimeStr || typeof startTimeStr !== 'string' || startTimeStr.trim() === '') {
-    return "Time not selected";
-  }
-
-  // Handle cases where duration is null, undefined, or empty
-  if (!durationStr || typeof durationStr !== 'string' || durationStr.trim() === '') {
-    return startTimeStr; // Just return the start time if no duration
-  }
-
-  try {
-    // Parse duration number
-    const durationMatch = durationStr.match(/(\d+)/);
-    if (!durationMatch) {
-      return startTimeStr; // Just return start time if duration can't be parsed
-    }
-    const hoursToAdd = parseInt(durationMatch[1]);
-
-    // Parse start time
-    const timeParts = startTimeStr.split(" ");
-    if (timeParts.length < 2) {
-      return startTimeStr; // Return as-is if format is unexpected
+    // Handle cases where selectedTime is null, undefined, or empty
+    if (
+      !startTimeStr ||
+      typeof startTimeStr !== "string" ||
+      startTimeStr.trim() === ""
+    ) {
+      return "Time not selected";
     }
 
-    const [time, modifier] = timeParts; // ["08:30", "am"]
-    const timeSplit = time.split(":");
-    if (timeSplit.length < 2) {
-      return startTimeStr; // Return as-is if time format is unexpected
+    // Handle cases where duration is null, undefined, or empty
+    if (
+      !durationStr ||
+      typeof durationStr !== "string" ||
+      durationStr.trim() === ""
+    ) {
+      return startTimeStr; // Just return the start time if no duration
     }
 
-    let [hours, minutes] = timeSplit.map(Number);
+    try {
+      // Parse duration number
+      const durationMatch = durationStr.match(/(\d+)/);
+      if (!durationMatch) {
+        return startTimeStr; // Just return start time if duration can't be parsed
+      }
+      const hoursToAdd = parseInt(durationMatch[1]);
 
-    // Validate parsed numbers
-    if (isNaN(hours) || isNaN(minutes)) {
-      return startTimeStr; // Return as-is if parsing failed
+      // Parse start time
+      const timeParts = startTimeStr.split(" ");
+      if (timeParts.length < 2) {
+        return startTimeStr; // Return as-is if format is unexpected
+      }
+
+      const [time, modifier] = timeParts; // ["08:30", "am"]
+      const timeSplit = time.split(":");
+      if (timeSplit.length < 2) {
+        return startTimeStr; // Return as-is if time format is unexpected
+      }
+
+      let [hours, minutes] = timeSplit.map(Number);
+
+      // Validate parsed numbers
+      if (isNaN(hours) || isNaN(minutes)) {
+        return startTimeStr; // Return as-is if parsing failed
+      }
+
+      if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
+      if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+
+      const startDate = new Date();
+      startDate.setHours(hours, minutes);
+
+      // Add duration
+      const endDate = new Date(
+        startDate.getTime() + hoursToAdd * 60 * 60 * 1000
+      );
+
+      // Format back to hh:mm am/pm
+      const endHours = endDate.getHours();
+      const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
+      const endModifier = endHours >= 12 ? "pm" : "am";
+      const formattedEndHours = endHours % 12 === 0 ? 12 : endHours % 12;
+
+      const endTimeStr = `${formattedEndHours}:${endMinutes} ${endModifier}`;
+
+      return `${startTimeStr} - ${endTimeStr}`;
+    } catch (error) {
+      console.error("Error calculating time range:", error);
+      return startTimeStr || "Time not available"; // Fallback
     }
-
-    if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
-    if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
-
-    const startDate = new Date();
-    startDate.setHours(hours, minutes);
-
-    // Add duration
-    const endDate = new Date(startDate.getTime() + hoursToAdd * 60 * 60 * 1000);
-
-    // Format back to hh:mm am/pm
-    const endHours = endDate.getHours();
-    const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
-    const endModifier = endHours >= 12 ? "pm" : "am";
-    const formattedEndHours = endHours % 12 === 0 ? 12 : endHours % 12;
-
-    const endTimeStr = `${formattedEndHours}:${endMinutes} ${endModifier}`;
-
-    return `${startTimeStr} - ${endTimeStr}`;
-  } catch (error) {
-    console.error("Error calculating time range:", error);
-    return startTimeStr || "Time not available"; // Fallback
-  }
-};
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -355,7 +364,6 @@ const getTimeRange = () => {
 
       if (response.ok) {
         const result = await response.json();
-        // console.log("Booking processed successfully:", result);
 
         // Check if there's a checkout_url in the response
         if (result.checkout_url) {
@@ -753,12 +761,12 @@ const getTimeRange = () => {
                         style={{ fontSize: "14px" }}
                       ></i>
                       <span style={{ fontSize: "14px" }}>
-    {formatDate(bookingData.selectedDate)}
-    {bookingData.selectedTime && getTimeRange() !== "No Time For this Selection" 
-      ? ` at ${getTimeRange()}` 
-      : ""
-    }
-  </span>
+                        {formatDate(bookingData.selectedDate)}
+                        {bookingData.selectedTime &&
+                        getTimeRange() !== "No Time For this Selection"
+                          ? ` at ${getTimeRange()}`
+                          : ""}
+                      </span>
                     </div>
                     <div className="d-flex align-items-center mb-2">
                       <i

@@ -36,10 +36,10 @@ export const useTourBookings = (travellerId) => {
         setError(null);
 
         const apiResponse = await fetchTourBookings(travellerId, page, size);
-        console.log("API Response:", apiResponse); // Debug log
+        // Debug log
 
         const transformedData = transformBookingData(apiResponse);
-        console.log("Transformed Data:", transformedData); // Debug log
+        // Debug log
 
         setBookingData(transformedData);
         setCurrentPage(page);

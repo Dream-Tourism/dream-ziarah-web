@@ -20,8 +20,6 @@ const Banner = ({ slug }) => {
     description = data2[0]?.value;
   }
 
-  // console.log(data2, "description in banner");
-
   let bannerUrl = "";
   if (isSuccess) {
     bannerUrl = `${

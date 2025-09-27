@@ -15,7 +15,7 @@ const IntroTown = ({ slug }) => {
   if (isSuccess) {
     value = data[0]?.description;
   }
-  console.log(data, "value in intro town");
+
   return (
     <>
       <div className="col-xl-8">
