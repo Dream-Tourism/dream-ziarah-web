@@ -1,9 +1,5 @@
 "use client";
-import {
-  useGetContentsByMenuContentIdQuery,
-  useGetContentsByMenuContentTitleQuery,
-} from "@/features/content/contentApi";
-import { capitalize } from "@/utils";
+
 import { useParams } from "next/navigation";
 import Script from "next/script";
 import GuestCalculate from "./GuestCalculate";
@@ -48,24 +44,23 @@ const SidebarRight2 = ({ tour, refFunction, umrah }) => {
   const params = useParams();
 
   // Skip query if params.name is undefined or empty
-  const shouldSkipQuery = !params?.name || params.name === 'undefined';
+  // const shouldSkipQuery = !params?.name || params.name === 'undefined';
 
-  const { data: contentItem, isFulfilled } =
-    useGetContentsByMenuContentTitleQuery(
-      shouldSkipQuery ? null : capitalize(params.name),
-      {
-        skip: shouldSkipQuery
-      }
-    );
-  const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
-    contentItem?.id,
-    {
-      skip: !contentItem?.id
-    }
-  );
-  const is_bokun_url = false;
+  // const { data: contentItem, isFulfilled } =
+  //   useGetContentsByMenuContentTitleQuery(
+  //     shouldSkipQuery ? null : capitalize(params.name),
+  //     {
+  //       skip: shouldSkipQuery
+  //     }
+  //   );
+  // const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
+  //   contentItem?.id,
+  //   {
+  //     skip: !contentItem?.id
+  //   }
+  // );
 
-  if (is_bokun_url) {
+  if (tour?.is_bokun_url) {
     return bokunUrls[params?.name] ? (
       <GuestCalculate contentItem={contentItem} />
     ) : (
@@ -76,7 +71,7 @@ const SidebarRight2 = ({ tour, refFunction, umrah }) => {
       >
         <div className="w-360 lg:w-full  items-left">
           {isSuccess && (
-            <div className="bokunWidget" data-src={data?.url}></div>
+            <div className="bokunWidget" data-src={tour?.url}></div>
           )}
         </div>
         <Script

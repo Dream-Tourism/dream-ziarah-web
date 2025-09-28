@@ -1,15 +1,15 @@
 "use client";
 import {
-  useGetContentsByMenuContentIdQuery,
+  // useGetContentsByMenuContentIdQuery,
   useGetContentsByMenuContentTitleQuery,
-  useGetTourEntryByIdQuery,
+  // useGetTourEntryByIdQuery,
 } from "@/features/content/contentApi";
 import { capitalize } from "@/utils";
 import { useParams } from "next/navigation";
 import Script from "next/script";
 import GuestCalculate from "./GuestCalculate";
 import AgentCalendar from "./Bookings/AgentCalendar";
-import { useGetSingleTourQuery } from "@/features/content/newContentApi";
+// import { useGetSingleTourQuery } from "@/features/content/newContentApi";
 import { useSingleTour } from "@/hooks/useSingleTour";
 
 const bokunUrls = {
@@ -51,9 +51,9 @@ const SidebarRight = ({ tourid, newdata }) => {
   const params = useParams();
   const { data: contentItem, isFulfilled } =
     useGetContentsByMenuContentTitleQuery(capitalize(params?.name));
-  const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
-    contentItem?.id
-  );
+  // const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
+  //   contentItem?.id
+  // );
   const {
     data: data2,
     isSuccess: isSuccess2,
@@ -73,8 +73,8 @@ const SidebarRight = ({ tourid, newdata }) => {
         style={{ height: "fit-content" }}
       >
         <div className="w-360 lg:w-full  items-left">
-          {isSuccess && (
-            <div className="bokunWidget" data-src={data?.url}></div>
+          {isSuccess2 && (
+            <div className="bokunWidget" data-src={data2?.url}></div>
           )}
         </div>
         <Script
