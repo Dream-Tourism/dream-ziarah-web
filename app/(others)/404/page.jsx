@@ -1,12 +1,11 @@
-import dynamic from "next/dynamic";
 import NotFound from "@/components/common/NotFound";
 
 export const metadata = {
-  title: "404 || GoTrip - Travel & Tour React NextJS Template",
-  description: "GoTrip - Travel & Tour React NextJS Template",
+  title: "404 || Dream Ziarah - Travel & Tour React NextJS Template",
+  description: "Dream Ziarah - Travel & Tour React NextJS Template",
 };
 
-const index = () => {
+export default function Page404() {
   return (
     <>
       <div className="header-margin"></div>
@@ -15,6 +14,4 @@ const index = () => {
       {/* End 404 section */}
     </>
   );
-};
-
-export default dynamic(() => Promise.resolve(index), { ssr: false });
+}

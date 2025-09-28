@@ -10,7 +10,9 @@ const TopDestinations = () => {
   const destinationId = menuItems.find(
     (item) => item.name === "Destinations"
   )?.id;
-  const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId);
+  const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId, {
+    skip: !destinationId
+  });
 
   let destinations = [];
   if (isSuccess) {
@@ -81,7 +83,7 @@ const TopDestinations = () => {
                   height={600}
                   quality={100}
                   priority
-                  alt={item?.name}
+                  alt={item?.name || item?.location || "Destination image"}
                 />
               </div>
               <div className="citiesCard__content d-flex justify-content-center align-items-center">

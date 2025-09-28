@@ -2,8 +2,21 @@
 import Image from "next/image";
 import MainFilterSearchBox from "../hero/hero-3/MainFilterSearchBox";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
 const CoverSkeleton = () => {
   const { tabs, currentTab } = useSelector((state) => state.hero) || {};
+  const [isClientSide, setIsClientSide] = useState(false);
+
+  useEffect(() => {
+    setIsClientSide(true);
+  }, []);
+
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   // localStorage.clear();
   return (
@@ -55,7 +68,7 @@ const CoverSkeleton = () => {
                   <div className="text-center">
                     <h1
                       className="text-25 lg:text-25 md:text-25  text-white"
-                      data-aos="fade-up"
+                      {...(isClientSide && { "data-aos": "fade-up" })}
                       style={{
                         textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                       }}
@@ -64,8 +77,7 @@ const CoverSkeleton = () => {
                     </h1>
                     <p
                       className="text-white text-12 mt-5"
-                      data-aos="fade-up"
-                      data-aos-delay="100"
+                      {...(isClientSide && { "data-aos": "fade-up", "data-aos-delay": "100" })}
                       style={{
                         textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                       }}
@@ -101,7 +113,7 @@ const CoverSkeleton = () => {
               <div className="text-center">
                 <h1
                   className="text-45 lg:text-40 md:text-30 text-white"
-                  data-aos="fade-up"
+                  {...(isClientSide && { "data-aos": "fade-up" })}
                   style={{
                     textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                     visibility: "hidden",
@@ -111,11 +123,10 @@ const CoverSkeleton = () => {
                 </h1>
                 <p
                   className="text-white mt-5"
-                  data-aos="fade-up"
-                  data-aos-delay="100"
+                  {...(isClientSide && { "data-aos": "fade-up", "data-aos-delay": "100" })}
                   style={{
                     textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
-                    isibility: "hidden",
+                    visibility: "hidden",
                   }}
                 >
                   Immerse in Spiritual Quests

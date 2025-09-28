@@ -1,7 +1,4 @@
 "use client";
-import { useSingleTour } from "@/hooks/useSingleTour";
-import { useTourBySlug } from "@/hooks/useTourBySlug";
-import { capitalize } from "@/utils";
 
 export const singleTourInfo = {
   "Madinah City Ziarah Vehicle Sharing With Guide": {
@@ -381,7 +378,7 @@ export const singleTourInfo = {
   },
 };
 
-const TourHeading = async ({ tourData }) => {
+const TourHeading = ({ tourData }) => {
   return (
     <div className="col-xl-8">
       <h1 className="text-25 fw-600">{tourData?.name}</h1>

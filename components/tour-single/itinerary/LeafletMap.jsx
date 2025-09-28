@@ -81,6 +81,8 @@ export default function LeafletMap({
     }
   }, [selectedLocation]);
 
+  console.log("selectedLocation", selectedLocation);
+
   return (
     <div className="map-container">
       {selectedLocation?.lat ? (

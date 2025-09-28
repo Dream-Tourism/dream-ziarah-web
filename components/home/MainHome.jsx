@@ -41,7 +41,7 @@ const MainHome = () => {
   const { isSuccess, isLoading, data } = useGetSliderImagesQuery();
   const { data: faqDescription } = useFaqDescription();
 
-  const [dataAvailable, setDataAvailable] = useState(false);
+  const [, setDataAvailable] = useState(false);
   const [mobileDataAvailable, setMobileDataAvailable] = useState(false);
   const [mobileTourDataAvailable, setMobileTourDataAvailable] = useState(false);
 

@@ -28,8 +28,6 @@ import Image from "next/image";
 import Loading from "@/app/loading";
 import { toast } from "react-toastify";
 
-const Itinerary = dynamic(() => import("@/components/tour-single/itinerary"));
-
 const Umrah = ({ children }) => {
   const dispatch = useDispatch();
   const [copied, setCopied] = useState(false);
@@ -41,7 +39,9 @@ const Umrah = ({ children }) => {
   const { data: itenarayItems, isSuccess: isItenariesSuccess } =
     useGetItenariesByMenuContentIdQuery(41);
   const { data: imageContents, isSuccess: isImageContentsSuccess } =
-    useGetImagesByMenuIdQuery(umrahId);
+    useGetImagesByMenuIdQuery(umrahId, {
+      skip: !umrahId,
+    });
 
   if (isItenariesSuccess) {
     dispatch(addItenarayItems(itenarayItems));

@@ -46,10 +46,22 @@ const bokunUrls = {
 
 const SidebarRight2 = ({ tour, refFunction, umrah }) => {
   const params = useParams();
+
+  // Skip query if params.name is undefined or empty
+  const shouldSkipQuery = !params?.name || params.name === 'undefined';
+
   const { data: contentItem, isFulfilled } =
-    useGetContentsByMenuContentTitleQuery(capitalize(params?.name));
+    useGetContentsByMenuContentTitleQuery(
+      shouldSkipQuery ? null : capitalize(params.name),
+      {
+        skip: shouldSkipQuery
+      }
+    );
   const { data, isSuccess } = useGetContentsByMenuContentIdQuery(
-    contentItem?.id
+    contentItem?.id,
+    {
+      skip: !contentItem?.id
+    }
   );
   const is_bokun_url = false;
 

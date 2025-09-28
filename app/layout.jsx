@@ -4,7 +4,7 @@ import Header from "@/components/header/header";
 import Aos from "aos";
 import "aos/dist/aos.css";
 // import Script from 'next/script';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import "swiper/css";
 import "swiper/css/effect-cards";
@@ -23,12 +23,16 @@ if (typeof window !== "undefined") {
 }
 
 export default function RootLayout({ children }) {
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
+    setIsClient(true);
     Aos.init({
       duration: 1200,
       once: true,
     });
   }, []);
+
   const pathname = usePathname();
 
   const isCheckout = pathname.startsWith("/checkout");
@@ -98,7 +102,7 @@ export default function RootLayout({ children }) {
 
         <link rel="icon" href="./favicon.ico" />
       </head>
-      <body>
+      <body suppressHydrationWarning={true}>
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-MDFK259S"

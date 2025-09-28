@@ -10,7 +10,9 @@ const TopDestinations2 = ({ slug }) => {
   const destinationId = menuItems.find(
     (item) => item.name === "Destinations"
   )?.id;
-  const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId);
+  const { isSuccess, data } = useGetImagesByMenuIdQuery(destinationId, {
+    skip: !destinationId,
+  });
 
   let destinations = [];
   if (isSuccess) {
@@ -81,7 +83,7 @@ const TopDestinations2 = ({ slug }) => {
                   height={600}
                   quality={100}
                   priority
-                  alt={item?.name}
+                  alt={item?.location}
                 />
               </div>
               <div className="citiesCard__content d-flex justify-content-center align-items-center">

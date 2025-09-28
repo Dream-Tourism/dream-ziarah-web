@@ -41,7 +41,9 @@ const Hajj = ({ children }) => {
   const { data: itenarayItems, isSuccess: isItenariesSuccess } =
     useGetItenariesByMenuContentIdQuery(40);
   const { data: imageContents, isSuccess: isImageContentsSuccess } =
-    useGetImagesByMenuIdQuery(hajjId);
+    useGetImagesByMenuIdQuery(hajjId, {
+      skip: !hajjId
+    });
 
   if (isItenariesSuccess) {
     dispatch(addItenarayItems(itenarayItems));

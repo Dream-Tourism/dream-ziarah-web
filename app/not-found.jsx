@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import NotFound from "@/components/common/NotFound";
 
 export const metadata = {
@@ -6,7 +5,7 @@ export const metadata = {
   description: "DreamZiarah - Hajj, Umrah And Ziarah",
 };
 
-const index = () => {
+export default function NotFoundPage() {
   return (
     <>
       {/* End Page Title */}
@@ -20,6 +19,4 @@ const index = () => {
       {/* End 404 section */}
     </>
   );
-};
-
-export default dynamic(() => Promise.resolve(index), { ssr: false });
+}

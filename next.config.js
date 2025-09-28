@@ -27,11 +27,12 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   output: "standalone",
+  reactStrictMode: true,
   async rewrites() {
     return {
       fallback: [
         {
-          source: "/:path*",
+          source: "/:path((?!favicon\\.ico|_next|api|.*\\.ico|.*\\.png|.*\\.jpg|.*\\.gif|.*\\.svg|.*\\.css|.*\\.js|.*\\.woff|.*\\.woff2|.*\\.ttf|.*\\.eot).*)",
           destination: "/api/gone",
         },
       ],
