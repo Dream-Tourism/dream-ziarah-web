@@ -223,8 +223,9 @@ export async function generateStaticParams() {
     ?.children?.map((item) => ({ slug: item.name }));
 }
 
-export async function generateMetadata({ params, searchParams }, parent) {
+export async function generateMetadata({ params }) {
   const slug = params.slug;
+
   return {
     title: destinationsMetadatas[slug]?.title,
     description: destinationsMetadatas[slug]?.description,

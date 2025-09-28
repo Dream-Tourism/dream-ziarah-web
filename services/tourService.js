@@ -52,10 +52,6 @@ export async function getTourBySlugServer(slug, forceRefresh = false) {
     // Debug logging to help identify issues
     if (!tour) {
       console.log("Tour not found for slug:", slug);
-      console.log(
-        "Available tour slugs:",
-        filteredTours.map((t) => t.slug).slice(0, 5)
-      );
     }
 
     return {

@@ -148,7 +148,7 @@ export default async function Tour({ params, searchParams }) {
     // Fetch tour data optimized for performance
     const data = await getTourData(slug, forceRefresh);
 
-    // Handle not found case
+    // Handle not found case - middleware will catch invalid slugs
     if (!data || !data.tourData) {
       notFound();
     }
@@ -170,8 +170,8 @@ export default async function Tour({ params, searchParams }) {
       </Wrapper>
     );
   } catch (error) {
-    // Check if it's a NEXT_NOT_FOUND error and re-throw it
-    if (error.digest === "NEXT_NOT_FOUND") {
+    // Check if it's a NEXT_REDIRECT error and re-throw it
+    if (error.digest?.includes("NEXT_REDIRECT")) {
       throw error;
     }
     console.error("Unexpected error rendering tour page:", error);

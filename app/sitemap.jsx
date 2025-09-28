@@ -3,7 +3,6 @@ import {
   GET_ALL_TOUR,
   GET_MENUS_ALL_NESTED,
 } from "@/constant/constants";
-import { slugify } from "@/utils/sluglify";
 
 const BASE_URL = "https://dreamziarah.com";
 
@@ -56,11 +55,11 @@ export default async function Sitemap() {
     const toursXml = toursData
       .filter((tour) => tour.published === true) // Only published tours
       .map((tour) => {
-        const locationType = tour.location_type?.toLowerCase() || '';
-        const tourName = tour.name?.toLowerCase() || '';
+        const locationType = tour.location_type?.toLowerCase() || "";
+        const tourName = tour.name?.toLowerCase() || "";
 
         // Check if it's a Hajj or Umrah tour
-        if (locationType.includes('hajj') || tourName.includes('hajj')) {
+        if (locationType.includes("hajj") || tourName.includes("hajj")) {
           return {
             url: `${BASE_URL}/hajj`,
             lastModified: new Date(tour.updated_at || Date.now()).toISOString(),
@@ -69,7 +68,7 @@ export default async function Sitemap() {
           };
         }
 
-        if (locationType.includes('umrah') || tourName.includes('umrah')) {
+        if (locationType.includes("umrah") || tourName.includes("umrah")) {
           return {
             url: `${BASE_URL}/umrah`,
             lastModified: new Date(tour.updated_at || Date.now()).toISOString(),
@@ -143,8 +142,9 @@ export default async function Sitemap() {
     ];
 
     // Remove duplicate URLs (e.g., multiple Hajj or Umrah tours generating same URL)
-    const uniqueXml = combinedXml.filter((item, index, array) =>
-      index === array.findIndex(t => t.url === item.url)
+    const uniqueXml = combinedXml.filter(
+      (item, index, array) =>
+        index === array.findIndex((t) => t.url === item.url)
     );
 
     return uniqueXml;
