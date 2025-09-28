@@ -139,8 +139,8 @@ const MainHome = () => {
                       </h2>
                       <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                         Reserve the Makkah ziyarat tour at Haram Sharif. Choose
-                        $25-$40 packages with or without guides for the list of
-                        ziyarat places in Makkah. Secure your sacred journey
+                        $120-$375 packages with or without guides for the list
+                        of ziyarat places in Makkah. Secure your sacred journey
                         spot now!
                       </p>
                     </div>
@@ -173,7 +173,7 @@ const MainHome = () => {
                       </h2>
                       <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                         Plan Madinah ziyarat tour at the Prophet’s Mosque. Enjoy
-                        $25-$40 packages with English guides for the ziyarat
+                        $120-$375 packages with English guides for the ziyarat
                         places in Madinah. Limited spots, book now for the holy
                         sites in Saudi Arabia!
                       </p>
@@ -208,9 +208,9 @@ const MainHome = () => {
                       </h2>
                       <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                         Book a ziyarat in Jeddah's holy places from the Jeddah
-                        gateway. Select $25-$40 packages with or without guides
-                        to Masjid Al-Jinn. Reserve your spiritual pilgrimage at
-                        holy sites in Saudi Arabia now!
+                        gateway. Select $120-$375 packages with or without
+                        guides to Masjid Al-Jinn. Reserve your spiritual
+                        pilgrimage at holy sites in Saudi Arabia now!
                       </p>
                     </div>
                   </div>
@@ -251,7 +251,7 @@ const MainHome = () => {
                       </h2>
                       <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                         Explore Taif ziyarat places on a day trip from Makkah.
-                        Enjoy $40-$100 packages with guided transport to the
+                        Enjoy $300-$600 packages with guided transport to the
                         Abdullah Ibn Abbas Mosque. Book today for sacred
                         journeys in holy sites in Saudi Arabia!
                       </p>
@@ -431,7 +431,7 @@ const MainHome = () => {
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                       Reserve the Makkah ziyarat tour at Haram Sharif. Choose
-                      $25-$40 packages with or without guides for the list of
+                      $120-$375 packages with or without guides for the list of
                       ziyarat places in Makkah. Secure your sacred journey spot
                       now!
                     </p>
@@ -457,7 +457,7 @@ const MainHome = () => {
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                       Plan Madinah ziyarat tour at the Prophet’s Mosque. Enjoy
-                      $25-$40 packages with English guides for the ziyarat
+                      $120-$375 packages with English guides for the ziyarat
                       places in Madinah. Limited spots, book now for the holy
                       sites in Saudi Arabia!
                     </p>
@@ -483,9 +483,9 @@ const MainHome = () => {
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                       Book a ziyarat in Jeddah's holy places from the Jeddah
-                      gateway. Select $25-$40 packages with or without guides to
-                      Masjid Al-Jinn. Reserve your spiritual pilgrimage at holy
-                      sites in Saudi Arabia now!
+                      gateway. Select $120-$375 packages with or without guides
+                      to Masjid Al-Jinn. Reserve your spiritual pilgrimage at
+                      holy sites in Saudi Arabia now!
                     </p>
                   </div>
                 </div>
@@ -509,7 +509,7 @@ const MainHome = () => {
                     </h2>
                     <p className=" sectionTitle__text mt-5 sm:mt-0 md:text-13">
                       Explore Taif ziyarat places on a day trip from Makkah.
-                      Enjoy $40-$100 packages with guided transport to the
+                      Enjoy $300-$600 packages with guided transport to the
                       Abdullah Ibn Abbas Mosque. Book today for sacred journeys
                       in holy sites in Saudi Arabia!
                     </p>
