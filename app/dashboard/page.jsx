@@ -341,7 +341,7 @@ function Dashboard() {
 
         .dashboard-layout {
           display: flex;
-          min-height: calc(100vh - 120px);
+          min-height: 100vh;
           padding-top: 120px;
         }
 
